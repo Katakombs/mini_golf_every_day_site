@@ -145,20 +145,19 @@ def api_update():
             existing_ids = set(v['video_id'] for v in existing_videos)
             new_videos = [v for v in videos if v['video_id'] not in existing_ids]
             
-            # Save and update
-            manager.save_video_data(videos)
-            success = manager.update_watch_html(videos)
+            # Merge all videos (existing + new)
+            all_videos = existing_videos + new_videos
             
-            if success:
-                return jsonify({
-                    'status': 'ok',
-                    'message': 'Videos updated successfully',
-                    'total_videos': len(videos),
-                    'new_videos': len(new_videos),
-                    'new_video_ids': [v['video_id'] for v in new_videos]
-                })
-            else:
-                return jsonify({'status': 'error', 'error': 'Failed to update HTML'})
+            # Save merged data (skip HTML update for dynamic site)
+            manager.save_video_data(all_videos)
+            
+            return jsonify({
+                'status': 'ok',
+                'message': 'Videos updated successfully',
+                'total_videos': len(all_videos),
+                'new_videos': len(new_videos),
+                'new_video_ids': [v['video_id'] for v in new_videos]
+            })
         else:
             return jsonify({'status': 'error', 'error': 'No videos found'})
             
