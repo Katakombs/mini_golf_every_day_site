@@ -1,0 +1,124 @@
+# Mini Golf Every Day - .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+py311env/
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs & Debug
+*.log
+debug.log
+cron_update.log
+*.tmp
+*.temp
+
+# Backup files
+*_backup_*.html
+*_backup_*.json
+tiktok_videos_backup_*.json
+watch_backup_*.html
+index_backup_*.html
+
+# Test files
+test_*
+*_test.py
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Sensitive config files (if any)
+.env
+.env.local
+.env.production
+secrets.json
+config.json
+
+# Node modules (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+*.min.js
+*.min.css
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Documentation drafts
+*_draft.md
+*_notes.md
+
+# Local development files
+local_*
+dev_*
+localhost_*
+
+# Server-specific files
+passenger_wsgi.py.bak
+.htaccess.bak
+
+# Media files that might be too large
+*.mov
+*.mp4
+*.avi
+MJLights.mov
+
+# Keep these important files
+!tiktok_videos.json
+!requirements.txt
+!.htaccess
+!*.html
+!*.css
+!*.js
+!*.svg
+!*.png
+!*.jpg
+!*.jpeg
+!*.gif
+!*.ico

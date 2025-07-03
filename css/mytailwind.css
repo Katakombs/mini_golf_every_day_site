@@ -1,0 +1,42 @@
+/* Custom Tailwind CSS Output */
+.bg-orange-400 { background-color: #fb923c; }
+.bg-orange-100 { background-color: #ffedd5; }
+.bg-orange-200 { background-color: #fed7aa; }
+.bg-orange-300 { background-color: #fdba74; }
+.bg-orange-500 { background-color: #f97316; }
+.bg-orange-600 { background-color: #ea580c; }
+.bg-orange-700 { background-color: #c2410c; }
+.bg-orange-800 { background-color: #9a3412; }
+.bg-orange-900 { background-color: #7c2d12; }
+
+.text-orange-100 { color: #ffedd5; }
+.text-orange-200 { color: #fed7aa; }
+.text-orange-300 { color: #fdba74; }
+.text-orange-400 { color: #fb923c; }
+.text-orange-500 { color: #f97316; }
+.text-orange-600 { color: #ea580c; }
+.text-orange-700 { color: #c2410c; }
+.text-orange-800 { color: #9a3412; }
+.text-orange-900 { color: #7c2d12; }
+
+.border-orange-100 { border-color: #ffedd5; }
+.border-orange-200 { border-color: #fed7aa; }
+.border-orange-300 { border-color: #fdba74; }
+.border-orange-400 { border-color: #fb923c; }
+.border-orange-500 { border-color: #f97316; }
+.border-orange-600 { border-color: #ea580c; }
+.border-orange-700 { border-color: #c2410c; }
+.border-orange-800 { border-color: #9a3412; }
+.border-orange-900 { border-color: #7c2d12; }
+.text-blue-700 { color: #1d4ed8; }
+.p-4 { padding: 1rem; }
+.via-orange-100 { background-image: linear-gradient(to center, #ffedd5, #ffedd5); }
+.via-orange-200 { background-image: linear-gradient(to center, #fed7aa, #fed7aa); }
+.via-orange-300 { background-image: linear-gradient(to center, #fdba74, #fdba74); }
+.via-orange-400 { background-image: linear-gradient(to center, #fb923c, #fb923c); }
+.via-orange-500 { background-image: linear-gradient(to center, #f97316, #f97316); }
+.via-orange-600 { background-image: linear-gradient(to center, #ea580c, #ea580c); }
+.via-orange-700 { background-image: linear-gradient(to center, #c2410c, #c2410c); }
+.via-orange-800 { background-image: linear-gradient(to center, #9a3412, #9a3412); }
+.via-orange-900 { background-image: linear-gradient(to center, #7c2d12, #7c2d12); }
+/* ...more utility classes would be here in a real build... */

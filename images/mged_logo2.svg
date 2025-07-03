@@ -1,0 +1,30 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <!-- Crossed Putters -->
+  <g stroke="#0a3a3a" stroke-width="6" stroke-linecap="round">
+    <line x1="40" y1="160" x2="100" y2="100" />
+    <line x1="160" y1="160" x2="100" y2="100" />
+  </g>
+
+  <!-- Putter heads -->
+  <g fill="#4caf50" stroke="#0a3a3a" stroke-width="2">
+    <rect x="25" y="145" width="30" height="12" rx="6" transform="rotate(-45 40 151)" />
+    <rect x="145" y="145" width="30" height="12" rx="6" transform="rotate(45 160 151)" />
+  </g>
+
+  <!-- Golf Ball -->
+  <circle cx="100" cy="100" r="40" fill="white" stroke="#0a3a3a" stroke-width="4" />
+
+  <!-- Smile and Eyes -->
+  <g fill="none" stroke="#0a3a3a" stroke-width="4" stroke-linecap="round">
+    <path d="M85 105 Q100 115 115 105" /> <!-- smile -->
+    <path d="M85 90 Q87 85 90 90" /> <!-- left eye -->
+    <path d="M110 90 Q113 85 115 90" /> <!-- right eye -->
+  </g>
+
+  <!-- Dimples -->
+  <g fill="none" stroke="#0a3a3a" stroke-width="2">
+    <path d="M85 120 q15 10 30 0" />
+    <path d="M80 115 q20 12 40 0" />
+    <path d="M90 125 q10 8 20 0" />
+  </g>
+</svg>

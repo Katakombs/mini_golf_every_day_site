@@ -1,0 +1,49 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <radialGradient id="golfBallGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dddddd"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Crossed Putters -->
+  <g stroke="#0a3a3a" stroke-width="6" stroke-linecap="round">
+    <line x1="40" y1="160" x2="100" y2="100" />
+    <line x1="160" y1="160" x2="100" y2="100" />
+  </g>
+
+  <!-- Putter Heads -->
+  <g fill="#4caf50" stroke="#0a3a3a" stroke-width="2">
+    <rect x="25" y="145" width="30" height="12" rx="6" transform="rotate(-45 40 151)" />
+    <rect x="145" y="145" width="30" height="12" rx="6" transform="rotate(45 160 151)" />
+  </g>
+
+  <!-- Putter Grips -->
+  <g fill="#0a3a3a">
+    <rect x="38" y="158" width="4" height="10" transform="rotate(-45 40 163)" />
+    <rect x="158" y="158" width="4" height="10" transform="rotate(45 160 163)" />
+  </g>
+
+  <!-- Golf Ball with gradient -->
+  <circle cx="100" cy="100" r="40" fill="url(#golfBallGradient)" stroke="#0a3a3a" stroke-width="4" />
+
+  <!-- Facial features -->
+  <g stroke="#0a3a3a" stroke-linecap="round">
+    <!-- Smile -->
+    <path d="M85 105 Q100 115 115 105" stroke-width="4" fill="none" />
+    <!-- Eyes -->
+    <circle cx="88" cy="88" r="4" fill="#0a3a3a" />
+    <circle cx="112" cy="88" r="4" fill="#0a3a3a" />
+  </g>
+
+  <!-- Extra Dimples -->
+  <g fill="none" stroke="#0a3a3a" stroke-width="1.5">
+    <circle cx="80" cy="115" r="2" />
+    <circle cx="90" cy="120" r="2" />
+    <circle cx="100" cy="125" r="2" />
+    <circle cx="110" cy="120" r="2" />
+    <circle cx="120" cy="115" r="2" />
+    <circle cx="85" cy="130" r="2" />
+    <circle cx="115" cy="130" r="2" />
+  </g>
+</svg>
