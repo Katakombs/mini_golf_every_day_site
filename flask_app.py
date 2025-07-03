@@ -79,51 +79,11 @@ def api_videos():
 
 @app.route('/api/add/<video_id>')
 def api_add_video(video_id):
-    """Add a single video"""
-    try:
-        if not AUTOMATION_AVAILABLE:
-            return jsonify({'status': 'error', 'error': 'TikTok automation not available'})
-        
-        # Extract video ID if it's a URL
-        if 'tiktok.com' in video_id:
-            import re
-            match = re.search(r'/video/(\d+)', video_id)
-            if match:
-                video_id = match.group(1)
-        
-        manager = TikTokVideoManager()
-        existing_videos = manager.load_video_data()
-        
-        # Check if video already exists
-        existing_ids = [v['video_id'] for v in existing_videos]
-        if video_id in existing_ids:
-            return jsonify({'status': 'error', 'error': f'Video {video_id} already exists'})
-        
-        # Add new video
-        new_video = {
-            'video_id': video_id,
-            'title': '',
-            'upload_date': '',
-            'url': f"https://www.tiktok.com/@minigolfeveryday/video/{video_id}"
-        }
-        
-        updated_videos = [new_video] + existing_videos[:29]
-        
-        # Save and update HTML
-        manager.save_video_data(updated_videos)
-        success = manager.update_watch_html(updated_videos)
-        
-        if success:
-            return jsonify({
-                'status': 'ok',
-                'message': f'Added video {video_id}',
-                'video_count': len(updated_videos)
-            })
-        else:
-            return jsonify({'status': 'error', 'error': 'Failed to update HTML'})
-            
-    except Exception as e:
-        return jsonify({'status': 'error', 'error': str(e)})
+    """Add a single video - DISABLED for safety"""
+    return jsonify({
+        'status': 'error', 
+        'error': 'This endpoint is disabled to prevent database corruption. Use /api/update instead.'
+    })
 
 @app.route('/api/update', methods=['GET', 'POST'])
 def api_update():
