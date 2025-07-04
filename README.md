@@ -91,4 +91,4 @@ This project is personal/educational. TikTok content belongs to [@minigolfeveryd
 
 Started as a New Year's resolution to play mini golf every single day in 2025. What began as a simple daily challenge has grown into a celebration of family, fun, and consistency - one putt at a time.
 
-**Created with ❤️ by MJ**
+**Created with ❤️ for MJ**
