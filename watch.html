@@ -181,7 +181,7 @@
     let allVideos = [];
     let displayedVideos = [];
     let currentPage = 1;
-    const videosPerPage = 12;
+    const videosPerPage = 6;
     let currentView = 'grid';
     
     // Load videos from API
@@ -343,6 +343,37 @@
     }
     
     function loadTikTokEmbeds() {
+      // Check if we're on localhost (embeds don't work on localhost)
+      const isLocalhost = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1';
+      
+      if (isLocalhost) {
+        console.log('Running on localhost - TikTok embeds may not work');
+        // Add fallback for failed embeds after a delay
+        setTimeout(() => {
+          const embeds = document.querySelectorAll('.tiktok-embed');
+          embeds.forEach(embed => {
+            // Check if embed loaded (has iframe)
+            if (!embed.querySelector('iframe')) {
+              const videoUrl = embed.getAttribute('cite');
+              embed.innerHTML = `
+                <div class="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-lg p-6 text-center" 
+                     style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                  <div class="text-6xl mb-4">🎬</div>
+                  <h3 class="text-xl font-bold mb-2">Mini Golf Every Day</h3>
+                  <p class="text-pink-100 mb-4">TikTok embed (localhost preview)</p>
+                  <a href="${videoUrl}" target="_blank" rel="noopener noreferrer"
+                     class="inline-block bg-white text-purple-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
+                    🎥 Watch on TikTok
+                  </a>
+                  <p class="text-xs text-pink-200 mt-4">@minigolfeveryday</p>
+                </div>
+              `;
+            }
+          });
+        }, 3000);
+      }
+      
       // Remove any existing TikTok script
       const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
       if (existingScript) {

@@ -239,17 +239,21 @@
       `;
       
       // Load TikTok embed script
-      if (window.tiktokEmbedLoaded) {
-        window.tiktok.render();
-      } else {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.tiktok.com/embed.js';
-        script.onload = () => {
-          window.tiktokEmbedLoaded = true;
-        };
-        document.body.appendChild(script);
+      loadTikTokEmbeds();
+    }
+    
+    function loadTikTokEmbeds() {
+      // Remove any existing TikTok script
+      const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
       }
+      
+      // Create new script element
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.tiktok.com/embed.js';
+      document.body.appendChild(script);
     }
     
     // Load data when page loads

@@ -16,10 +16,18 @@ from pathlib import Path
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, script_dir)
 
+# Load environment variables from .env file if it exists
+env_file = os.path.join(script_dir, '.env')
+if os.path.exists(env_file):
+    with open(env_file, 'r') as f:
+        for line in f:
+            if line.strip() and not line.startswith('#') and '=' in line:
+                key, value = line.strip().split('=', 1)
+                os.environ[key] = value
+
 # Configuration
-DOMAIN = "https://minigolfevery.day"  # Replace with your actual domain
-# For local testing, uncomment the line below:
-# DOMAIN = "http://127.0.0.1:5000"
+DOMAIN = os.environ.get('MGED_DOMAIN', "https://minigolfevery.day")
+API_KEY = os.environ.get('MGED_API_KEY', 'default_dev_key')
 LOG_FILE = os.path.join(script_dir, "cron_update.log")
 MAX_LOG_SIZE = 1024 * 1024  # 1MB
 
@@ -77,6 +85,21 @@ def get_video_count(domain):
             return None
     except Exception as e:
         return None
+
+def make_secure_api_call(endpoint, method='GET', timeout=30):
+    """Make a secure API call with proper authentication"""
+    headers = {'X-API-Key': API_KEY}
+    url = f"{DOMAIN}{endpoint}"
+    
+    try:
+        if method.upper() == 'POST':
+            response = requests.post(url, headers=headers, timeout=timeout)
+        else:
+            response = requests.get(url, headers=headers, timeout=timeout)
+        
+        return response.status_code == 200, response.json() if response.status_code == 200 else response.text
+    except Exception as e:
+        return False, str(e)
 
 def main():
     logger = setup_logging()

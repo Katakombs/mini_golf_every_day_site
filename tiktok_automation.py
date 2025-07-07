@@ -169,6 +169,49 @@ class TikTokVideoManager:
         except Exception as e:
             print(f"Error updating HTML file: {e}")
             return False
+    
+    def get_video_info(self, video_id: str) -> Dict:
+        """
+        Get information for a specific video using yt-dlp
+        """
+        try:
+            # Check if yt-dlp is installed
+            result = subprocess.run(['which', 'yt-dlp'], capture_output=True, text=True)
+            if result.returncode != 0:
+                print("yt-dlp not found. Installing...")
+                subprocess.run(['pip', 'install', 'yt-dlp'], check=True)
+            
+            video_url = f"https://www.tiktok.com/@{self.username}/video/{video_id}"
+            
+            # Use yt-dlp to extract video info
+            cmd = [
+                'yt-dlp',
+                '--print', '%(id)s|%(title)s|%(upload_date)s',
+                '--no-download',
+                video_url
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                print(f"yt-dlp error for video {video_id}: {result.stderr}")
+                return None
+            
+            output = result.stdout.strip()
+            if '|' in output:
+                parts = output.split('|')
+                if len(parts) >= 3:
+                    return {
+                        'video_id': parts[0],
+                        'title': parts[1],
+                        'upload_date': parts[2]
+                    }
+            
+            return None
+            
+        except Exception as e:
+            print(f"Error fetching video info for {video_id}: {e}")
+            return None
 
 def main():
     """Main function to fetch and update TikTok videos"""
