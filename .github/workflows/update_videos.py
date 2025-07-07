@@ -80,7 +80,7 @@ def load_existing_videos():
     """Load existing video database"""
     if os.path.exists('tiktok_videos.json'):
         try:
-            with open('tiktok_videos.json', 'r') as f:
+            with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 return data.get('videos', [])
         except Exception as e:
@@ -96,7 +96,7 @@ def save_videos(videos):
             'total_count': len(videos)
         }
         
-        with open('tiktok_videos.json', 'w') as f:
+        with open('tiktok_videos.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
         print(f"✅ Saved {len(videos)} videos to tiktok_videos.json")

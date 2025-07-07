@@ -51,7 +51,7 @@ def api_status():
         
         if videos_exist:
             try:
-                with open('tiktok_videos.json', 'r') as f:
+                with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     video_count = len(data.get('videos', []))
                     last_updated = data.get('last_updated')
@@ -74,7 +74,7 @@ def api_videos():
     """Get current videos"""
     try:
         if os.path.exists('tiktok_videos.json'):
-            with open('tiktok_videos.json', 'r') as f:
+            with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 return jsonify({
                     'status': 'ok',

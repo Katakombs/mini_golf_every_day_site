@@ -31,7 +31,7 @@ def check_video_data():
     
     # Try to load JSON
     try:
-        with open(video_file, 'r') as f:
+        with open(video_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
         print("✅ JSON file is valid")
     except json.JSONDecodeError as e:
