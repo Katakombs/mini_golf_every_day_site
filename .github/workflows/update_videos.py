@@ -45,6 +45,11 @@ def run_ytdlp(username="minigolfeveryday", limit=50):
                     title = parts[1].strip() if len(parts) > 1 else f"TikTok Video {video_id}"
                     upload_date = parts[2].strip() if len(parts) > 2 else datetime.now().strftime('%Y%m%d')
                     
+                    # Fix empty titles
+                    if not title or title.strip() == '':
+                        title = f"TikTok Video {video_id}"
+                        print(f"  ⚠️  Empty title for {video_id}, using fallback: {title}")
+                    
                     # Basic validation
                     if video_id and video_id.isdigit() and len(video_id) >= 15:
                         videos.append({
@@ -53,6 +58,10 @@ def run_ytdlp(username="minigolfeveryday", limit=50):
                             'upload_date': upload_date,
                             'url': f"https://www.tiktok.com/@{username}/video/{video_id}"
                         })
+                    else:
+                        print(f"  ⚠️  Skipping invalid video_id: {video_id}")
+                else:
+                    print(f"  ⚠️  Skipping line with insufficient parts: {line[:50]}...")
         
         print(f"✅ Successfully parsed {len(videos)} videos")
         for i, video in enumerate(videos[:5]):  # Show first 5
@@ -129,12 +138,23 @@ def main():
     # This preserves the order and ensures new videos appear first
     all_videos = truly_new + existing_videos
     
+    # Safety check: never save an empty video list if we had existing videos
+    if not all_videos and existing_videos:
+        print("❌ SAFETY CHECK: Refusing to save empty video list when existing videos exist!")
+        print("❌ This suggests a parsing error. Keeping existing database unchanged.")
+        return
+    
     # Limit to most recent 200 videos to prevent file from growing too large
     if len(all_videos) > 200:
         all_videos = all_videos[:200]
         print(f"📉 Trimmed to most recent 200 videos")
     
     print(f"📊 Total videos after update: {len(all_videos)}")
+    
+    # Final safety check before saving
+    if len(all_videos) == 0:
+        print("❌ SAFETY CHECK: Refusing to save empty video list!")
+        return
     
     # Save updated database
     if save_videos(all_videos):
