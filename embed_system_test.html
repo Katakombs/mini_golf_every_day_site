@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Embed Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 p-8">
+  <h1 class="text-3xl font-bold mb-8">TikTok Embed Loading Test</h1>
+  
+  <div class="mb-8">
+    <button onclick="testBasicEmbed()" class="bg-blue-600 text-white px-4 py-2 rounded mr-4">Test Basic Embed</button>
+    <button onclick="testScriptLoading()" class="bg-green-600 text-white px-4 py-2 rounded mr-4">Test Script Loading</button>
+    <button onclick="testMultipleEmbeds()" class="bg-purple-600 text-white px-4 py-2 rounded">Test Multiple Embeds</button>
+  </div>
+
+  <div id="test-area" class="border-2 border-gray-300 p-8 rounded-lg min-h-96">
+    <p class="text-gray-500">Test results will appear here...</p>
+  </div>
+
+  <div id="debug-info" class="mt-8 bg-black text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto">
+    <div class="text-white mb-2">Debug Log:</div>
+  </div>
+
+  <script>
+    function log(message) {
+      console.log(message);
+      const debug = document.getElementById('debug-info');
+      debug.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${message}</div>`;
+      debug.scrollTop = debug.scrollHeight;
+    }
+
+    function clearTestArea() {
+      document.getElementById('test-area').innerHTML = '<p class="text-gray-500">Test in progress...</p>';
+    }
+
+    async function testBasicEmbed() {
+      log('Testing basic TikTok embed...');
+      clearTestArea();
+      
+      const testArea = document.getElementById('test-area');
+      
+      // Basic TikTok embed HTML
+      testArea.innerHTML = `
+        <h3 class="text-lg font-bold mb-4">Basic TikTok Embed Test</h3>
+        <blockquote class="tiktok-embed" 
+                    cite="https://www.tiktok.com/@minigolfeveryday/video/7524061825164479799" 
+                    data-video-id="7524061825164479799" 
+                    style="max-width: 605px; min-width: 325px;">
+          <section>
+            <a target="_blank" title="@minigolfeveryday" href="https://www.tiktok.com/@minigolfeveryday">@minigolfeveryday</a>
+            <p>Day 181. Balance. #minigolfeveryday #minigolf #everyday #puttputt</p>
+            <a target="_blank" href="https://www.tiktok.com/@minigolfeveryday/video/7524061825164479799">♬ original sound - minigolfeveryday</a>
+          </section>
+        </blockquote>
+        <div class="mt-4">
+          <p class="text-sm text-gray-600">Embed added to DOM. Checking if TikTok script loads...</p>
+        </div>
+      `;
+      
+      // Wait a moment for DOM to settle
+      setTimeout(() => {
+        log('DOM updated with embed HTML');
+        
+        // Check if TikTok script exists
+        const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+        log(`Existing TikTok script: ${existingScript ? 'Found' : 'Not found'}`);
+        
+        if (!existingScript) {
+          log('Loading TikTok script...');
+          loadTikTokScript();
+        } else {
+          log('TikTok script already exists, checking functions...');
+          checkTikTokReadiness();
+        }
+      }, 500);
+    }
+
+    function loadTikTokScript() {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.tiktok.com/embed.js';
+      
+      script.onload = function() {
+        log('✅ TikTok script loaded successfully');
+        setTimeout(checkTikTokReadiness, 1000);
+      };
+      
+      script.onerror = function() {
+        log('❌ TikTok script failed to load');
+      };
+      
+      document.head.appendChild(script);
+      log('TikTok script added to page');
+    }
+
+    function checkTikTokReadiness() {
+      log('Checking TikTok readiness...');
+      log(`window.tiktokEmbedLoad: ${typeof window.tiktokEmbedLoad}`);
+      log(`window.TikTok: ${typeof window.TikTok}`);
+      
+      if (window.tiktokEmbedLoad) {
+        log('🎯 Calling tiktokEmbedLoad()...');
+        try {
+          window.tiktokEmbedLoad();
+          log('✅ tiktokEmbedLoad() called successfully');
+          
+          // Check for iframe after a delay
+          setTimeout(checkForIframes, 3000);
+        } catch (e) {
+          log(`❌ Error calling tiktokEmbedLoad(): ${e.message}`);
+        }
+      } else if (window.TikTok && window.TikTok.load) {
+        log('🎯 Calling TikTok.load()...');
+        try {
+          window.TikTok.load();
+          log('✅ TikTok.load() called successfully');
+          setTimeout(checkForIframes, 3000);
+        } catch (e) {
+          log(`❌ Error calling TikTok.load(): ${e.message}`);
+        }
+      } else {
+        log('⏳ TikTok functions not ready yet, waiting...');
+        setTimeout(checkTikTokReadiness, 1000);
+      }
+    }
+
+    function checkForIframes() {
+      const embeds = document.querySelectorAll('.tiktok-embed');
+      const iframes = document.querySelectorAll('.tiktok-embed iframe');
+      
+      log(`Found ${embeds.length} TikTok embeds`);
+      log(`Found ${iframes.length} TikTok iframes`);
+      
+      if (iframes.length > 0) {
+        log('✅ TikTok embeds loaded successfully!');
+        iframes.forEach((iframe, index) => {
+          log(`Iframe ${index + 1}: ${iframe.src}`);
+        });
+      } else {
+        log('❌ No TikTok iframes found - embeds failed to load');
+        
+        // Check embed content
+        embeds.forEach((embed, index) => {
+          log(`Embed ${index + 1} innerHTML length: ${embed.innerHTML.length}`);
+          log(`Embed ${index + 1} first 100 chars: ${embed.innerHTML.substring(0, 100)}`);
+        });
+      }
+    }
+
+    async function testScriptLoading() {
+      log('Testing TikTok script loading process...');
+      clearTestArea();
+      
+      const testArea = document.getElementById('test-area');
+      testArea.innerHTML = `
+        <h3 class="text-lg font-bold mb-4">Script Loading Test</h3>
+        <div id="script-status">
+          <p>Testing script loading...</p>
+        </div>
+      `;
+      
+      // Remove existing script first
+      const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+      if (existingScript) {
+        existingScript.remove();
+        log('Removed existing TikTok script');
+      }
+      
+      // Clear TikTok globals
+      if (window.tiktokEmbedLoad) delete window.tiktokEmbedLoad;
+      if (window.TikTok) delete window.TikTok;
+      
+      log('Cleared TikTok globals');
+      
+      // Load script with detailed monitoring
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.tiktok.com/embed.js';
+      
+      let loadStartTime = Date.now();
+      
+      script.onload = function() {
+        const loadTime = Date.now() - loadStartTime;
+        log(`✅ Script loaded in ${loadTime}ms`);
+        
+        // Monitor for function availability
+        let checkCount = 0;
+        const checkInterval = setInterval(() => {
+          checkCount++;
+          const hasFunction = !!window.tiktokEmbedLoad;
+          const hasObject = !!window.TikTok;
+          
+          log(`Check ${checkCount}: tiktokEmbedLoad=${hasFunction}, TikTok=${hasObject}`);
+          
+          if (hasFunction || hasObject || checkCount >= 20) {
+            clearInterval(checkInterval);
+            
+            if (hasFunction || hasObject) {
+              log(`✅ TikTok functions available after ${checkCount * 500}ms`);
+            } else {
+              log(`❌ TikTok functions not available after ${checkCount * 500}ms`);
+            }
+          }
+        }, 500);
+      };
+      
+      script.onerror = function(e) {
+        log(`❌ Script failed to load: ${e}`);
+      };
+      
+      document.head.appendChild(script);
+      log('Started loading TikTok script...');
+    }
+
+    async function testMultipleEmbeds() {
+      log('Testing multiple TikTok embeds...');
+      clearTestArea();
+      
+      // Get some videos from our API
+      try {
+        const response = await fetch('/api/videos');
+        const data = await response.json();
+        const videos = data.videos.slice(0, 3); // Get first 3 videos
+        
+        log(`Loading ${videos.length} embeds...`);
+        
+        const testArea = document.getElementById('test-area');
+        testArea.innerHTML = `
+          <h3 class="text-lg font-bold mb-4">Multiple Embeds Test</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${videos.map((video, index) => `
+              <div class="border p-4 rounded">
+                <h4 class="font-bold mb-2">Video ${index + 1}</h4>
+                <blockquote class="tiktok-embed" 
+                            cite="${video.url}" 
+                            data-video-id="${video.video_id}" 
+                            style="max-width: 100%; min-width: 280px;">
+                  <section>
+                    <a target="_blank" title="@minigolfeveryday" href="https://www.tiktok.com/@minigolfeveryday">@minigolfeveryday</a>
+                    <p>${video.title || 'Mini golf adventure!'}</p>
+                    <a target="_blank" href="${video.url}">♬ original sound - minigolfeveryday</a>
+                  </section>
+                </blockquote>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        
+        // Load TikTok script if needed
+        setTimeout(() => {
+          const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+          if (!existingScript) {
+            loadTikTokScript();
+          } else {
+            checkTikTokReadiness();
+          }
+        }, 500);
+        
+      } catch (error) {
+        log(`❌ Error loading videos: ${error.message}`);
+      }
+    }
+
+    // Initial log
+    log('TikTok Embed Test Page Loaded');
+    log(`Current hostname: ${window.location.hostname}`);
+    log(`User agent: ${navigator.userAgent.substring(0, 100)}...`);
+  </script>
+</body>
+</html>

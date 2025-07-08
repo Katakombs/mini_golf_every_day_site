@@ -265,12 +265,59 @@ MGED.ui = {
         }
       }, 5000);
     }
+  }
+};
+
+// =============================================================================
+// VIDEO FUNCTIONS
+// =============================================================================
+
+MGED.video = {
+  /**
+   * Preload TikTok script early (before embeds are needed)
+   */
+  preloadTikTokScript: function() {
+    // Check if we're on localhost (skip preload on localhost)
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname === '';
+    
+    if (isLocalhost) {
+      console.log('🎥 Skipping TikTok preload on localhost');
+      return;
+    }
+
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (existingScript) {
+      console.log('🎥 TikTok script already exists, skipping preload');
+      return;
+    }
+
+    console.log('🎥 Preloading TikTok script...');
+    
+    // Create script element for preloading
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.tiktok.com/embed.js';
+    
+    script.onload = function() {
+      console.log('🎥 TikTok script preloaded successfully');
+    };
+    
+    script.onerror = function() {
+      console.warn('🎥 TikTok script preload failed');
+    };
+    
+    document.head.appendChild(script);
   },
 
   /**
    * Load TikTok embeds with fallback handling
    */
   loadTikTokEmbeds: function() {
+    console.log('🎥 loadTikTokEmbeds() called');
+    
     // Check if we're on localhost (embeds typically don't work on localhost)
     const isLocalhost = window.location.hostname === 'localhost' || 
                        window.location.hostname === '127.0.0.1' ||
@@ -284,11 +331,69 @@ MGED.ui = {
       }, 1000);
       return;
     }
+
+    // Check if any embeds are present
+    const embeds = document.querySelectorAll('.tiktok-embed');
+    if (embeds.length === 0) {
+      console.log('🎥 No TikTok embeds found, skipping script load');
+      return;
+    }
+
+    console.log(`🎥 Found ${embeds.length} TikTok embeds to load`);
+
+    // Check for existing TikTok objects/functions
+    const hasTikTokScript = !!document.querySelector('script[src*="tiktok.com/embed.js"]');
+    const hasTikTokFunction = window.tiktokEmbedLoad && typeof window.tiktokEmbedLoad === 'function';
+    const hasTikTokObject = window.TikTok && typeof window.TikTok === 'object';
     
+    console.log('🎥 TikTok detection:', {
+      hasTikTokScript,
+      hasTikTokFunction, 
+      hasTikTokObject,
+      windowTikTok: typeof window.TikTok,
+      windowTiktokEmbedLoad: typeof window.tiktokEmbedLoad
+    });
+
+    // If TikTok is already loaded and working, use it
+    if (hasTikTokFunction || hasTikTokObject) {
+      console.log('🎥 TikTok already available, processing embeds');
+      try {
+        if (hasTikTokFunction) {
+          window.tiktokEmbedLoad();
+        } else if (hasTikTokObject && window.TikTok.load) {
+          window.TikTok.load();
+        }
+        // Check status after giving TikTok time to process
+        setTimeout(() => {
+          MGED.video.checkEmbedStatus();
+        }, 4000);
+        return;
+      } catch (error) {
+        console.warn('🎥 Error using existing TikTok:', error);
+      }
+    }
+    
+    // If script exists but functions aren't ready, wait for them
+    if (hasTikTokScript) {
+      console.log('🎥 TikTok script exists, waiting for ready state');
+      MGED.video.waitForTikTokReady();
+      return;
+    }
+    
+    // Load fresh TikTok script
+    console.log('🎥 Loading fresh TikTok script');
+    MGED.video.loadFreshTikTokScript();
+  },
+
+  /**
+   * Load a fresh TikTok script
+   */
+  loadFreshTikTokScript: function() {
     // Remove any existing TikTok script
     const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
     if (existingScript) {
       existingScript.remove();
+      console.log('🎥 Removed existing TikTok script');
     }
     
     // Create new script element
@@ -298,20 +403,68 @@ MGED.ui = {
     
     // Add error handling
     script.onerror = function() {
-      console.warn('TikTok embed script failed to load, using fallback');
+      console.warn('🎥 TikTok embed script failed to load, using fallback');
       MGED.video.showEmbedFallbacks();
     };
     
     // Add load success handler
     script.onload = function() {
-      console.log('TikTok embed script loaded successfully');
-      // Give TikTok time to process embeds
-      setTimeout(() => {
-        MGED.video.checkEmbedStatus();
-      }, 3000);
+      console.log('🎥 TikTok embed script loaded successfully');
+      // Wait for script to be ready, then process embeds
+      MGED.video.waitForTikTokReady();
     };
     
+    console.log('🎥 Adding TikTok script to page');
     document.body.appendChild(script);
+  },
+
+  /**
+   * Wait for TikTok to be ready and process embeds
+   */
+  waitForTikTokReady: function() {
+    let attempts = 0;
+    const maxAttempts = 25; // 12.5 seconds max (increased from 10 seconds)
+    
+    const checkReady = () => {
+      attempts++;
+      console.log(`🎥 Checking TikTok ready state (attempt ${attempts}/${maxAttempts})`);
+      
+      const hasTikTokFunction = window.tiktokEmbedLoad && typeof window.tiktokEmbedLoad === 'function';
+      const hasTikTokObject = window.TikTok && typeof window.TikTok === 'object';
+      
+      console.log('🎥 TikTok state:', {
+        tiktokEmbedLoad: typeof window.tiktokEmbedLoad,
+        TikTok: typeof window.TikTok,
+        hasTikTokFunction,
+        hasTikTokObject
+      });
+      
+      if (hasTikTokFunction || hasTikTokObject) {
+        console.log('🎥 TikTok ready! Processing embeds');
+        try {
+          if (hasTikTokFunction) {
+            window.tiktokEmbedLoad();
+          } else if (hasTikTokObject && window.TikTok.load) {
+            window.TikTok.load();
+          }
+          // Check status after processing with longer delay for initial load
+          setTimeout(() => {
+            MGED.video.checkEmbedStatus();
+          }, 5000);
+        } catch (error) {
+          console.warn('🎥 Error calling TikTok functions:', error);
+          MGED.video.showEmbedFallbacks();
+        }
+      } else if (attempts < maxAttempts) {
+        // Try again in 500ms
+        setTimeout(checkReady, 500);
+      } else {
+        console.warn('🎥 TikTok not ready after max attempts, using fallbacks');
+        MGED.video.showEmbedFallbacks();
+      }
+    };
+    
+    checkReady();
   },
 
   /**
@@ -319,14 +472,83 @@ MGED.ui = {
    */
   checkEmbedStatus: function() {
     const embeds = document.querySelectorAll('.tiktok-embed');
+    let successCount = 0;
+    
     embeds.forEach(embed => {
       // Check if embed loaded properly
       const iframe = embed.querySelector('iframe');
-      if (!iframe) {
-        console.warn('TikTok embed failed to load iframe, showing fallback');
-        MGED.video.showEmbedFallback(embed);
+      if (iframe) {
+        successCount++;
+        console.log('🎥 Embed loaded successfully:', embed.getAttribute('data-video-id'));
+      } else {
+        // Give TikTok more time before showing fallback (increased delay)
+        setTimeout(() => {
+          const delayedIframe = embed.querySelector('iframe');
+          if (!delayedIframe) {
+            console.warn('TikTok embed failed to load iframe after extended delay, showing fallback');
+            MGED.video.showEmbedFallback(embed);
+          } else {
+            console.log('🎥 Embed loaded after delay:', embed.getAttribute('data-video-id'));
+          }
+        }, 6000); // Increased from 3000ms to 6000ms
       }
     });
+    
+    console.log(`🎥 ${successCount}/${embeds.length} embeds loaded successfully on initial check`);
+    
+    // If no embeds loaded initially, do a final check after an even longer delay
+    if (successCount === 0 && embeds.length > 0) {
+      console.log('🎥 No embeds loaded initially, scheduling final check...');
+      setTimeout(() => {
+        MGED.video.performFinalEmbedCheck();
+      }, 8000);
+    }
+  },
+
+  /**
+   * Perform a final check for embeds that might have loaded slowly
+   */
+  performFinalEmbedCheck: function() {
+    const embeds = document.querySelectorAll('.tiktok-embed');
+    let finalSuccessCount = 0;
+    
+    embeds.forEach(embed => {
+      const iframe = embed.querySelector('iframe');
+      if (iframe) {
+        finalSuccessCount++;
+      }
+    });
+    
+    console.log(`🎥 Final check: ${finalSuccessCount}/${embeds.length} embeds loaded`);
+    
+    // If still no embeds after final check, something might be wrong with the script
+    if (finalSuccessCount === 0 && embeds.length > 0) {
+      console.warn('🎥 No embeds loaded after final check - may need to reload TikTok script');
+      // Optionally try reloading the script one more time
+      MGED.video.retryTikTokScript();
+    }
+  },
+
+  /**
+   * Retry loading TikTok script as a last resort
+   */
+  retryTikTokScript: function() {
+    console.log('🎥 Retrying TikTok script as last resort...');
+    
+    // Remove existing script
+    const existingScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    
+    // Clear TikTok objects
+    if (window.tiktokEmbedLoad) delete window.tiktokEmbedLoad;
+    if (window.TikTok) delete window.TikTok;
+    
+    // Wait a moment, then reload
+    setTimeout(() => {
+      MGED.video.loadFreshTikTokScript();
+    }, 1000);
   },
 
   /**
@@ -474,8 +696,8 @@ MGED.pages.home = {
    */
   updateHomeStats: function(statusData) {
     const elements = {
-      'video-count': statusData.video_count || '0',
-      'days-count': statusData.video_count || '0' // Assuming 1 video per day
+      'video-count': statusData.video_count || statusData.total_videos || '0',
+      'days-count': statusData.days_running || statusData.video_count || '0'
     };
     
     Object.entries(elements).forEach(([id, value]) => {
@@ -571,6 +793,10 @@ MGED.pages.watch = {
       const data = await MGED.api.loadData();
       console.log('🔍 API data loaded:', data);
       
+      if (!data || !data.videos) {
+        throw new Error('No video data received from API');
+      }
+      
       // Update stats
       MGED.ui.updateStats(data.status);
       console.log('🔍 Stats updated');
@@ -579,6 +805,12 @@ MGED.pages.watch = {
       MGED.state.allVideos = data.videos;
       MGED.state.displayedVideos = [...data.videos];
       console.log('🔍 Videos stored:', MGED.state.allVideos.length);
+      
+      if (MGED.state.allVideos.length === 0) {
+        console.warn('🔍 No videos found to display');
+        MGED.ui.hideLoadingStates();
+        return;
+      }
       
       // Display videos
       MGED.pages.watch.displayVideos();
@@ -598,54 +830,79 @@ MGED.pages.watch = {
    */
   displayVideos: function() {
     console.log('🎥 MGED.pages.watch.displayVideos() called');
-    const container = document.getElementById('videos-container');
-    if (!container) {
-      console.error('🎥 No videos-container element found!');
-      return;
-    }
-    console.log('🎥 Container found:', container);
     
-    const startIndex = (MGED.state.currentPage - 1) * MGED.config.videosPerPage;
-    const endIndex = startIndex + MGED.config.videosPerPage;
-    const videosToShow = MGED.state.displayedVideos.slice(0, endIndex);
-    console.log('🎥 Videos to show:', videosToShow.length);
-    
-    // Handle empty results
-    if (videosToShow.length === 0) {
-      console.log('🎥 No videos to show, hiding container');
-      container.classList.add('hidden');
+    try {
+      const container = document.getElementById('videos-container');
+      if (!container) {
+        console.error('🎥 No videos-container element found!');
+        return;
+      }
+      console.log('🎥 Container found:', container);
+      
+      const startIndex = (MGED.state.currentPage - 1) * MGED.config.videosPerPage;
+      const endIndex = startIndex + MGED.config.videosPerPage;
+      const videosToShow = MGED.state.displayedVideos.slice(0, endIndex);
+      console.log('🎥 Videos to show:', videosToShow.length, 'from total:', MGED.state.displayedVideos.length);
+      
+      // Handle empty results
+      if (videosToShow.length === 0) {
+        console.log('🎥 No videos to show, hiding container');
+        container.classList.add('hidden');
+        const noResults = document.getElementById('no-results');
+        if (noResults) noResults.classList.remove('hidden');
+        return;
+      }
+      
+      // Show container, hide no results
+      console.log('🎥 Showing container with videos');
+      container.classList.remove('hidden');
       const noResults = document.getElementById('no-results');
-      if (noResults) noResults.classList.remove('hidden');
-      return;
-    }
-    
-    // Show container, hide no results
-    console.log('🎥 Showing container with videos');
-    container.classList.remove('hidden');
-    const noResults = document.getElementById('no-results');
-    if (noResults) noResults.classList.add('hidden');
-    
-    // Update container classes based on view
-    if (MGED.state.currentView === 'grid') {
-      container.className = 'grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-none';
-    } else {
-      container.className = 'space-y-6 max-w-4xl mx-auto';
-    }
-    
-    // Generate video cards
-    container.innerHTML = videosToShow.map(video => 
-      MGED.video.generateVideoCard(video, MGED.state.currentView)
-    ).join('');
-    
-    // Load TikTok embeds
-    setTimeout(() => {
-      MGED.video.loadTikTokEmbeds();
-    }, 100);
-    
-    // Show/hide load more button
-    const loadMoreSection = document.getElementById('load-more-section');
-    if (loadMoreSection) {
-      loadMoreSection.style.display = endIndex < MGED.state.displayedVideos.length ? 'block' : 'none';
+      if (noResults) noResults.classList.add('hidden');
+      
+      // Update container classes based on view
+      if (MGED.state.currentView === 'grid') {
+        container.className = 'grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-none';
+      } else {
+        container.className = 'space-y-6 max-w-4xl mx-auto';
+      }
+      console.log('🎥 Container classes updated:', container.className);
+      
+      // Generate video cards
+      try {
+        const videoHTML = videosToShow.map(video => 
+          MGED.video.generateVideoCard(video, MGED.state.currentView)
+        ).join('');
+        console.log('🎥 Generated HTML length:', videoHTML.length);
+        
+        container.innerHTML = videoHTML;
+        console.log('🎥 HTML inserted into container');
+      } catch (htmlError) {
+        console.error('🎥 Error generating video HTML:', htmlError);
+        throw htmlError;
+      }
+      
+      // Load TikTok embeds with appropriate delay based on page state
+      const isInitialLoad = MGED.state.currentPage === 1 && !window.tiktokEmbedLoad && !window.TikTok;
+      const delay = isInitialLoad ? 1500 : 500; // Longer delay for initial page load
+      
+      console.log(`🎥 Scheduling TikTok embed load with ${delay}ms delay (initial load: ${isInitialLoad})`);
+      
+      setTimeout(() => {
+        MGED.video.loadTikTokEmbeds();
+      }, delay);
+      
+      // Show/hide load more button
+      const loadMoreSection = document.getElementById('load-more-section');
+      if (loadMoreSection) {
+        loadMoreSection.style.display = endIndex < MGED.state.displayedVideos.length ? 'block' : 'none';
+      }
+      
+      console.log('🎥 displayVideos completed successfully');
+      
+    } catch (error) {
+      console.error('🎥 Error in displayVideos:', error);
+      // Show error state if display fails
+      MGED.ui.showError();
     }
   },
   
@@ -782,6 +1039,28 @@ window.loadVideos = MGED.pages.watch.loadVideos;
 window.clearSearch = MGED.pages.watch.clearSearch;
 window.copyToClipboard = MGED.utils.copyToClipboard;
 
+// Export functions for global access (for inline HTML scripts)
+window.loadVideos = function() {
+  if (MGED.pages && MGED.pages.watch) {
+    MGED.pages.watch.loadVideos();
+  }
+};
+
+window.filterAndSortVideos = function() {
+  if (MGED.pages && MGED.pages.watch) {
+    MGED.pages.watch.filterAndSortVideos();
+  }
+};
+
+window.loadMore = function() {
+  if (MGED.pages && MGED.pages.watch) {
+    MGED.pages.watch.loadMore();
+  }
+};
+
+// Export API functions too
+window.MGED = MGED;
+
 // =============================================================================
 // INITIALIZATION
 // =============================================================================
@@ -790,10 +1069,16 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 MGED app initializing...');
   
   // Show development notice if on localhost
-  MGED.video.showDevelopmentNotice();
+  MGED.ui.showDevelopmentNotice();
+  
+  // Preload TikTok script on watch page for faster embed loading
+  const currentPage = window.location.pathname.split('/').pop();
+  if (currentPage === 'watch.html' || currentPage === 'watch') {
+    console.log('🎥 Preloading TikTok script for watch page...');
+    MGED.video.preloadTikTokScript();
+  }
   
   // Determine current page and initialize accordingly
-  const currentPage = window.location.pathname.split('/').pop();
   console.log('🚀 Current page detected:', currentPage);
   
   switch (currentPage) {

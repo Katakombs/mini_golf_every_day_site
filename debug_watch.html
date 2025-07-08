@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debug Watch - Mini Golf Every Day</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&family=Inter&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-white text-gray-800 p-8">
+  <h1 class="text-3xl font-bold mb-8">Debug Watch Page</h1>
+  
+  <div id="debug-info" class="bg-gray-100 p-4 rounded mb-8">
+    <h2 class="text-xl font-bold mb-4">Debug Information</h2>
+    <div id="debug-output"></div>
+  </div>
+  
+  <div id="api-test" class="bg-blue-100 p-4 rounded mb-8">
+    <h2 class="text-xl font-bold mb-4">API Test</h2>
+    <button onclick="testAPI()" class="bg-blue-600 text-white px-4 py-2 rounded">Test API</button>
+    <div id="api-results" class="mt-4"></div>
+  </div>
+  
+  <div id="video-test" class="bg-green-100 p-4 rounded">
+    <h2 class="text-xl font-bold mb-4">Video Loading Test</h2>
+    <button onclick="testVideoLoading()" class="bg-green-600 text-white px-4 py-2 rounded">Test Video Loading</button>
+    <div id="video-results" class="mt-4"></div>
+  </div>
+
+  <script>
+    function log(message) {
+      const debugOutput = document.getElementById('debug-output');
+      const timestamp = new Date().toLocaleTimeString();
+      debugOutput.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+      console.log(message);
+    }
+
+    function testAPI() {
+      log('Testing API endpoints...');
+      const apiResults = document.getElementById('api-results');
+      apiResults.innerHTML = '';
+      
+      Promise.all([
+        fetch('/api/status').then(r => r.json()),
+        fetch('/api/videos').then(r => r.json())
+      ]).then(([status, videos]) => {
+        log(`Status API: ${JSON.stringify(status)}`);
+        log(`Videos API: Found ${videos.videos?.length || 0} videos`);
+        apiResults.innerHTML = `
+          <div class="bg-green-50 p-2 rounded">
+            <strong>Status:</strong> ${JSON.stringify(status)}<br>
+            <strong>Videos:</strong> ${videos.videos?.length || 0} found
+          </div>
+        `;
+      }).catch(error => {
+        log(`API Error: ${error.message}`);
+        apiResults.innerHTML = `<div class="bg-red-50 p-2 rounded text-red-700">Error: ${error.message}</div>`;
+      });
+    }
+
+    function testVideoLoading() {
+      log('Testing video loading...');
+      const videoResults = document.getElementById('video-results');
+      
+      fetch('/api/videos')
+        .then(r => r.json())
+        .then(data => {
+          const videos = data.videos || [];
+          log(`Got ${videos.length} videos`);
+          
+          if (videos.length > 0) {
+            const firstVideo = videos[0];
+            log(`First video: ${JSON.stringify(firstVideo)}`);
+            
+            videoResults.innerHTML = `
+              <div class="bg-white p-4 rounded shadow">
+                <h3 class="font-bold">First Video Test</h3>
+                <p><strong>Title:</strong> ${firstVideo.title || 'No title'}</p>
+                <p><strong>URL:</strong> ${firstVideo.url || 'No URL'}</p>
+                <p><strong>Video ID:</strong> ${firstVideo.video_id || 'No ID'}</p>
+                <p><strong>Upload Date:</strong> ${firstVideo.upload_date || 'No date'}</p>
+              </div>
+            `;
+          } else {
+            videoResults.innerHTML = '<div class="bg-yellow-50 p-2 rounded">No videos found</div>';
+          }
+        })
+        .catch(error => {
+          log(`Video loading error: ${error.message}`);
+          videoResults.innerHTML = `<div class="bg-red-50 p-2 rounded text-red-700">Error: ${error.message}</div>`;
+        });
+    }
+
+    // Auto-run tests on load
+    window.addEventListener('load', function() {
+      log('Page loaded, running automatic tests...');
+      testAPI();
+      setTimeout(() => {
+        testVideoLoading();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
