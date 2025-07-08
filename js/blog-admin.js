@@ -861,13 +861,17 @@ class BlogAdminApp {
       videoId = url.split('v=')[1].split('&')[0];
     } else if (url.includes('youtu.be/')) {
       videoId = url.split('youtu.be/')[1].split('?')[0];
+    } else if (url.includes('youtube.com/embed/')) {
+      videoId = url.split('embed/')[1].split('?')[0];
     }
     
     if (videoId && this.editor) {
-      const embedHtml = `<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1em 0;">
-        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
-                src="https://www.youtube.com/embed/${videoId}" 
-                frameborder="0" allowfullscreen></iframe>
+      const embedHtml = `<div class="youtube-embed-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1.5em 0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;" 
+                src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" 
+                allowfullscreen 
+                loading="lazy"
+                title="YouTube video player"></iframe>
       </div>`;
       
       // Insert at current cursor position
@@ -879,6 +883,10 @@ class BlogAdminApp {
         const length = this.editor.getLength();
         this.editor.clipboard.dangerouslyPasteHTML(length, embedHtml);
       }
+      
+      console.log('YouTube embed inserted:', videoId);
+    } else {
+      alert('Please enter a valid YouTube URL');
     }
   }
 }
