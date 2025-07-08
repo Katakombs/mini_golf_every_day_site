@@ -3,6 +3,8 @@ class PublicBlogApp {
   constructor() {
     this.currentPage = 1;
     this.apiBase = window.location.origin;
+    this.currentPosts = []; // Store current posts for navigation
+    this.currentPostIndex = -1; // Track current post index
     
     this.init();
   }
@@ -47,6 +49,9 @@ class PublicBlogApp {
   }
 
   displayPosts(posts) {
+    // Store posts for navigation
+    this.currentPosts = posts;
+    
     const postsGrid = document.getElementById('posts-grid');
     if (!postsGrid) return;
     
@@ -97,6 +102,9 @@ class PublicBlogApp {
 
   async showPost(postId) {
     try {
+      // Find the index of the current post
+      this.currentPostIndex = this.currentPosts.findIndex(post => post.id === postId);
+      
       const response = await fetch(`${this.apiBase}/api/blog/posts/${postId}/public`);
       
       if (!response.ok) {
@@ -106,9 +114,14 @@ class PublicBlogApp {
       const data = await response.json();
       const post = data.post;
       
+      // Check if we have previous/next posts
+      const hasPrevious = this.currentPostIndex > 0;
+      const hasNext = this.currentPostIndex < this.currentPosts.length - 1;
+      
       // Create modal for full post view
       const modal = document.createElement('div');
       modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4';
+      modal.id = 'post-modal';
       modal.innerHTML = `
         <div class="bg-white rounded-lg w-full max-w-4xl h-full max-h-[90vh] overflow-hidden flex flex-col mx-2 sm:mx-4">
           <div class="flex-shrink-0 p-3 sm:p-4 lg:p-6 border-b border-gray-200">
@@ -121,9 +134,45 @@ class PublicBlogApp {
                   ${post.is_featured ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">⭐ Featured</span>' : ''}
                 </div>
               </div>
-              <button onclick="this.closest('.fixed').remove()" 
+              <button onclick="publicBlog.closePost()" 
+                      title="Close post (ESC)"
                       class="flex-shrink-0 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl p-1 leading-none">
                 ×
+              </button>
+            </div>
+            
+            <!-- Navigation controls -->
+            <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
+              <button onclick="publicBlog.previousPost()" 
+                      ${!hasPrevious ? 'disabled' : ''} 
+                      title="${hasPrevious ? 'Previous post (← or H)' : 'No previous post'}"
+                      class="flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                        hasPrevious 
+                          ? 'text-green-600 hover:text-green-700 hover:bg-green-50 hover:shadow-sm' 
+                          : 'text-gray-400 cursor-not-allowed opacity-50'
+                      }">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span>Previous</span>
+              </button>
+              
+              <div class="text-sm text-gray-500 px-3 py-1 bg-gray-50 rounded-full">
+                <span class="font-medium">${this.currentPostIndex + 1}</span> of <span class="font-medium">${this.currentPosts.length}</span>
+              </div>
+              
+              <button onclick="publicBlog.nextPost()" 
+                      ${!hasNext ? 'disabled' : ''} 
+                      title="${hasNext ? 'Next post (→ or L)' : 'No next post'}"
+                      class="flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                        hasNext 
+                          ? 'text-green-600 hover:text-green-700 hover:bg-green-50 hover:shadow-sm' 
+                          : 'text-gray-400 cursor-not-allowed opacity-50'
+                      }">
+                <span>Next</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
               </button>
             </div>
           </div>
@@ -144,14 +193,23 @@ class PublicBlogApp {
         </div>
       `;
       
+      // Remove existing modal if any
+      const existingModal = document.getElementById('post-modal');
+      if (existingModal) {
+        existingModal.remove();
+      }
+      
       document.body.appendChild(modal);
       
       // Close modal when clicking outside
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-          modal.remove();
+          this.closePost();
         }
       });
+      
+      // Keyboard navigation
+      this.setupKeyboardNavigation();
       
     } catch (error) {
       console.error('Error loading post:', error);
@@ -279,6 +337,78 @@ class PublicBlogApp {
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  // Navigation methods for blog post modal
+  previousPost() {
+    if (this.currentPostIndex > 0) {
+      const previousPost = this.currentPosts[this.currentPostIndex - 1];
+      this.showPostWithTransition(previousPost.id, 'previous');
+    }
+  }
+
+  nextPost() {
+    if (this.currentPostIndex < this.currentPosts.length - 1) {
+      const nextPost = this.currentPosts[this.currentPostIndex + 1];
+      this.showPostWithTransition(nextPost.id, 'next');
+    }
+  }
+
+  async showPostWithTransition(postId, direction) {
+    const modal = document.getElementById('post-modal');
+    if (!modal) return;
+    
+    const contentDiv = modal.querySelector('.bg-white');
+    
+    // Add loading state
+    contentDiv.style.opacity = '0.6';
+    contentDiv.style.pointerEvents = 'none';
+    
+    // Small delay for visual feedback
+    await new Promise(resolve => setTimeout(resolve, 150));
+    
+    // Load new post
+    await this.showPost(postId);
+  }
+
+  closePost() {
+    const modal = document.getElementById('post-modal');
+    if (modal) {
+      modal.remove();
+    }
+    // Remove keyboard listener
+    document.removeEventListener('keydown', this.keyboardHandler);
+  }
+
+  setupKeyboardNavigation() {
+    // Remove any existing listener first
+    document.removeEventListener('keydown', this.keyboardHandler);
+    
+    // Create bound handler
+    this.keyboardHandler = (e) => {
+      const modal = document.getElementById('post-modal');
+      if (!modal) return; // Only handle when modal is open
+      
+      switch(e.key) {
+        case 'ArrowLeft':
+        case 'h': // Vim-style navigation
+          e.preventDefault();
+          this.previousPost();
+          break;
+        case 'ArrowRight':
+        case 'l': // Vim-style navigation
+          e.preventDefault();
+          this.nextPost();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          this.closePost();
+          break;
+      }
+    };
+    
+    // Add keyboard listener
+    document.addEventListener('keydown', this.keyboardHandler);
   }
 }
 

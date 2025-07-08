@@ -331,11 +331,11 @@ MGED.video = {
                        window.location.hostname === '';
     
     if (isLocalhost) {
-      console.warn('Running on localhost - TikTok embeds may not work, using fallbacks');
-      // Show fallbacks immediately on localhost
-      setTimeout(() => {
-        MGED.video.showEmbedFallbacks();
-      }, 1000);
+      console.warn('Running on localhost - TikTok embeds may not work, but NOT using fallbacks to avoid conflicts');
+      // DISABLED: Show fallbacks immediately on localhost
+      // setTimeout(() => {
+      //   MGED.video.showEmbedFallbacks();
+      // }, 1000);
       return;
     }
 
@@ -413,9 +413,9 @@ MGED.video = {
     
     // Add error handling
     script.onerror = function() {
-      console.warn('🎥 TikTok embed script failed to load, using fallback');
+      console.warn('🎥 TikTok embed script failed to load, but NOT using fallback to avoid conflicts');
       MGED.state.tiktokLoading = false; // Clear loading flag
-      MGED.video.showEmbedFallbacks();
+      // DISABLED: MGED.video.showEmbedFallbacks();
     };
     
     // Add load success handler
@@ -466,15 +466,15 @@ MGED.video = {
         } catch (error) {
           console.warn('🎥 Error calling TikTok functions:', error);
           MGED.state.tiktokLoading = false; // Clear loading flag
-          MGED.video.showEmbedFallbacks();
+          // DISABLED: MGED.video.showEmbedFallbacks();
         }
       } else if (attempts < maxAttempts) {
         // Try again in 500ms
         setTimeout(checkReady, 500);
       } else {
-        console.warn('🎥 TikTok not ready after max attempts, using fallbacks');
+        console.warn('🎥 TikTok not ready after max attempts, but NOT using fallbacks to avoid conflicts');
         MGED.state.tiktokLoading = false; // Clear loading flag
-        MGED.video.showEmbedFallbacks();
+        // DISABLED: MGED.video.showEmbedFallbacks();
       }
     };
     
@@ -602,15 +602,31 @@ MGED.video = {
    * Show fallback for failed embeds
    */
   showEmbedFallback: function(embed) {
+    // COMPREHENSIVE LOGGING TO CATCH THE CULPRIT
+    console.error('🚨 showEmbedFallback called!');
+    console.error('🚨 Stack trace:', new Error().stack);
+    console.error('🚨 Embed element:', embed);
+    console.error('🚨 Video ID:', embed.getAttribute('data-video-id'));
+    console.error('🚨 Current processed status:', embed.getAttribute('data-embed-processed'));
+    console.error('🚨 Working status:', embed.getAttribute('data-embed-working'));
+    console.error('🚨 Has iframe:', !!embed.querySelector('iframe'));
+    console.error('🚨 Current innerHTML length:', embed.innerHTML.length);
+    
     // Don't replace protected/working embeds
     if (embed.hasAttribute('data-embed-working')) {
-      console.warn('🔒 Refused to replace protected working embed:', embed.getAttribute('data-video-id'));
+      console.error('🔒 BLOCKED: Refused to replace protected working embed:', embed.getAttribute('data-video-id'));
       return;
     }
     
     // Don't replace if it already has a fallback
     if (embed.innerHTML.includes('Mini Golf Every Day')) {
-      console.log('🔒 Embed already has fallback, skipping:', embed.getAttribute('data-video-id'));
+      console.error('🔒 BLOCKED: Embed already has fallback, skipping:', embed.getAttribute('data-video-id'));
+      return;
+    }
+    
+    // Don't replace if it has an iframe
+    if (embed.querySelector('iframe')) {
+      console.error('🔒 BLOCKED: Embed has iframe, refusing to replace:', embed.getAttribute('data-video-id'));
       return;
     }
     
@@ -620,7 +636,7 @@ MGED.video = {
     // Mark as processed to prevent further checks
     embed.setAttribute('data-embed-processed', 'fallback');
     
-    console.log('🎯 Showing fallback for embed:', videoId);
+    console.error('🎯 PROCEEDING: Showing fallback for embed:', videoId);
     
     embed.innerHTML = `
       <div class="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-lg p-6 text-center" 
@@ -670,11 +686,25 @@ MGED.video = {
   },
 
   /**
-   * Show fallbacks for all failed embeds
+   * Show fallbacks for all failed embeds - ONLY TRULY FAILED ONES
    */
   showEmbedFallbacks: function() {
+    console.error('🚨 showEmbedFallbacks called! This should be rare.');
+    console.error('🚨 Stack trace:', new Error().stack);
+    
     const embeds = document.querySelectorAll('.tiktok-embed');
     embeds.forEach(embed => {
+      // Only apply fallback to embeds that are truly broken
+      const hasIframe = embed.querySelector('iframe');
+      const isWorking = embed.hasAttribute('data-embed-working');
+      const hasExistingFallback = embed.innerHTML.includes('Mini Golf Every Day');
+      
+      if (hasIframe || isWorking || hasExistingFallback) {
+        console.error('🔒 SKIPPED: Embed is working or already has fallback:', embed.getAttribute('data-video-id'));
+        return;
+      }
+      
+      console.error('🎯 Applying fallback to genuinely broken embed:', embed.getAttribute('data-video-id'));
       MGED.video.showEmbedFallback(embed);
     });
   },
