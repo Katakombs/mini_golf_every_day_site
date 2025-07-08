@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Cleanup Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+  <script src="/js/scripts.js" type="text/javascript"></script>
+  <script src="/js/app.js" type="text/javascript"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">JavaScript Cleanup Test</h1>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Home Page Functions Test -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">Home Page Functions</h2>
+        <div class="space-y-2">
+          <div>MGED Object: <span id="mged-status" class="font-mono">Not loaded</span></div>
+          <div>Home Init: <span id="home-init-status" class="font-mono">Not tested</span></div>
+          <div>API Data: <span id="api-status" class="font-mono">Not tested</span></div>
+        </div>
+        <button id="test-home" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">Test Home Functions</button>
+      </div>
+      
+      <!-- About Page Functions Test -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">About Page Functions</h2>
+        <div class="space-y-2">
+          <div>About Init: <span id="about-init-status" class="font-mono">Not tested</span></div>
+          <div>Stats Loading: <span id="stats-status" class="font-mono">Not tested</span></div>
+        </div>
+        <button id="test-about" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Test About Functions</button>
+      </div>
+      
+      <!-- Video Functions Test -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">Video Functions</h2>
+        <div class="space-y-2">
+          <div>Video Object: <span id="video-status" class="font-mono">Not tested</span></div>
+          <div>TikTok Embeds: <span id="tiktok-status" class="font-mono">Not tested</span></div>
+        </div>
+        <button id="test-video" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded">Test Video Functions</button>
+      </div>
+      
+      <!-- Console Output -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">Console Output</h2>
+        <div id="console-output" class="bg-gray-100 p-4 rounded text-sm font-mono h-32 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Override console.log to show output in page
+    const originalLog = console.log;
+    const consoleOutput = document.getElementById('console-output');
+    
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      if (consoleOutput) {
+        consoleOutput.innerHTML += args.join(' ') + '<br>';
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      }
+    };
+    
+    // Test functions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if MGED is loaded
+      if (typeof MGED !== 'undefined') {
+        document.getElementById('mged-status').textContent = 'Loaded ✓';
+        document.getElementById('mged-status').className = 'font-mono text-green-600';
+      } else {
+        document.getElementById('mged-status').textContent = 'Failed ✗';
+        document.getElementById('mged-status').className = 'font-mono text-red-600';
+      }
+      
+      // Test home functions
+      document.getElementById('test-home').addEventListener('click', function() {
+        try {
+          if (MGED.pages.home && MGED.pages.home.init) {
+            console.log('Testing home page init...');
+            MGED.pages.home.loadHomeData();
+            document.getElementById('home-init-status').textContent = 'Success ✓';
+            document.getElementById('home-init-status').className = 'font-mono text-green-600';
+          } else {
+            throw new Error('Home functions not available');
+          }
+        } catch (error) {
+          console.error('Home test failed:', error);
+          document.getElementById('home-init-status').textContent = 'Failed ✗';
+          document.getElementById('home-init-status').className = 'font-mono text-red-600';
+        }
+      });
+      
+      // Test about functions
+      document.getElementById('test-about').addEventListener('click', function() {
+        try {
+          if (MGED.pages.about && MGED.pages.about.init) {
+            console.log('Testing about page init...');
+            MGED.pages.about.loadStats();
+            document.getElementById('about-init-status').textContent = 'Success ✓';
+            document.getElementById('about-init-status').className = 'font-mono text-green-600';
+          } else {
+            throw new Error('About functions not available');
+          }
+        } catch (error) {
+          console.error('About test failed:', error);
+          document.getElementById('about-init-status').textContent = 'Failed ✗';
+          document.getElementById('about-init-status').className = 'font-mono text-red-600';
+        }
+      });
+      
+      // Test video functions
+      document.getElementById('test-video').addEventListener('click', function() {
+        try {
+          if (MGED.video && MGED.video.loadTikTokEmbeds) {
+            console.log('Testing video functions...');
+            document.getElementById('video-status').textContent = 'Available ✓';
+            document.getElementById('video-status').className = 'font-mono text-green-600';
+          } else {
+            throw new Error('Video functions not available');
+          }
+        } catch (error) {
+          console.error('Video test failed:', error);
+          document.getElementById('video-status').textContent = 'Failed ✗';
+          document.getElementById('video-status').className = 'font-mono text-red-600';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

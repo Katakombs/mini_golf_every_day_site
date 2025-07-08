@@ -103,28 +103,9 @@
   </footer>
 
   <!-- JavaScript for dynamic stats -->
-  <script>
-    // Load stats from API
-    async function loadStats() {
-      try {
-        const response = await fetch('/api/status');
-        const data = await response.json();
-        
-        // Update stats
-        document.getElementById('total-videos').textContent = data.video_count || '178';
-        document.getElementById('days-running').textContent = data.video_count || '178';
-        
-      } catch (error) {
-        console.error('Error loading stats:', error);
-        // Fallback to static values
-        document.getElementById('total-videos').textContent = '178';
-        document.getElementById('days-running').textContent = '178';
-      }
-    }
-    
-    // Load stats when page loads
-    document.addEventListener('DOMContentLoaded', loadStats);
-  </script>
+  <!-- All dynamic functionality is handled by centralized JS files -->
+  <script src="/js/scripts.js" type="text/javascript"></script>
+  <script src="/js/app.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch Status Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 p-8">
+  <h1 class="text-3xl font-bold mb-8">Watch Page Status Test</h1>
+  
+  <div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-bold mb-4">API Test</h2>
+    <button onclick="testAPI()" class="bg-blue-600 text-white px-4 py-2 rounded mr-4">Test API</button>
+    <button onclick="testMGED()" class="bg-green-600 text-white px-4 py-2 rounded">Test MGED Object</button>
+  </div>
+  
+  <div id="results" class="bg-black text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto">
+    Test results will appear here...
+  </div>
+
+  <!-- Load the same scripts as watch.html -->
+  <script src="/js/scripts.js" type="text/javascript"></script>
+  <script src="/js/app.js?v=1752000500" type="text/javascript"></script>
+  
+  <script>
+    function log(message) {
+      console.log(message);
+      const results = document.getElementById('results');
+      results.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${message}</div>`;
+      results.scrollTop = results.scrollHeight;
+    }
+    
+    async function testAPI() {
+      log('Testing API endpoints...');
+      
+      try {
+        // Test videos API
+        const videosResponse = await fetch('/api/videos');
+        const videosData = await videosResponse.json();
+        log(`✅ Videos API: ${videosData.total_count} videos loaded`);
+        
+        // Test status API
+        const statusResponse = await fetch('/api/status');
+        const statusData = await statusResponse.json();
+        log(`✅ Status API: ${statusData.status} - ${statusData.total_videos} videos`);
+        
+      } catch (error) {
+        log(`❌ API Error: ${error.message}`);
+      }
+    }
+    
+    function testMGED() {
+      log('Testing MGED object...');
+      
+      try {
+        // Check if MGED exists
+        if (typeof MGED === 'undefined') {
+          log('❌ MGED object not found');
+          return;
+        }
+        log('✅ MGED object exists');
+        
+        // Check MGED structure
+        log(`MGED.config: ${typeof MGED.config}`);
+        log(`MGED.state: ${typeof MGED.state}`);
+        log(`MGED.api: ${typeof MGED.api}`);
+        log(`MGED.ui: ${typeof MGED.ui}`);
+        log(`MGED.video: ${typeof MGED.video}`);
+        log(`MGED.pages: ${typeof MGED.pages}`);
+        
+        // Check specific functions
+        if (MGED.video && typeof MGED.video.generateVideoCard === 'function') {
+          log('✅ MGED.video.generateVideoCard exists');
+        } else {
+          log('❌ MGED.video.generateVideoCard missing');
+        }
+        
+        if (MGED.pages && MGED.pages.watch && typeof MGED.pages.watch.init === 'function') {
+          log('✅ MGED.pages.watch.init exists');
+        } else {
+          log('❌ MGED.pages.watch.init missing');
+        }
+        
+        // Test a simple video card generation
+        if (MGED.video && typeof MGED.video.generateVideoCard === 'function') {
+          const testVideo = {
+            title: "Test Video",
+            video_id: "123456789",
+            url: "https://www.tiktok.com/@test/video/123456789",
+            upload_date: "20250108"
+          };
+          
+          const card = MGED.video.generateVideoCard(testVideo);
+          if (card && card.includes('tiktok-embed')) {
+            log('✅ Video card generation works');
+          } else {
+            log('❌ Video card generation failed');
+          }
+        }
+        
+      } catch (error) {
+        log(`❌ MGED Error: ${error.message}`);
+      }
+    }
+    
+    // Auto-run tests when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      log('Page loaded, running tests...');
+      setTimeout(() => {
+        testAPI();
+        testMGED();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
