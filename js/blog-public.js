@@ -11,7 +11,32 @@ class PublicBlogApp {
 
   init() {
     this.bindEvents();
+    this.handleUrlRouting();
     this.loadBlogPosts();
+  }
+
+  handleUrlRouting() {
+    // Handle URL routing for individual posts
+    const urlParams = new URLSearchParams(window.location.search);
+    const postSlug = urlParams.get('post');
+    
+    if (postSlug) {
+      // Load specific post from URL
+      this.loadPostBySlug(postSlug);
+    }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (event) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postSlug = urlParams.get('post');
+      
+      if (postSlug) {
+        this.loadPostBySlug(postSlug);
+      } else {
+        this.closePost();
+        this.loadBlogPosts();
+      }
+    });
   }
 
   bindEvents() {
@@ -72,7 +97,7 @@ class PublicBlogApp {
           </div>
           
           <h2 class="text-xl font-bold text-gray-900 mb-3 hover:text-green-600 transition-colors">
-            <a href="#" onclick="publicBlog.showPost(${post.id})" class="text-decoration-none">
+            <a href="?post=${post.slug}" onclick="publicBlog.showPostBySlug('${post.slug}'); return false;" class="text-decoration-none">
               ${this.escapeHtml(post.title)}
             </a>
           </h2>
@@ -84,10 +109,10 @@ class PublicBlogApp {
           ` : ''}
           
           <div class="flex items-center justify-between">
-            <button onclick="publicBlog.showPost(${post.id})" 
-                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
+            <a href="?post=${post.slug}" onclick="publicBlog.showPostBySlug('${post.slug}'); return false;" 
+               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-decoration-none">
               Read More
-            </button>
+            </a>
             
             ${post.is_featured ? `
               <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
@@ -114,6 +139,9 @@ class PublicBlogApp {
       const data = await response.json();
       const post = data.post;
       
+      // Update URL and title for the current post
+      this.updateUrlAndTitle(post);
+      
       // Check if we have previous/next posts
       const hasPrevious = this.currentPostIndex > 0;
       const hasNext = this.currentPostIndex < this.currentPosts.length - 1;
@@ -134,11 +162,20 @@ class PublicBlogApp {
                   ${post.is_featured ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">⭐ Featured</span>' : ''}
                 </div>
               </div>
-              <button onclick="publicBlog.closePost()" 
-                      title="Close post (ESC)"
-                      class="flex-shrink-0 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl p-1 leading-none">
-                ×
-              </button>
+              <div class="flex items-center space-x-2">
+                <button onclick="publicBlog.sharePost('${post.slug}', '${this.escapeHtml(post.title)}')" 
+                        title="Share this post"
+                        class="flex-shrink-0 text-gray-500 hover:text-green-600 p-1">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                  </svg>
+                </button>
+                <button onclick="publicBlog.closePost()" 
+                        title="Close post (ESC)"
+                        class="flex-shrink-0 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl p-1 leading-none">
+                  ×
+                </button>
+              </div>
             </div>
             
             <!-- Navigation controls -->
@@ -215,6 +252,126 @@ class PublicBlogApp {
       console.error('Error loading post:', error);
       this.showMessage('Error loading post. Please try again.', 'error');
     }
+  }
+
+  async loadPostBySlug(slug) {
+    try {
+      const response = await fetch(`${this.apiBase}/api/blog/posts/${slug}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const post = data.post;
+      
+      // Load the post using its ID
+      await this.showPost(post.id);
+      
+      // Update the URL and page title
+      this.updateUrlAndTitle(post);
+      
+    } catch (error) {
+      console.error('Error loading post by slug:', error);
+      // If post not found, redirect to blog home
+      window.history.pushState({}, '', '/blog.html');
+      this.showMessage('Post not found. Redirected to blog home.', 'error');
+    }
+  }
+
+  updateUrlAndTitle(post) {
+    // Update URL with post slug
+    const newUrl = `${window.location.pathname}?post=${post.slug}`;
+    window.history.pushState({ postSlug: post.slug }, post.title, newUrl);
+    
+    // Update page title
+    document.title = `${post.title} - Mini Golf Every Day Blog`;
+    
+    // Update meta tags for better SEO and social sharing
+    this.updateMetaTags(post);
+  }
+
+  updateMetaTags(post) {
+    // Update or create meta description
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.name = 'description';
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.content = post.meta_description || post.excerpt || `Read ${post.title} on Mini Golf Every Day Blog`;
+
+    // Update or create Open Graph meta tags
+    this.updateOgTag('og:title', post.meta_title || post.title);
+    this.updateOgTag('og:description', post.meta_description || post.excerpt || `Read ${post.title} on Mini Golf Every Day Blog`);
+    this.updateOgTag('og:url', window.location.href);
+    if (post.featured_image) {
+      this.updateOgTag('og:image', post.featured_image);
+    }
+    this.updateOgTag('og:type', 'article');
+  }
+
+  updateOgTag(property, content) {
+    let tag = document.querySelector(`meta[property="${property}"]`);
+    if (!tag) {
+      tag = document.createElement('meta');
+      tag.setAttribute('property', property);
+      document.head.appendChild(tag);
+    }
+    tag.content = content;
+  }
+
+  resetMetaTags() {
+    // Reset to default blog meta tags
+    document.title = 'Mini Golf Every Day - Blog';
+    
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.content = 'Stories, tips, and adventures from the world of mini golf. Join me on this daily journey of putts, fails, and fun!';
+    }
+
+    // Reset Open Graph tags
+    this.updateOgTag('og:title', 'Mini Golf Every Day - Blog');
+    this.updateOgTag('og:description', 'Stories, tips, and adventures from the world of mini golf.');
+    this.updateOgTag('og:url', window.location.origin + '/blog.html');
+    this.updateOgTag('og:type', 'website');
+  }
+
+  async showPostBySlug(slug) {
+    // Update URL immediately for better UX
+    const newUrl = `${window.location.pathname}?post=${slug}`;
+    window.history.pushState({ postSlug: slug }, '', newUrl);
+    
+    // Load the post by slug
+    await this.loadPostBySlug(slug);
+  }
+
+  sharePost(slug, title) {
+    const url = `${window.location.origin}/blog.html?post=${slug}`;
+    
+    // Try to use native share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: title,
+        text: `Check out this blog post: ${title}`,
+        url: url
+      }).catch(err => {
+        console.log('Error sharing:', err);
+        this.fallbackShare(url, title);
+      });
+    } else {
+      this.fallbackShare(url, title);
+    }
+  }
+
+  fallbackShare(url, title) {
+    // Copy URL to clipboard and show notification
+    navigator.clipboard.writeText(url).then(() => {
+      this.showMessage(`Link copied to clipboard!`, 'success');
+    }).catch(() => {
+      // If clipboard API fails, show the URL in a prompt
+      prompt('Copy this URL to share:', url);
+    });
   }
 
   setupPagination(pagination) {
@@ -378,6 +535,12 @@ class PublicBlogApp {
     }
     // Remove keyboard listener
     document.removeEventListener('keydown', this.keyboardHandler);
+    
+    // Reset URL to blog home
+    window.history.pushState({}, 'Mini Golf Every Day - Blog', '/blog.html');
+    
+    // Reset meta tags
+    this.resetMetaTags();
   }
 
   setupKeyboardNavigation() {
