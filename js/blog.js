@@ -24,7 +24,7 @@ class PublicBlogApp {
     try {
       this.showLoading();
       
-      const response = await fetch(`${this.apiBase}/api/blog/posts?page=${page}&limit=12&published_only=true`);
+      const response = await fetch(`${this.apiBase}/api/blog/posts?page=${page}&limit=12&published=true`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

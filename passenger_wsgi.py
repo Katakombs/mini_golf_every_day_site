@@ -11,7 +11,7 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Import the Flask app and expose it as 'application' for WSGI
-from flask_app import app
+from server import app
 
 # WSGI servers expect this variable to be named 'application'
 application = app

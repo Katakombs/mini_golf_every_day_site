@@ -4,8 +4,9 @@ Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
 Flask-CORS==4.0.0
 
-# Database
-psycopg2-binary==2.9.9
+# Database - Multiple MySQL drivers for compatibility
+PyMySQL==1.1.0
+mysql-connector-python==8.2.0
 SQLAlchemy==2.0.23
 
 # Authentication and security
@@ -22,5 +23,5 @@ python-dotenv==1.0.0
 # Production WSGI server
 gunicorn==21.2.0
 
-# Existing requirements for video functionality
-yt-dlp==2023.12.30
+# NOTE: yt-dlp is NOT included here - videos are fetched via GitHub Actions
+# The server only reads from tiktok_videos.json file updated by GitHub Actions

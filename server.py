@@ -11,6 +11,7 @@ import secrets
 from datetime import datetime, timedelta
 from functools import wraps
 import json
+import traceback
 
 import bcrypt
 import jwt
@@ -18,8 +19,31 @@ from flask import Flask, request, jsonify, session, render_template, send_from_d
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
+# Try to import MySQL drivers
+MYSQL_DRIVERS = {
+    'pymysql': None,
+    'mysqldb': None,
+    'mysqlconnector': None
+}
+
+try:
+    import pymysql
+    MYSQL_DRIVERS['pymysql'] = pymysql
+except ImportError:
+    pass
+
+try:
+    import MySQLdb
+    MYSQL_DRIVERS['mysqldb'] = MySQLdb
+except ImportError:
+    pass
+
+try:
+    import mysql.connector
+    MYSQL_DRIVERS['mysqlconnector'] = mysql.connector
+except ImportError:
+    pass
 
 # Load environment variables
 if os.path.exists('.env'):
@@ -34,8 +58,49 @@ CORS(app)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/minigolf_blog')
+
+# Database configuration for shared hosting compatibility
+def get_database_uri():
+    """Get database URI with fallback options"""
+    database_url = os.environ.get('DATABASE_URL')
+    
+    # Try individual components first for better compatibility
+    db_user = os.environ.get('DB_USER')
+    db_password = os.environ.get('DB_PASSWORD')
+    db_host = os.environ.get('DB_HOST')
+    db_port = os.environ.get('DB_PORT', '3306')
+    db_name = os.environ.get('DB_NAME')
+    
+    if db_user and db_password and db_host and db_name:
+        # Determine best MySQL driver
+        if MYSQL_DRIVERS['pymysql']:
+            # PyMySQL is preferred for shared hosting
+            return f'mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4'
+        elif MYSQL_DRIVERS['mysqlconnector']:
+            # mysql-connector-python as fallback
+            return f'mysql+mysqlconnector://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4'
+        elif MYSQL_DRIVERS['mysqldb']:
+            # MySQLdb (older, less preferred)
+            return f'mysql+mysqldb://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4'
+        else:
+            # Generic MySQL (will auto-detect driver)
+            return f'mysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4'
+    elif database_url:
+        # Use direct URL
+        return database_url
+    else:
+        # Final fallback to SQLite
+        return 'sqlite:///blog.db'
+
+# Set database URI
+database_uri = get_database_uri()
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300
+}
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', secrets.token_hex(32))
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
@@ -335,7 +400,312 @@ def init_db():
             print("✅ Created admin user")
 
 
+def setup_video_database():
+    """Setup video database table and migrate data from JSON"""
+    try:
+        result = {
+            'video_table_created': False,
+            'videos_migrated': 0,
+            'videos_existing': 0,
+            'json_synced': False,
+            'errors': []
+        }
+        
+        # Get direct database connection
+        connection = get_db_connection()
+        if not connection:
+            result['errors'].append('Could not connect to database')
+            return result
+        
+        try:
+            with connection.cursor() as cursor:
+                # Create videos table
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS videos (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        video_id VARCHAR(255) UNIQUE NOT NULL,
+                        title TEXT,
+                        upload_date VARCHAR(8),
+                        url VARCHAR(500),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        INDEX idx_video_id (video_id),
+                        INDEX idx_upload_date (upload_date)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+                """)
+                
+                # Create additional index
+                try:
+                    cursor.execute("""
+                        CREATE INDEX idx_videos_upload_date_desc 
+                        ON videos (upload_date DESC)
+                    """)
+                except Exception:
+                    # Index might already exist, ignore
+                    pass
+                
+                connection.commit()
+                result['video_table_created'] = True
+                
+                # Check existing videos in database
+                cursor.execute("SELECT COUNT(*) as count FROM videos")
+                existing_count = cursor.fetchone()['count']
+                result['videos_existing'] = existing_count
+                
+                # If no videos in database, try to migrate from JSON
+                if existing_count == 0:
+                    try:
+                        if os.path.exists('tiktok_videos.json'):
+                            with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
+                                data = json.load(f)
+                            videos = data.get('videos', [])
+                            
+                            # Migrate videos to database
+                            migrated = 0
+                            for video in videos:
+                                try:
+                                    cursor.execute("""
+                                        INSERT IGNORE INTO videos (video_id, title, upload_date, url)
+                                        VALUES (%s, %s, %s, %s)
+                                    """, (
+                                        video.get('video_id', ''),
+                                        video.get('title', ''),
+                                        video.get('upload_date', ''),
+                                        video.get('url', f"https://www.tiktok.com/@minigolfeveryday/video/{video.get('video_id', '')}")
+                                    ))
+                                    migrated += 1
+                                except Exception as e:
+                                    result['errors'].append(f"Failed to migrate video {video.get('video_id', 'unknown')}: {str(e)}")
+                            
+                            connection.commit()
+                            result['videos_migrated'] = migrated
+                            
+                            # Sync database back to JSON to ensure consistency
+                            cursor.execute("""
+                                SELECT video_id, title, upload_date, url
+                                FROM videos
+                                ORDER BY upload_date DESC, created_at DESC
+                            """)
+                            
+                            db_videos = cursor.fetchall()
+                            json_videos = []
+                            for video in db_videos:
+                                json_videos.append({
+                                    'video_id': video['video_id'],
+                                    'title': video['title'] or '',
+                                    'upload_date': video['upload_date'] or '',
+                                    'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}"
+                                })
+                            
+                            # Update JSON file
+                            json_data = {
+                                'videos': json_videos,
+                                'last_updated': datetime.now().isoformat(),
+                                'total_count': len(json_videos)
+                            }
+                            
+                            with open('tiktok_videos.json', 'w', encoding='utf-8') as f:
+                                json.dump(json_data, f, indent=2, ensure_ascii=False)
+                            
+                            result['json_synced'] = True
+                            
+                    except Exception as e:
+                        result['errors'].append(f"JSON migration failed: {str(e)}")
+                
+        finally:
+            connection.close()
+        
+        return result
+        
+    except Exception as e:
+        return {
+            'video_table_created': False,
+            'videos_migrated': 0,
+            'videos_existing': 0,
+            'json_synced': False,
+            'errors': [f"Video database setup failed: {str(e)}"]
+        }
+
+
 # API Routes
+
+def get_db_connection():
+    """Get database connection for video operations"""
+    try:
+        return pymysql.connect(
+            host=os.environ.get('DB_HOST', 'localhost'),
+            user=os.environ.get('DB_USER'),
+            password=os.environ.get('DB_PASSWORD'),
+            database=os.environ.get('DB_NAME'),
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    except Exception as e:
+        print(f"[ERROR] Database connection failed: {e}")
+        return None
+
+def get_videos_from_database():
+    """Get videos from database, fallback to JSON if database fails"""
+    try:
+        # Try database first
+        connection = get_db_connection()
+        if connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT video_id, title, upload_date, url
+                    FROM videos
+                    ORDER BY upload_date DESC, created_at DESC
+                """)
+                
+                db_videos = cursor.fetchall()
+                
+                # Convert to expected format
+                videos = []
+                for video in db_videos:
+                    videos.append({
+                        'video_id': video['video_id'],
+                        'title': video['title'] or '',
+                        'upload_date': video['upload_date'] or '',
+                        'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}"
+                    })
+                
+                connection.close()
+                
+                return {
+                    'videos': videos,
+                    'last_updated': datetime.now().isoformat(),
+                    'total_count': len(videos),
+                    'source': 'database'
+                }
+        
+    except Exception as e:
+        print(f"[ERROR] Database video fetch failed: {e}")
+    
+    # Fallback to JSON file
+    try:
+        with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            data['source'] = 'json_fallback'
+            return data
+    except Exception as e:
+        print(f"[ERROR] JSON fallback failed: {e}")
+        return {
+            'videos': [],
+            'last_updated': datetime.now().isoformat(),
+            'total_count': 0,
+            'source': 'empty_fallback'
+        }
+
+def get_video_stats_from_database():
+    """Get video statistics from database with JSON fallback"""
+    try:
+        # Try database first
+        connection = get_db_connection()
+        if connection:
+            with connection.cursor() as cursor:
+                # Get total count
+                cursor.execute("SELECT COUNT(*) as count FROM videos")
+                total_videos = cursor.fetchone()['count']
+                
+                # Get first video for days calculation
+                cursor.execute("""
+                    SELECT upload_date 
+                    FROM videos 
+                    WHERE upload_date IS NOT NULL AND upload_date != ''
+                    ORDER BY upload_date ASC 
+                    LIMIT 1
+                """)
+                first_video = cursor.fetchone()
+                
+                # Get latest video
+                cursor.execute("""
+                    SELECT video_id, title, upload_date, url
+                    FROM videos 
+                    ORDER BY upload_date DESC, created_at DESC 
+                    LIMIT 1
+                """)
+                latest_video = cursor.fetchone()
+                
+                connection.close()
+                
+                # Calculate days running
+                days_running = 0
+                if first_video and first_video['upload_date']:
+                    try:
+                        first_date = datetime.strptime(first_video['upload_date'], '%Y%m%d')
+                        days_running = (datetime.now() - first_date).days + 1
+                    except ValueError:
+                        days_running = total_videos
+                else:
+                    days_running = total_videos
+                
+                # Format latest video
+                latest_video_data = None
+                if latest_video:
+                    latest_video_data = {
+                        'video_id': latest_video['video_id'],
+                        'title': latest_video['title'] or '',
+                        'upload_date': latest_video['upload_date'] or '',
+                        'url': latest_video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{latest_video['video_id']}"
+                    }
+                
+                return {
+                    'video_count': total_videos,
+                    'total_videos': total_videos,
+                    'days_running': days_running,
+                    'latest_video': latest_video_data,
+                    'last_updated': datetime.now().isoformat(),
+                    'source': 'database'
+                }
+        
+    except Exception as e:
+        print(f"[ERROR] Database stats fetch failed: {e}")
+    
+    # Fallback to JSON processing (existing logic)
+    try:
+        with open('tiktok_videos.json', 'r') as f:
+            data = json.load(f)
+        videos = data.get('videos', [])
+        
+        total_videos = len(videos)
+        days_running = 0
+        
+        if videos:
+            first_video = min(videos, key=lambda x: x.get('upload_date', '99999999'))
+            if 'upload_date' in first_video:
+                try:
+                    first_date = datetime.strptime(first_video['upload_date'], '%Y%m%d')
+                    days_running = (datetime.now() - first_date).days + 1
+                except ValueError:
+                    days_running = total_videos
+            else:
+                days_running = total_videos
+        
+        latest_video = None
+        if videos:
+            latest_video = max(videos, key=lambda x: x.get('upload_date', '00000000'))
+        
+        return {
+            'video_count': total_videos,
+            'total_videos': total_videos,
+            'days_running': days_running,
+            'latest_video': latest_video,
+            'last_updated': datetime.now().isoformat(),
+            'source': 'json_fallback'
+        }
+        
+    except Exception as e:
+        print(f"[ERROR] JSON stats fallback failed: {e}")
+        return {
+            'video_count': 0,
+            'total_videos': 0,
+            'days_running': 0,
+            'latest_video': None,
+            'last_updated': datetime.now().isoformat(),
+            'source': 'empty_fallback'
+        }
+
+
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     """Register new user"""
@@ -474,8 +844,12 @@ def get_blog_posts():
             query = query.filter(BlogPost.author_id == author_id)
         
         # Order by published date (or created date for unpublished)
+        # MySQL doesn't support NULLS LAST, so we use CASE for equivalent behavior
         query = query.order_by(
-            BlogPost.published_at.desc().nullslast(),
+            db.case(
+                (BlogPost.published_at.is_(None), BlogPost.created_at),
+                else_=BlogPost.published_at
+            ).desc(),
             BlogPost.created_at.desc()
         )
         
@@ -737,67 +1111,35 @@ def get_public_blog_post(post_id):
 # TikTok Video API Routes
 @app.route('/api/videos', methods=['GET'])
 def get_videos():
-    """Get TikTok videos from JSON file"""
+    """Get TikTok videos from database with JSON fallback"""
     try:
-        with open('tiktok_videos.json', 'r') as f:
-            data = json.load(f)
+        data = get_videos_from_database()
         return jsonify(data), 200
-    except FileNotFoundError:
-        return jsonify({'videos': []}), 200
     except Exception as e:
-        return jsonify({'error': 'Failed to load videos'}), 500
+        print(f"[ERROR] Videos endpoint failed: {e}")
+        return jsonify({
+            'error': 'Failed to load videos',
+            'videos': [],
+            'source': 'error_fallback'
+        }), 500
 
 @app.route('/api/status', methods=['GET'])
 def get_status():
-    """Get system status and statistics"""
+    """Get system status and statistics from database with JSON fallback"""
     try:
-        # Load video data
-        try:
-            with open('tiktok_videos.json', 'r') as f:
-                data = json.load(f)
-            videos = data.get('videos', [])
-        except FileNotFoundError:
-            videos = []
-        
-        # Calculate statistics
-        total_videos = len(videos)
-        
-        # Calculate days running (from first video date if available)
-        days_running = 0
-        if videos:
-            # Get the first video's upload date
-            first_video = min(videos, key=lambda x: x.get('upload_date', '99999999'))
-            if 'upload_date' in first_video:
-                try:
-                    # Parse upload_date (format: YYYYMMDD)
-                    first_date = datetime.strptime(first_video['upload_date'], '%Y%m%d')
-                    days_running = (datetime.now() - first_date).days + 1
-                except ValueError:
-                    days_running = total_videos  # Fallback to video count
-            else:
-                days_running = total_videos
-        
-        # Get latest video info
-        latest_video = None
-        if videos:
-            latest_video = max(videos, key=lambda x: x.get('upload_date', '00000000'))
-        
-        return jsonify({
-            'video_count': total_videos,  # Using video_count for compatibility with existing frontend
-            'total_videos': total_videos,
-            'days_running': days_running,
-            'latest_video': latest_video,
-            'last_updated': datetime.now().isoformat()
-        }), 200
+        stats = get_video_stats_from_database()
+        return jsonify(stats), 200
         
     except Exception as e:
+        print(f"[ERROR] Status endpoint failed: {e}")
         return jsonify({
             'error': 'Failed to get status',
-            'video_count': 0,  # Using video_count for compatibility
+            'video_count': 0,
             'total_videos': 0,
             'days_running': 0,
             'latest_video': None,
-            'last_updated': datetime.now().isoformat()
+            'last_updated': datetime.now().isoformat(),
+            'source': 'error_fallback'
         }), 500
 
 
@@ -861,6 +1203,123 @@ def toggle_user_active(current_user, user_id):
         db.session.rollback()
         return jsonify({'error': 'Failed to update user'}), 500
 
+
+# Database Setup Route (for production initialization)
+@app.route('/api/setup', methods=['GET', 'POST'])
+def setup_database_api():
+    """Initialize database tables, admin user, and video database - for production setup only"""
+    try:
+        # Check MySQL driver availability
+        available_drivers = [name for name, driver in MYSQL_DRIVERS.items() if driver is not None]
+        
+        # Try to create tables with current database configuration
+        db.create_all()
+        
+        # Setup video database table and migration
+        video_setup_result = setup_video_database()
+        
+        # Check if admin user exists
+        admin = User.query.filter_by(username='admin').first()
+        admin_created = False
+        
+        if not admin:
+            admin = User(
+                username='admin',
+                email='admin@minigolfevery.day',
+                is_admin=True
+            )
+            admin.set_password(os.environ.get('ADMIN_PASSWORD', 'admin123secure!'))
+            db.session.add(admin)
+            db.session.commit()
+            admin_created = True
+        
+        # Create sample post if no posts exist
+        post_count = BlogPost.query.count()
+        post_created = False
+        
+        if post_count == 0:
+            sample_post = BlogPost(
+                title="Welcome to Mini Golf Every Day Blog!",
+                content="""<h2>Welcome to the official blog!</h2>
+                
+<p>This is the first post on the Mini Golf Every Day blog. Here you'll find:</p>
+
+<ul>
+<li>🏌️‍♂️ Tips and tricks for mini golf</li>
+<li>🎯 Course reviews and recommendations</li>
+<li>📝 Behind-the-scenes stories</li>
+<li>🎉 Updates on the daily challenge</li>
+</ul>
+
+<p>Stay tuned for more content!</p>
+
+<h3>About the Challenge</h3>
+<p>The Mini Golf Every Day challenge started on January 1, 2025, with a simple goal: play mini golf every single day for the entire year. What began as a personal challenge has grown into a celebration of family, fun, and consistency.</p>
+
+<p>Follow along on <a href="https://www.tiktok.com/@minigolfeveryday" target="_blank">TikTok @minigolfeveryday</a> for daily videos!</p>""",
+                excerpt="Welcome to the official Mini Golf Every Day blog! Here you'll find tips, course reviews, and behind-the-scenes stories from the daily challenge.",
+                is_published=True,
+                is_featured=True,
+                author_id=admin.id
+            )
+            sample_post.slug = sample_post.generate_slug()
+            sample_post.publish()
+            
+            db.session.add(sample_post)
+            db.session.commit()
+            post_created = True
+        
+        # Get final stats
+        user_count = User.query.count()
+        total_posts = BlogPost.query.count()
+        published_posts = BlogPost.query.filter_by(is_published=True).count()
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Database setup completed successfully!',
+            'database_uri': app.config['SQLALCHEMY_DATABASE_URI'].split('@')[0] + '@***',
+            'mysql_drivers_available': available_drivers,
+            'setup_performed': {
+                'tables_created': True,
+                'admin_user_created': admin_created,
+                'sample_post_created': post_created,
+                'video_table_created': video_setup_result.get('video_table_created', False),
+                'videos_migrated': video_setup_result.get('videos_migrated', 0),
+                'videos_existing': video_setup_result.get('videos_existing', 0),
+                'json_synced': video_setup_result.get('json_synced', False)
+            },
+            'stats': {
+                'total_users': user_count,
+                'total_posts': total_posts,
+                'published_posts': published_posts,
+                'total_videos': video_setup_result.get('videos_existing', 0) + video_setup_result.get('videos_migrated', 0)
+            },
+            'video_setup_errors': video_setup_result.get('errors', []),
+            'next_steps': [
+                'Visit /blog.html to see your blog',
+                'Login with username: admin, password: admin123secure!',
+                'Change the admin password after first login',
+                'Test video endpoints: /api/videos and /api/status',
+                'GitHub Actions will continue to work with JSON fallback'
+            ]
+        }), 200
+        
+    except Exception as e:
+        error_trace = traceback.format_exc()
+        return jsonify({
+            'status': 'error',
+            'message': f'Database setup failed: {str(e)}',
+            'error_type': type(e).__name__,
+            'error_trace': error_trace,
+            'suggestion': 'Check database connection and ensure MySQL drivers are installed',
+            'database_uri': app.config.get('SQLALCHEMY_DATABASE_URI', 'Not configured').split('@')[0] + '@***' if '@' in app.config.get('SQLALCHEMY_DATABASE_URI', '') else app.config.get('SQLALCHEMY_DATABASE_URI', 'Not configured'),
+            'mysql_drivers_available': [name for name, driver in MYSQL_DRIVERS.items() if driver is not None],
+            'required_packages': [
+                'PyMySQL (pip install pymysql)',
+                'mysql-connector-python (pip install mysql-connector-python)',
+                'Flask-SQLAlchemy (pip install flask-sqlalchemy)'
+            ]
+        }), 500
 
 # Static file serving (for existing functionality)
 @app.route('/')
