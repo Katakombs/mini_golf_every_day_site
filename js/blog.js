@@ -10,6 +10,44 @@ class PublicBlogApp {
   init() {
     this.bindEvents();
     this.loadBlogPosts();
+    this.handleHashNavigation();
+  }
+  
+  handleHashNavigation() {
+    // Check if there's a hash in the URL (e.g., #welcome-post)
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      this.loadPostBySlug(hash);
+    }
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', () => {
+      const newHash = window.location.hash.substring(1);
+      if (newHash) {
+        this.loadPostBySlug(newHash);
+      } else {
+        this.loadBlogPosts();
+      }
+    });
+  }
+  
+  async loadPostBySlug(slug) {
+    try {
+      const response = await fetch(`${this.apiBase}/api/blog/posts/${slug}`);
+      
+      if (!response.ok) {
+        throw new Error(`Post not found: ${slug}`);
+      }
+      
+      const data = await response.json();
+      this.showPost(data.post.id);
+      
+    } catch (error) {
+      console.error('Error loading post by slug:', error);
+      // If post not found, show blog list
+      window.location.hash = '';
+      this.loadBlogPosts();
+    }
   }
 
   bindEvents() {
@@ -282,6 +320,22 @@ class PublicBlogApp {
 
 // Initialize the public blog app
 const publicBlog = new PublicBlogApp();
+
+// Blog App for Admin functionality
+class BlogApp {
+  constructor() {
+    this.currentUser = null;
+    this.currentPage = 1;
+    this.apiBase = window.location.origin;
+    
+    this.init();
+  }
+
+  init() {
+    this.updateAuthUI();
+    this.bindEvents();
+    this.loadBlogPosts();
+  }
 
   updateAuthUI() {
     const loginBtn = document.getElementById('login-btn');

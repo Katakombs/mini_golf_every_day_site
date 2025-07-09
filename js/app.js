@@ -810,6 +810,9 @@ MGED.pages.home = {
         MGED.pages.home.displayLatestVideo(latestVideo);
       }
       
+      // Load latest blog post
+      MGED.pages.home.loadLatestBlogPost();
+      
     } catch (error) {
       console.error('Error loading home data:', error);
       // Fallback values
@@ -872,20 +875,85 @@ MGED.pages.home = {
   },
   
   /**
-   * Set fallback values when API fails
+   * Load and display latest blog post
    */
-  setFallbackValues: function() {
-    const fallbacks = {
-      'video-count': '30+',
-      'days-count': '30+',
-      'last-updated': 'Recently updated'
-    };
+  loadLatestBlogPost: async function() {
+    try {
+      const response = await fetch('/api/blog/posts?limit=1&t=' + Date.now());
+      const data = await response.json();
+      
+      if (data.posts && data.posts.length > 0) {
+        MGED.pages.home.displayLatestBlogPost(data.posts[0]);
+      } else {
+        MGED.pages.home.showNoBlogPost();
+      }
+      
+    } catch (error) {
+      console.error('Error loading latest blog post:', error);
+      MGED.pages.home.showNoBlogPost();
+    }
+  },
+  
+  /**
+   * Display latest blog post on home page
+   */
+  displayLatestBlogPost: function(post) {
+    const container = document.getElementById('latest-blog-post');
+    if (!container) return;
     
-    Object.entries(fallbacks).forEach(([id, value]) => {
-      const element = document.getElementById(id);
-      if (element) element.textContent = value;
-    });
-  }
+    const publishedDate = new Date(post.published_at || post.created_at).toLocaleDateString();
+    const excerpt = post.excerpt || MGED.pages.home.truncateText(post.content, 150);
+    
+    container.innerHTML = `
+      <div class="cursor-pointer hover:bg-gray-50 transition-colors duration-200" onclick="MGED.pages.home.goToBlogPost('${post.slug}')">
+        <h3 class="text-xl font-bold text-green-700 mb-3">${post.title}</h3>
+        <div class="text-gray-600 mb-4 leading-relaxed">${excerpt}</div>
+        <div class="flex items-center justify-between text-sm text-gray-500">
+          <span>Published: ${publishedDate}</span>
+          <span class="text-green-600 font-semibold hover:text-green-800">Read More →</span>
+        </div>
+      </div>
+    `;
+  },
+  
+  /**
+   * Show message when no blog posts available
+   */
+  showNoBlogPost: function() {
+    const container = document.getElementById('latest-blog-post');
+    if (!container) return;
+    
+    container.innerHTML = `
+      <div class="text-center py-8">
+        <h3 class="text-xl font-bold text-green-700 mb-3">Coming Soon</h3>
+        <p class="text-gray-600 mb-4">We're working on some exciting blog content!</p>
+        <a href="blog.html" class="text-green-600 hover:text-green-800 font-semibold">Check Back Soon →</a>
+      </div>
+    `;
+  },
+  
+  /**
+   * Navigate to blog post
+   */
+  goToBlogPost: function(slug) {
+    window.location.href = `/blog.html?post=${slug}`;
+  },
+  
+  /**
+   * Truncate text to specified length
+   */
+  truncateText: function(text, maxLength) {
+    if (!text) return '';
+    
+    // Strip HTML tags for excerpt
+    const plainText = text.replace(/<[^>]*>/g, '');
+    
+    if (plainText.length <= maxLength) return plainText;
+    
+    return plainText.substring(0, maxLength).trim() + '...';
+  },
+
+  // ...existing code...
 };
 
 // =============================================================================

@@ -12,26 +12,33 @@ class PublicBlogApp {
   init() {
     this.bindEvents();
     this.handleUrlRouting();
-    this.loadBlogPosts();
   }
 
-  handleUrlRouting() {
+  async handleUrlRouting() {
     // Handle URL routing for individual posts
     const urlParams = new URLSearchParams(window.location.search);
     const postSlug = urlParams.get('post');
     
     if (postSlug) {
-      // Load specific post from URL
-      this.loadPostBySlug(postSlug);
+      // Load blog posts first to populate currentPosts array, then load specific post
+      await this.loadBlogPosts();
+      await this.loadPostBySlug(postSlug);
+    } else {
+      // Load blog posts normally
+      this.loadBlogPosts();
     }
 
     // Handle browser back/forward buttons
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', async (event) => {
       const urlParams = new URLSearchParams(window.location.search);
       const postSlug = urlParams.get('post');
       
       if (postSlug) {
-        this.loadPostBySlug(postSlug);
+        // Ensure posts are loaded before showing individual post
+        if (this.currentPosts.length === 0) {
+          await this.loadBlogPosts();
+        }
+        await this.loadPostBySlug(postSlug);
       } else {
         this.closePost();
         this.loadBlogPosts();
@@ -143,8 +150,13 @@ class PublicBlogApp {
       this.updateUrlAndTitle(post);
       
       // Check if we have previous/next posts
-      const hasPrevious = this.currentPostIndex > 0;
-      const hasNext = this.currentPostIndex < this.currentPosts.length - 1;
+      const validIndex = this.currentPostIndex >= 0 && this.currentPostIndex < this.currentPosts.length;
+      const hasPrevious = validIndex && this.currentPostIndex > 0;
+      const hasNext = validIndex && this.currentPostIndex < this.currentPosts.length - 1;
+      
+      // For display purposes, show current position or "1 of 1" if not in list
+      const displayIndex = validIndex ? this.currentPostIndex + 1 : 1;
+      const displayTotal = validIndex ? this.currentPosts.length : 1;
       
       // Create modal for full post view
       const modal = document.createElement('div');
@@ -195,7 +207,7 @@ class PublicBlogApp {
               </button>
               
               <div class="text-sm text-gray-500 px-3 py-1 bg-gray-50 rounded-full">
-                <span class="font-medium">${this.currentPostIndex + 1}</span> of <span class="font-medium">${this.currentPosts.length}</span>
+                <span class="font-medium">${displayIndex}</span> of <span class="font-medium">${displayTotal}</span>
               </div>
               
               <button onclick="publicBlog.nextPost()" 
@@ -265,8 +277,11 @@ class PublicBlogApp {
       const data = await response.json();
       const post = data.post;
       
-      // Load the post using its ID
-      await this.showPost(post.id);
+      // Find the index of the current post in the list
+      this.currentPostIndex = this.currentPosts.findIndex(p => p.id === post.id);
+      
+      // Show the post directly without another API call
+      this.displayFullPost(post);
       
       // Update the URL and page title
       this.updateUrlAndTitle(post);
@@ -496,36 +511,154 @@ class PublicBlogApp {
     });
   }
 
+  displayFullPost(post) {
+    // Check if we have previous/next posts
+    const validIndex = this.currentPostIndex >= 0 && this.currentPostIndex < this.currentPosts.length;
+    const hasPrevious = validIndex && this.currentPostIndex > 0;
+    const hasNext = validIndex && this.currentPostIndex < this.currentPosts.length - 1;
+    
+    // For display purposes, show current position or "1 of 1" if not in list
+    const displayIndex = validIndex ? this.currentPostIndex + 1 : 1;
+    const displayTotal = validIndex ? this.currentPosts.length : 1;
+    
+    // Create modal for full post view
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4';
+    modal.id = 'post-modal';
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg w-full max-w-4xl h-full max-h-[90vh] overflow-hidden flex flex-col mx-2 sm:mx-4">
+        <div class="flex-shrink-0 p-3 sm:p-4 lg:p-6 border-b border-gray-200">
+          <div class="flex justify-between items-start">
+            <div class="flex-1 pr-3">
+              <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 line-clamp-2">${this.escapeHtml(post.title)}</h1>
+              <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 gap-2 sm:gap-4">
+                <span>By ${this.escapeHtml(post.author || 'MGED Team')}</span>
+                <time datetime="${post.created_at || post.published_at}">${this.formatDate(post.created_at || post.published_at)}</time>
+                ${post.is_featured ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">⭐ Featured</span>' : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="publicBlog.sharePost('${post.slug}', '${this.escapeHtml(post.title)}')" 
+                      title="Share this post"
+                      class="flex-shrink-0 text-gray-500 hover:text-green-600 p-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                </svg>
+              </button>
+              <button onclick="publicBlog.closePost()" 
+                      title="Close post (ESC)"
+                      class="flex-shrink-0 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl p-1 leading-none">
+                ×
+              </button>
+            </div>
+          </div>
+          
+          <!-- Navigation controls -->
+          <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
+            <button onclick="publicBlog.previousPost()" 
+                    ${!hasPrevious ? 'disabled' : ''} 
+                    title="${hasPrevious ? 'Previous post (← or H)' : 'No previous post'}"
+                    class="flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      hasPrevious 
+                        ? 'text-green-600 hover:text-green-700 hover:bg-green-50 hover:shadow-sm' 
+                        : 'text-gray-400 cursor-not-allowed opacity-50'
+                    }">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Previous</span>
+            </button>
+            
+            <div class="text-sm text-gray-500 px-3 py-1 bg-gray-50 rounded-full">
+              <span class="font-medium">${displayIndex}</span> of <span class="font-medium">${displayTotal}</span>
+            </div>
+            
+            <button onclick="publicBlog.nextPost()" 
+                    ${!hasNext ? 'disabled' : ''} 
+                    title="${hasNext ? 'Next post (→ or L)' : 'No next post'}"
+                    class="flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      hasNext 
+                        ? 'text-green-600 hover:text-green-700 hover:bg-green-50 hover:shadow-sm' 
+                        : 'text-gray-400 cursor-not-allowed opacity-50'
+                    }">
+              <span>Next</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
+          ${post.featured_image ? `
+            <div class="mb-4 sm:mb-6">
+              <img src="${this.escapeHtml(post.featured_image)}" 
+                   alt="${this.escapeHtml(post.title)}" 
+                   class="w-full rounded-lg max-h-48 sm:max-h-64 lg:max-h-80 object-cover">
+            </div>
+          ` : ''}
+          
+          <div class="prose prose-sm sm:prose lg:prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700">
+            ${post.content}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('post-modal');
+    if (existingModal) {
+      existingModal.remove();
+    }
+    
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        this.closePost();
+      }
+    });
+    
+    // Keyboard navigation
+    this.setupKeyboardNavigation();
+  }
+
+  // ...existing code...
+
   // Navigation methods for blog post modal
-  previousPost() {
+  async previousPost() {
     if (this.currentPostIndex > 0) {
       const previousPost = this.currentPosts[this.currentPostIndex - 1];
-      this.showPostWithTransition(previousPost.id, 'previous');
+      await this.navigateToPost(previousPost, 'previous');
     }
   }
 
-  nextPost() {
+  async nextPost() {
     if (this.currentPostIndex < this.currentPosts.length - 1) {
       const nextPost = this.currentPosts[this.currentPostIndex + 1];
-      this.showPostWithTransition(nextPost.id, 'next');
+      await this.navigateToPost(nextPost, 'next');
     }
   }
 
-  async showPostWithTransition(postId, direction) {
-    const modal = document.getElementById('post-modal');
-    if (!modal) return;
-    
-    const contentDiv = modal.querySelector('.bg-white');
-    
-    // Add loading state
-    contentDiv.style.opacity = '0.6';
-    contentDiv.style.pointerEvents = 'none';
-    
-    // Small delay for visual feedback
-    await new Promise(resolve => setTimeout(resolve, 150));
-    
-    // Load new post
-    await this.showPost(postId);
+  async navigateToPost(post, direction) {
+    try {
+      // Update the current post index
+      this.currentPostIndex = this.currentPosts.findIndex(p => p.id === post.id);
+      
+      // Update URL
+      const newUrl = `${window.location.origin}${window.location.pathname}?post=${post.slug}`;
+      window.history.pushState({ post: post.slug }, post.title, newUrl);
+      document.title = `${post.title} - MGED Blog`;
+      
+      // Close existing modal and show new one with the post data we already have
+      this.closePost();
+      this.displayFullPost(post);
+      
+    } catch (error) {
+      console.error('Error navigating to post:', error);
+      this.showMessage('Error loading post. Please try again.', 'error');
+    }
   }
 
   closePost() {
