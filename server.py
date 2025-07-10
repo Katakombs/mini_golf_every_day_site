@@ -1218,13 +1218,18 @@ def setup_database_api():
         # Setup video database table and migration
         video_setup_result = setup_video_database()
         
-        # Check if admin user exists
-        admin = User.query.filter_by(username='admin').first()
+        # Check if admin user exists (check both usernames)
+        admin = User.query.filter_by(username='MGED!').first()
+        if not admin:
+            admin = User.query.filter_by(username='admin').first()
+        
         admin_created = False
+        admin_updated = False
         
         if not admin:
+            # Create new admin user with MGED! username
             admin = User(
-                username='admin',
+                username='MGED!',
                 email='admin@minigolfevery.day',
                 is_admin=True
             )
@@ -1232,6 +1237,11 @@ def setup_database_api():
             db.session.add(admin)
             db.session.commit()
             admin_created = True
+        elif admin.username == 'admin':
+            # Update existing admin user to use MGED! username  
+            admin.username = 'MGED!'
+            db.session.commit()
+            admin_updated = True
         
         # Create sample post if no posts exist
         post_count = BlogPost.query.count()
@@ -1282,6 +1292,7 @@ def setup_database_api():
             'setup_performed': {
                 'tables_created': True,
                 'admin_user_created': admin_created,
+                'admin_user_updated': admin_updated,
                 'sample_post_created': post_created,
                 'video_table_created': video_setup_result.get('video_table_created', False),
                 'videos_migrated': video_setup_result.get('videos_migrated', 0),
@@ -1297,7 +1308,7 @@ def setup_database_api():
             'video_setup_errors': video_setup_result.get('errors', []),
             'next_steps': [
                 'Visit /blog.html to see your blog',
-                'Login with username: admin, password: admin123secure!',
+                'Login with username: MGED!, password: admin123secure!',
                 'Change the admin password after first login',
                 'Test video endpoints: /api/videos and /api/status',
                 'GitHub Actions will continue to work with JSON fallback'

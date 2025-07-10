@@ -57,17 +57,35 @@
     }
     
     .ql-minigolf, .ql-youtube {
-      background: none;
+      background: #ffffff;
       border: 1px solid #ccc;
       border-radius: 3px;
       margin: 0 2px;
       padding: 5px 8px;
       cursor: pointer;
       font-size: 16px;
+      line-height: 1;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      min-width: 32px;
     }
     
     .ql-minigolf:hover, .ql-youtube:hover {
       background: #f0f0f0;
+      border-color: #999;
+    }
+    
+    .ql-minigolf:active, .ql-youtube:active {
+      background: #e0e0e0;
+    }
+    
+    /* Ensure custom buttons are visible */
+    .ql-toolbar .ql-formats:last-child .ql-minigolf,
+    .ql-toolbar .ql-formats:last-child .ql-youtube {
+      margin-left: 8px;
     }
     
     .ql-toolbar {

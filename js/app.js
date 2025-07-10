@@ -904,8 +904,18 @@ MGED.pages.home = {
     const publishedDate = new Date(post.published_at || post.created_at).toLocaleDateString();
     const excerpt = post.excerpt || MGED.pages.home.truncateText(post.content, 150);
     
+    // Prepare featured image HTML if available
+    const featuredImageHtml = post.featured_image ? `
+      <div class="mb-4">
+        <img src="${post.featured_image}" 
+             alt="${post.title}" 
+             class="w-full h-48 object-contain bg-gray-50 rounded-lg">
+      </div>
+    ` : '';
+    
     container.innerHTML = `
       <div class="cursor-pointer hover:bg-gray-50 transition-colors duration-200" onclick="MGED.pages.home.goToBlogPost('${post.slug}')">
+        ${featuredImageHtml}
         <h3 class="text-xl font-bold text-green-700 mb-3">${post.title}</h3>
         <div class="text-gray-600 mb-4 leading-relaxed">${excerpt}</div>
         <div class="flex items-center justify-between text-sm text-gray-500">

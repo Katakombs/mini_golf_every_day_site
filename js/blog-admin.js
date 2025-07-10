@@ -101,13 +101,28 @@ class BlogAdminApp {
     });
 
     // Dashboard events
-    document.getElementById('admin-write-post-btn').addEventListener('click', () => this.showWritePost());
+    document.getElementById('admin-write-post-btn').addEventListener('click', () => {
+      this.closeDropdown();
+      this.showWritePost();
+    });
     document.getElementById('quick-write-post').addEventListener('click', () => this.showWritePost());
     document.getElementById('quick-view-drafts').addEventListener('click', () => this.showPostsManagement('drafts'));
     document.getElementById('quick-manage-posts').addEventListener('click', () => this.showPostsManagement('all'));
     document.getElementById('quick-view-public').addEventListener('click', () => window.open('blog.html', '_blank'));
-    document.getElementById('admin-all-posts-btn').addEventListener('click', () => this.showPostsManagement('all'));
-    document.getElementById('admin-my-posts-btn').addEventListener('click', () => this.showPostsManagement('my'));
+    document.getElementById('admin-all-posts-btn').addEventListener('click', () => {
+      this.closeDropdown();
+      this.showPostsManagement('all');
+    });
+    document.getElementById('admin-my-posts-btn').addEventListener('click', () => {
+      this.closeDropdown();
+      this.showPostsManagement('my');
+    });
+    
+    // Add missing admin-users-btn event handler
+    document.getElementById('admin-users-btn').addEventListener('click', () => {
+      this.closeDropdown();
+      this.showUserManagement();
+    });
 
     // Post management filters
     document.getElementById('filter-all').addEventListener('click', () => this.setFilter('all'));
@@ -185,6 +200,9 @@ class BlogAdminApp {
     localStorage.removeItem('blog_token');
     this.currentUser = null;
     this.updateAuthUI();
+    
+    // Reload the page to ensure clean state
+    window.location.reload();
   }
 
   showAdminAuthMessage(message, type) {
@@ -483,7 +501,23 @@ class BlogAdminApp {
     modal.classList.remove('flex');
     
     if (this.editor) {
-      tinymce.remove('#post-content');
+      // Properly destroy Quill editor and remove all associated DOM elements
+      const container = document.getElementById('post-content');
+      const parent = container ? container.parentNode : null;
+      
+      // Remove the entire Quill container including toolbar
+      if (parent && container) {
+        // Find and remove the toolbar (usually a sibling of the editor)
+        const toolbar = parent.querySelector('.ql-toolbar');
+        if (toolbar) {
+          toolbar.remove();
+        }
+        
+        // Clear the editor container
+        container.innerHTML = '';
+        container.className = ''; // Reset classes that Quill might have added
+      }
+      
       this.editor = null;
     }
     
@@ -491,32 +525,54 @@ class BlogAdminApp {
   }
 
   initEditor(content = '') {
+    // Clean up any existing editor first
     if (this.editor) {
-      // Quill handles cleanup automatically when reinitializing
-      const container = document.getElementById('post-content');
+      this.editor = null;
+    }
+    
+    const container = document.getElementById('post-content');
+    const parent = container ? container.parentNode : null;
+    
+    if (container && parent) {
+      // Remove any existing toolbar
+      const existingToolbar = parent.querySelector('.ql-toolbar');
+      if (existingToolbar) {
+        existingToolbar.remove();
+      }
+      
+      // Clear the container completely and reset classes
       container.innerHTML = '';
+      container.className = '';
+      
+      // Ensure the container has the correct ID for Quill
+      container.id = 'post-content';
     }
 
     // Initialize Quill editor
     this.editor = new Quill('#post-content', {
       theme: 'snow',
       modules: {
-        toolbar: [
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          [{ 'size': ['small', false, 'large', 'huge'] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'script': 'sub'}, { 'script': 'super' }],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'indent': '-1'}, { 'indent': '+1' }],
-          [{ 'direction': 'rtl' }],
-          [{ 'align': [] }],
-          ['link', 'image', 'video'],
-          ['blockquote', 'code-block'],
-          ['clean'],
-          ['minigolf', 'youtube'] // Custom buttons
-        ]
+        toolbar: {
+          container: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'align': [] }],
+            ['link', 'image', 'video'],
+            ['blockquote', 'code-block'],
+            ['clean']
+          ],
+          handlers: {
+            'minigolf': () => this.showMiniGolfDialog(),
+            'youtube': () => this.showYouTubeDialog()
+          }
+        }
       },
       placeholder: 'Write your blog post content here...',
       formats: [
@@ -536,34 +592,64 @@ class BlogAdminApp {
       this.editor.root.innerHTML = content;
     }
 
-    // Add custom toolbar buttons
-    this.addCustomButtons();
+    // Add custom toolbar buttons after editor initialization
+    setTimeout(() => {
+      this.addCustomButtons();
+    }, 500); // Increased timeout to ensure DOM is ready
   }
 
   addCustomButtons() {
-    // Add mini golf template button
-    const toolbar = this.editor.getModule('toolbar');
+    // Wait for toolbar to be rendered
+    const toolbarContainer = document.querySelector('.ql-toolbar');
+    if (!toolbarContainer) {
+      console.log('Toolbar container not found, retrying...');
+      setTimeout(() => this.addCustomButtons(), 200);
+      return;
+    }
+
+    // Remove existing custom buttons if they exist
+    const existingButtons = toolbarContainer.querySelectorAll('.ql-minigolf, .ql-youtube');
+    existingButtons.forEach(btn => btn.remove());
+
+    // Create a custom button group
+    const customGroup = document.createElement('span');
+    customGroup.className = 'ql-formats';
     
     // Mini Golf button
     const minigolfBtn = document.createElement('button');
     minigolfBtn.innerHTML = '⛳';
     minigolfBtn.title = 'Insert Mini Golf Template';
     minigolfBtn.className = 'ql-minigolf';
-    minigolfBtn.addEventListener('click', () => this.showMiniGolfDialog());
+    minigolfBtn.type = 'button';
+    minigolfBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Mini Golf button clicked');
+      this.showMiniGolfDialog();
+    });
     
     // YouTube button
     const youtubeBtn = document.createElement('button');
     youtubeBtn.innerHTML = '📺';
     youtubeBtn.title = 'Insert YouTube Video';
     youtubeBtn.className = 'ql-youtube';
-    youtubeBtn.addEventListener('click', () => this.showYouTubeDialog());
+    youtubeBtn.type = 'button';
+    youtubeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('YouTube button clicked');
+      this.showYouTubeDialog();
+    });
     
-    // Add buttons to toolbar
-    const toolbarContainer = document.querySelector('.ql-toolbar');
-    if (toolbarContainer) {
-      toolbarContainer.appendChild(minigolfBtn);
-      toolbarContainer.appendChild(youtubeBtn);
-    }
+    // Add buttons to the custom group
+    customGroup.appendChild(minigolfBtn);
+    customGroup.appendChild(youtubeBtn);
+    
+    // Add the custom group to the toolbar
+    toolbarContainer.appendChild(customGroup);
+    
+    console.log('Custom template buttons added successfully');
+    console.log('Buttons in toolbar:', toolbarContainer.querySelectorAll('.ql-minigolf, .ql-youtube').length);
   }
 
   async savePost(isDraft = false) {
@@ -723,44 +809,105 @@ class BlogAdminApp {
   }
 
   showMiniGolfDialog() {
+    // Remove any existing modals first
+    const existingModals = document.querySelectorAll('.template-modal');
+    existingModals.forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 template-modal';
     modal.innerHTML = `
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
         <h3 class="text-lg font-bold mb-4">Insert Mini Golf Content</h3>
-        <select id="content-type" class="w-full p-2 border rounded mb-4">
+        <select id="mini-golf-content-type-${Date.now()}" class="w-full p-2 border rounded mb-4">
           <option value="course_review">Course Review Template</option>
           <option value="tip_trick">Tip & Trick Template</option>
           <option value="equipment">Equipment Review</option>
           <option value="tournament">Tournament Report</option>
         </select>
         <div class="flex justify-end space-x-2">
-          <button onclick="this.closest('.fixed').remove()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-          <button onclick="blogAdmin.insertMiniGolfTemplate(); this.closest('.fixed').remove()" class="bg-green-600 text-white px-4 py-2 rounded">Insert</button>
+          <button class="cancel-btn bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+          <button class="insert-btn bg-green-600 text-white px-4 py-2 rounded">Insert</button>
         </div>
       </div>
     `;
+    
+    // Add event listeners
+    const cancelBtn = modal.querySelector('.cancel-btn');
+    const insertBtn = modal.querySelector('.insert-btn');
+    const selectElement = modal.querySelector('select');
+    
+    cancelBtn.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    insertBtn.addEventListener('click', () => {
+      const contentType = selectElement.value;
+      this.insertMiniGolfTemplate(contentType);
+      modal.remove();
+    });
+    
     document.body.appendChild(modal);
   }
 
   showYouTubeDialog() {
+    // Remove any existing modals first
+    const existingModals = document.querySelectorAll('.template-modal');
+    existingModals.forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 template-modal';
     modal.innerHTML = `
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
         <h3 class="text-lg font-bold mb-4">Insert YouTube Video</h3>
-        <input type="text" id="youtube-url" placeholder="YouTube URL" class="w-full p-2 border rounded mb-4">
+        <input type="text" id="youtube-url-input-${Date.now()}" placeholder="YouTube URL" class="w-full p-2 border rounded mb-4">
+        <div class="text-sm text-gray-600 mb-4">
+          Supported formats:<br>
+          • https://youtube.com/watch?v=VIDEO_ID<br>
+          • https://youtu.be/VIDEO_ID
+        </div>
         <div class="flex justify-end space-x-2">
-          <button onclick="this.closest('.fixed').remove()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-          <button onclick="blogAdmin.insertYouTubeEmbed(); this.closest('.fixed').remove()" class="bg-red-600 text-white px-4 py-2 rounded">Insert</button>
+          <button class="cancel-btn bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+          <button class="insert-btn bg-red-600 text-white px-4 py-2 rounded">Insert</button>
         </div>
       </div>
     `;
+    
+    // Add event listeners
+    const cancelBtn = modal.querySelector('.cancel-btn');
+    const insertBtn = modal.querySelector('.insert-btn');
+    const inputElement = modal.querySelector('input');
+    
+    cancelBtn.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    insertBtn.addEventListener('click', () => {
+      const url = inputElement.value.trim();
+      if (url) {
+        this.insertYouTubeEmbed(url);
+        modal.remove();
+      } else {
+        alert('Please enter a YouTube URL');
+      }
+    });
+    
+    // Focus on input
+    setTimeout(() => inputElement.focus(), 100);
+    
     document.body.appendChild(modal);
   }
 
-  insertMiniGolfTemplate() {
-    const contentType = document.getElementById('content-type').value;
+  insertMiniGolfTemplate(contentType) {
+    if (!contentType) {
+      console.error('No content type provided for mini golf template');
+      alert('Please select a template type');
+      return;
+    }
+
+    console.log('Inserting Mini Golf template:', contentType);
+
     let template = '';
     
     switch (contentType) {
@@ -837,35 +984,66 @@ class BlogAdminApp {
 <h3>Lessons Learned</h3>
 <p>[What you learned from the experience]</p>`;
         break;
+      default:
+        console.error('Unknown content type:', contentType);
+        alert('Unknown template type: ' + contentType);
+        return;
     }
     
     if (this.editor && template) {
-      // Insert at current cursor position
-      const range = this.editor.getSelection();
-      if (range) {
-        this.editor.clipboard.dangerouslyPasteHTML(range.index, template);
-      } else {
-        // Append to end
-        const length = this.editor.getLength();
-        this.editor.clipboard.dangerouslyPasteHTML(length, template);
+      try {
+        // Insert at current cursor position
+        const range = this.editor.getSelection();
+        if (range) {
+          this.editor.clipboard.dangerouslyPasteHTML(range.index, template);
+        } else {
+          // Append to end
+          const length = this.editor.getLength();
+          this.editor.clipboard.dangerouslyPasteHTML(length - 1, template);
+        }
+        console.log('Mini golf template inserted successfully:', contentType);
+      } catch (error) {
+        console.error('Error inserting template:', error);
+        alert('Failed to insert template. Please try again.');
       }
+    } else {
+      console.error('Editor not available or template empty');
+      alert('Editor not available. Please try again.');
     }
   }
 
-  insertYouTubeEmbed() {
-    const url = document.getElementById('youtube-url').value;
-    if (!url) return;
-    
-    let videoId = '';
-    if (url.includes('youtube.com/watch?v=')) {
-      videoId = url.split('v=')[1].split('&')[0];
-    } else if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1].split('?')[0];
-    } else if (url.includes('youtube.com/embed/')) {
-      videoId = url.split('embed/')[1].split('?')[0];
+  insertYouTubeEmbed(url) {
+    if (!url) {
+      alert('Please enter a valid YouTube URL');
+      return;
     }
     
-    if (videoId && this.editor) {
+    console.log('Inserting YouTube embed for:', url);
+    
+    let videoId = '';
+    try {
+      if (url.includes('youtube.com/watch?v=')) {
+        videoId = url.split('v=')[1].split('&')[0];
+      } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0];
+      } else if (url.includes('youtube.com/embed/')) {
+        videoId = url.split('embed/')[1].split('?')[0];
+      }
+      
+      // Clean video ID
+      videoId = videoId.replace(/[^a-zA-Z0-9_-]/g, '');
+    } catch (error) {
+      console.error('Error parsing YouTube URL:', error);
+      alert('Invalid YouTube URL format');
+      return;
+    }
+    
+    if (!videoId || videoId.length < 10) {
+      alert('Could not extract video ID from URL. Please check the URL format.');
+      return;
+    }
+    
+    if (this.editor) {
       const embedHtml = `<div class="youtube-embed-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1.5em 0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;" 
                 src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" 
@@ -876,18 +1054,53 @@ class BlogAdminApp {
       
       // Insert at current cursor position
       const range = this.editor.getSelection();
-      if (range) {
-        this.editor.clipboard.dangerouslyPasteHTML(range.index, embedHtml);
-      } else {
-        // Append to end
-        const length = this.editor.getLength();
-        this.editor.clipboard.dangerouslyPasteHTML(length, embedHtml);
+      try {
+        if (range) {
+          this.editor.clipboard.dangerouslyPasteHTML(range.index, embedHtml);
+        } else {
+          // Append to end
+          const length = this.editor.getLength();
+          this.editor.clipboard.dangerouslyPasteHTML(length - 1, embedHtml);
+        }
+        console.log('YouTube embed inserted successfully:', videoId);
+      } catch (error) {
+        console.error('Error inserting YouTube embed:', error);
+        alert('Failed to insert YouTube video. Please try again.');
       }
-      
-      console.log('YouTube embed inserted:', videoId);
     } else {
-      alert('Please enter a valid YouTube URL');
+      console.error('Editor not available');
+      alert('Editor not available. Please try again.');
     }
+  }
+
+  // User management
+  showUserManagement() {
+    // Simple placeholder for user management
+    // For now, just show an alert with available functionality
+    const message = `User Management Features:\n\n` +
+                   `Current User: ${this.currentUser.username}\n` +
+                   `Role: ${this.currentUser.is_admin ? 'Admin' : 'User'}\n\n` +
+                   `Available Actions:\n` +
+                   `• View current user info ✅\n` +
+                   `• Create new users (coming soon)\n` +
+                   `• Edit user permissions (coming soon)\n` +
+                   `• Delete users (coming soon)\n\n` +
+                   `For now, user management must be done directly in the database.`;
+    
+    alert(message);
+    
+    // TODO: Implement full user management interface
+    // This would include:
+    // - List all users
+    // - Create new users
+    // - Edit user permissions
+    // - Delete users
+    // - Reset passwords
+  }
+
+  // Helper method to close admin dropdown
+  closeDropdown() {
+    document.getElementById('admin-dropdown').classList.add('hidden');
   }
 }
 
@@ -896,3 +1109,6 @@ let blogAdminApp;
 document.addEventListener('DOMContentLoaded', () => {
   blogAdminApp = new BlogAdminApp();
 });
+
+// Make blogAdmin globally accessible
+window.blogAdmin = blogAdmin;

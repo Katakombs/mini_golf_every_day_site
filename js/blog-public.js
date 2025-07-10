@@ -6,6 +6,29 @@ class PublicBlogApp {
     this.currentPosts = []; // Store current posts for navigation
     this.currentPostIndex = -1; // Track current post index
     
+    // Create keyboard handler once to avoid multiple event listeners
+    this.keyboardHandler = (e) => {
+      const modal = document.getElementById('post-modal');
+      if (!modal) return; // Only handle when modal is open
+      
+      switch(e.key) {
+        case 'ArrowLeft':
+        case 'h': // Vim-style navigation
+          e.preventDefault();
+          this.previousPost();
+          break;
+        case 'ArrowRight':
+        case 'l': // Vim-style navigation
+          e.preventDefault();
+          this.nextPost();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          this.closePost();
+          break;
+      }
+    };
+    
     this.init();
   }
 
@@ -93,13 +116,13 @@ class PublicBlogApp {
           <div class="aspect-w-16 aspect-h-9">
             <img src="${this.escapeHtml(post.featured_image)}" 
                  alt="${this.escapeHtml(post.title)}" 
-                 class="w-full h-48 object-cover">
+                 class="w-full h-48 object-contain bg-gray-50">
           </div>
         ` : ''}
         
         <div class="p-6">
           <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
-            <span>By ${this.escapeHtml(post.author_username)}</span>
+            <span>By ${this.escapeHtml(post.author?.username || 'MGED Team')}</span>
             <time datetime="${post.created_at}">${this.formatDate(post.created_at)}</time>
           </div>
           
@@ -169,7 +192,7 @@ class PublicBlogApp {
               <div class="flex-1 pr-3">
                 <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 line-clamp-2">${this.escapeHtml(post.title)}</h1>
                 <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 gap-2 sm:gap-4">
-                  <span>By ${this.escapeHtml(post.author_username)}</span>
+                  <span>By ${this.escapeHtml(post.author?.username || 'MGED Team')}</span>
                   <time datetime="${post.created_at}">${this.formatDate(post.created_at)}</time>
                   ${post.is_featured ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">⭐ Featured</span>' : ''}
                 </div>
@@ -231,7 +254,7 @@ class PublicBlogApp {
               <div class="mb-4 sm:mb-6">
                 <img src="${this.escapeHtml(post.featured_image)}" 
                      alt="${this.escapeHtml(post.title)}" 
-                     class="w-full rounded-lg max-h-48 sm:max-h-64 lg:max-h-80 object-cover">
+                     class="w-full rounded-lg max-h-48 sm:max-h-64 lg:max-h-80 object-contain bg-gray-50">
               </div>
             ` : ''}
             
@@ -491,7 +514,8 @@ class PublicBlogApp {
   }
 
   escapeHtml(text) {
-    if (!text) return '';
+    if (text === null || text === undefined) return '';
+    if (typeof text !== 'string') return String(text);
     const map = {
       '&': '&amp;',
       '<': '&lt;',
@@ -532,7 +556,7 @@ class PublicBlogApp {
             <div class="flex-1 pr-3">
               <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 line-clamp-2">${this.escapeHtml(post.title)}</h1>
               <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 gap-2 sm:gap-4">
-                <span>By ${this.escapeHtml(post.author || 'MGED Team')}</span>
+                <span>By ${this.escapeHtml(post.author?.username || 'MGED Team')}</span>
                 <time datetime="${post.created_at || post.published_at}">${this.formatDate(post.created_at || post.published_at)}</time>
                 ${post.is_featured ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">⭐ Featured</span>' : ''}
               </div>
@@ -594,7 +618,7 @@ class PublicBlogApp {
             <div class="mb-4 sm:mb-6">
               <img src="${this.escapeHtml(post.featured_image)}" 
                    alt="${this.escapeHtml(post.title)}" 
-                   class="w-full rounded-lg max-h-48 sm:max-h-64 lg:max-h-80 object-cover">
+                   class="w-full rounded-lg max-h-48 sm:max-h-64 lg:max-h-80 object-contain bg-gray-50">
             </div>
           ` : ''}
           
@@ -651,9 +675,19 @@ class PublicBlogApp {
       window.history.pushState({ post: post.slug }, post.title, newUrl);
       document.title = `${post.title} - MGED Blog`;
       
-      // Close existing modal and show new one with the post data we already have
+      // Fetch the full post data instead of using summary data
+      const response = await fetch(`${this.apiBase}/api/blog/posts/${post.slug}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const fullPost = data.post;
+      
+      // Close existing modal and show new one with the full post data
       this.closePost();
-      this.displayFullPost(post);
+      this.displayFullPost(fullPost);
       
     } catch (error) {
       console.error('Error navigating to post:', error);
@@ -679,29 +713,6 @@ class PublicBlogApp {
   setupKeyboardNavigation() {
     // Remove any existing listener first
     document.removeEventListener('keydown', this.keyboardHandler);
-    
-    // Create bound handler
-    this.keyboardHandler = (e) => {
-      const modal = document.getElementById('post-modal');
-      if (!modal) return; // Only handle when modal is open
-      
-      switch(e.key) {
-        case 'ArrowLeft':
-        case 'h': // Vim-style navigation
-          e.preventDefault();
-          this.previousPost();
-          break;
-        case 'ArrowRight':
-        case 'l': // Vim-style navigation
-          e.preventDefault();
-          this.nextPost();
-          break;
-        case 'Escape':
-          e.preventDefault();
-          this.closePost();
-          break;
-      }
-    };
     
     // Add keyboard listener
     document.addEventListener('keydown', this.keyboardHandler);
