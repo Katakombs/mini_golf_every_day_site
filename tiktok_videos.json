@@ -1,6 +1,12 @@
 {
   "videos": [
     {
+      "video_id": "7525544472994696462",
+      "title": "Day 185. Down under.  #minigolfeveryday #minigolf #everyday #puttputt...",
+      "upload_date": "20250710",
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7525544472994696462"
+    },
+    {
       "video_id": "7525183887849311543",
       "title": "Day 184. Change of scenery.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250709",
@@ -1105,6 +1111,6 @@
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7455430384231255342"
     }
   ],
-  "last_updated": "2025-07-10T16:19:10.729195",
-  "total_count": 184
+  "last_updated": "2025-07-10T20:16:43.333322",
+  "total_count": 185
 }
