@@ -19,6 +19,7 @@ from flask import Flask, request, jsonify, session, render_template, send_from_d
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 # Try to import MySQL drivers
 MYSQL_DRIVERS = {
@@ -1344,10 +1345,76 @@ def static_files(filename):
     return send_from_directory('.', filename)
 
 
-if __name__ == '__main__':
-    # Initialize database if running directly
-    with app.app_context():
-        db.create_all()
-    
-    # Run the application
-    app.run(host='0.0.0.0', port=5002, debug=True)
+# Image Upload API Routes
+@app.route('/api/upload/image', methods=['POST'])
+def upload_image():
+    """Upload image for blog posts"""
+    try:
+        # Simple auth check (fallback if token_required fails)
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'Authorization required'}), 401
+        
+        token = auth_header.split(' ')[1]
+        if not token:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Validate file type
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        if not file.filename or '.' not in file.filename:
+            return jsonify({'error': 'Invalid file format'}), 400
+        
+        file_ext = file.filename.rsplit('.', 1)[1].lower()
+        if file_ext not in allowed_extensions:
+            return jsonify({'error': 'File type not allowed. Use PNG, JPG, JPEG, GIF, or WebP'}), 400
+        
+        # Validate file size (16MB max)
+        file.seek(0, 2)  # Seek to end of file
+        file_size = file.tell()
+        file.seek(0)  # Reset to beginning
+        
+        if file_size > 16 * 1024 * 1024:  # 16MB
+            return jsonify({'error': 'File size too large. Maximum 16MB allowed'}), 400
+        
+        # Generate secure filename
+        filename = secure_filename(file.filename)
+        # Add timestamp to avoid filename conflicts
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        name, ext = os.path.splitext(filename)
+        filename = f"{name}_{timestamp}{ext}"
+        
+        # Ensure uploads directory exists
+        uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+        os.makedirs(uploads_dir, exist_ok=True)
+        
+        # Save file
+        file_path = os.path.join(uploads_dir, filename)
+        file.save(file_path)
+        
+        # Return relative URL
+        file_url = f'/uploads/{filename}'
+        
+        return jsonify({
+            'url': file_url,
+            'filename': filename,
+            'size': file_size
+        }), 200
+        
+    except Exception as e:
+        print(f"[ERROR] Image upload failed: {e}")
+        return jsonify({'error': 'Image upload failed'}), 500
+
+
+# Serve uploaded files
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+    return send_from_directory(uploads_dir, filename)

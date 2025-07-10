@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload Test - MGED</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #fafafa;
+        }
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+        #fileInput {
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .auth-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏌️‍♂️ MGED Image Upload Test</h1>
+        
+        <!-- Authentication Section -->
+        <div class="auth-section">
+            <h3>Authentication</h3>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" value="admin" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" value="admin123" placeholder="Enter password">
+            </div>
+            <button onclick="login()">Login</button>
+            <div id="authStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h3>Image Upload</h3>
+            <div class="upload-area" id="uploadArea">
+                <p>📷 Drag and drop an image here, or click to select</p>
+                <input type="file" id="fileInput" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" style="display: none;">
+                <button type="button" onclick="document.getElementById('fileInput').click()">Select Image</button>
+            </div>
+            
+            <div id="uploadStatus" class="status" style="display: none;"></div>
+            
+            <div id="preview" class="preview" style="display: none;">
+                <h4>Preview:</h4>
+                <img id="previewImg" src="" alt="Preview">
+                <p id="imageInfo"></p>
+            </div>
+            
+            <button id="uploadBtn" onclick="uploadImage()" disabled>Upload Image</button>
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('blog_token');
+        let selectedFile = null;
+
+        // Check if already logged in
+        if (authToken) {
+            document.getElementById('authStatus').innerHTML = '✅ Already logged in';
+            document.getElementById('authStatus').className = 'status success';
+            document.getElementById('authStatus').style.display = 'block';
+        }
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const statusEl = document.getElementById('authStatus');
+            
+            if (!username || !password) {
+                statusEl.innerHTML = '❌ Please enter username and password';
+                statusEl.className = 'status error';
+                statusEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                statusEl.innerHTML = '🔄 Logging in...';
+                statusEl.className = 'status info';
+                statusEl.style.display = 'block';
+
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    localStorage.setItem('blog_token', authToken);
+                    statusEl.innerHTML = '✅ Login successful!';
+                    statusEl.className = 'status success';
+                } else {
+                    statusEl.innerHTML = `❌ Login failed: ${data.error}`;
+                    statusEl.className = 'status error';
+                }
+            } catch (error) {
+                statusEl.innerHTML = `❌ Login error: ${error.message}`;
+                statusEl.className = 'status error';
+            }
+        }
+
+        // File input change handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            handleFileSelect(e.target.files[0]);
+        });
+
+        // Drag and drop handlers
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFileSelect(e.dataTransfer.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            if (!file) return;
+
+            // Validate file type
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showStatus('error', '❌ Please select a valid image file (PNG, JPG, JPEG, GIF, WebP)');
+                return;
+            }
+
+            // Validate file size (16MB max)
+            if (file.size > 16 * 1024 * 1024) {
+                showStatus('error', '❌ File size must be less than 16MB');
+                return;
+            }
+
+            selectedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('preview');
+                const previewImg = document.getElementById('previewImg');
+                const imageInfo = document.getElementById('imageInfo');
+                
+                previewImg.src = e.target.result;
+                imageInfo.innerHTML = `
+                    <strong>File:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
+                    <strong>Type:</strong> ${file.type}
+                `;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Enable upload button
+            document.getElementById('uploadBtn').disabled = false;
+            showStatus('info', '📁 File selected. Ready to upload!');
+        }
+
+        async function uploadImage() {
+            if (!selectedFile) {
+                showStatus('error', '❌ Please select a file first');
+                return;
+            }
+
+            if (!authToken) {
+                showStatus('error', '❌ Please login first');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const originalText = uploadBtn.textContent;
+            
+            try {
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
+                showStatus('info', '🔄 Uploading image...');
+
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const response = await fetch('/api/upload/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('success', `✅ Upload successful!<br>
+                        <strong>URL:</strong> <a href="${data.url}" target="_blank">${data.url}</a><br>
+                        <strong>Filename:</strong> ${data.filename}<br>
+                        <strong>Size:</strong> ${(data.size / 1024 / 1024).toFixed(2)} MB`);
+                } else {
+                    showStatus('error', `❌ Upload failed: ${data.error}`);
+                }
+            } catch (error) {
+                showStatus('error', `❌ Upload error: ${error.message}`);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = originalText;
+            }
+        }
+
+        function showStatus(type, message) {
+            const statusEl = document.getElementById('uploadStatus');
+            statusEl.innerHTML = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

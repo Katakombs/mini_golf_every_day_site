@@ -162,3 +162,13 @@ __pycache__/
 venv/
 .venv/
 instance/
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep
+# Allow some common image formats but ignore large files
+!uploads/*.png
+!uploads/*.jpg
+!uploads/*.jpeg
+!uploads/*.gif
+!uploads/*.webp

@@ -569,6 +569,7 @@ class BlogAdminApp {
             ['clean']
           ],
           handlers: {
+            'image': () => this.handleImageUpload(),
             'minigolf': () => this.showMiniGolfDialog(),
             'youtube': () => this.showYouTubeDialog()
           }
@@ -592,10 +593,38 @@ class BlogAdminApp {
       this.editor.root.innerHTML = content;
     }
 
+    // Override any default image handling (drag & drop, paste)
+    this.editor.root.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+          this.handleImageFile(file);
+        }
+      }
+    });
+
+    this.editor.root.addEventListener('paste', (e) => {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          e.preventDefault();
+          const file = items[i].getAsFile();
+          this.handleImageFile(file);
+          break;
+        }
+      }
+    });
+
     // Add custom toolbar buttons after editor initialization
     setTimeout(() => {
       this.addCustomButtons();
+      this.preventBase64Images();
     }, 500); // Increased timeout to ensure DOM is ready
+
+    // Override default image handling to prevent base64 storage
+    this.preventBase64Images();
   }
 
   addCustomButtons() {
@@ -650,6 +679,32 @@ class BlogAdminApp {
     
     console.log('Custom template buttons added successfully');
     console.log('Buttons in toolbar:', toolbarContainer.querySelectorAll('.ql-minigolf, .ql-youtube').length);
+  }
+
+  // Prevent base64 image insertion and enforce file uploads
+  preventBase64Images() {
+    // Monitor content changes to prevent base64 images
+    this.editor.on('text-change', () => {
+      const contents = this.editor.getContents();
+      let changed = false;
+      
+      contents.ops.forEach((op, index) => {
+        if (op.insert && op.insert.image && op.insert.image.startsWith('data:image')) {
+          console.warn('Blocked base64 image insertion. Use the upload button instead.');
+          // Remove the base64 image
+          const length = this.editor.getLength();
+          for (let i = 0; i < length; i++) {
+            const [leaf] = this.editor.getLeaf(i);
+            if (leaf && leaf.domNode && leaf.domNode.tagName === 'IMG' && leaf.domNode.src.startsWith('data:image')) {
+              this.editor.deleteText(i, 1);
+              this.showPostMessage('Base64 images are not allowed. Please use the image upload button (📷) in the toolbar.', 'error');
+              changed = true;
+              break;
+            }
+          }
+        }
+      });
+    });
   }
 
   async savePost(isDraft = false) {
@@ -805,6 +860,98 @@ class BlogAdminApp {
     } catch (error) {
       console.error('Delete post error:', error);
       alert('Failed to delete post');
+    }
+  }
+
+  // Image upload handler for Quill editor
+  handleImageUpload() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/png,image/jpg,image/jpeg,image/gif,image/webp');
+    input.click();
+
+    input.onchange = () => {
+      const file = input.files[0];
+      if (file) {
+        this.handleImageFile(file);
+      }
+    };
+  }
+
+  handleImageFile(file) {
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please select a valid image file (PNG, JPG, JPEG, GIF, WebP)');
+      return;
+    }
+
+    // Validate file size (16MB max)
+    if (file.size > 16 * 1024 * 1024) {
+      alert('File size must be less than 16MB');
+      return;
+    }
+
+    this.uploadImageFile(file);
+  }
+
+  async uploadImageFile(file) {
+    try {
+      // Show loading state
+      const range = this.editor.getSelection() || { index: this.editor.getLength() };
+      this.editor.insertText(range.index, 'Uploading image...', 'italic', true);
+
+      // Upload the file
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const token = localStorage.getItem('blog_token');
+      const response = await fetch(`${this.apiBase}/api/upload/image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      console.log('Upload response status:', response.status);
+      console.log('Upload response headers:', response.headers);
+
+      // Remove loading text
+      this.editor.deleteText(range.index, 'Uploading image...'.length);
+
+      if (response.ok) {
+        try {
+          const data = await response.json();
+          // Insert the image at the current cursor position
+          this.editor.insertEmbed(range.index, 'image', `${this.apiBase}${data.url}`);
+          this.editor.setSelection(range.index + 1);
+        } catch (jsonError) {
+          console.error('Failed to parse successful response as JSON:', jsonError);
+          alert('Upload succeeded but response format was unexpected. Please refresh and try again.');
+        }
+      } else {
+        try {
+          const error = await response.json();
+          alert(`Upload failed: ${error.error || 'Unknown error'}`);
+        } catch (jsonError) {
+          // Handle non-JSON error response (like HTML error pages)
+          const errorText = await response.text();
+          console.error('Server error (non-JSON response):', errorText);
+          alert(`Upload failed: Server returned ${response.status} error. Check server logs for details.`);
+        }
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert('Image upload failed. Please try again.');
+      // Remove loading text if still there
+      const currentContent = this.editor.getText();
+      if (currentContent.includes('Uploading image...')) {
+        const range = this.editor.getSelection() || { index: this.editor.getLength() };
+        this.editor.deleteText(range.index - 'Uploading image...'.length, 'Uploading image...'.length);
+      }
     }
   }
 
@@ -1110,5 +1257,5 @@ document.addEventListener('DOMContentLoaded', () => {
   blogAdminApp = new BlogAdminApp();
 });
 
-// Make blogAdmin globally accessible
-window.blogAdmin = blogAdmin;
+// Make blogAdminApp globally accessible
+window.blogAdminApp = blogAdminApp;
