@@ -104,6 +104,21 @@ def fetch_all_videos():
         print(f"\n💾 Saving {len(all_videos)} videos to database...")
         manager.save_video_data(all_videos)
         
+        # Update MySQL database
+        print("🗄️  Updating MySQL database...")
+        try:
+            import subprocess
+            result = subprocess.run(['python', 'migrate_videos_to_db.py'], 
+                                  capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                print("✅ Database updated successfully")
+            else:
+                print(f"⚠️  Database update failed: {result.stderr}")
+                print("   JSON file is still updated and website will work")
+        except Exception as e:
+            print(f"⚠️  Could not run database migration: {e}")
+            print("   JSON file is updated, manually run: python migrate_videos_to_db.py")
+        
         # Update HTML
         print("🔄 Updating watch.html with all videos...")
         success = manager.update_watch_html(all_videos)
@@ -135,24 +150,43 @@ def fetch_all_videos():
         return False
 
 def main():
-    print("This script will fetch ALL videos from @minigolfeveryday")
-    print("and replace your current 30-video database.\n")
+    import argparse
     
-    response = input("Do you want to proceed? (y/N): ").lower().strip()
+    parser = argparse.ArgumentParser(description='Fetch all videos from @minigolfeveryday TikTok channel')
+    parser.add_argument('--yes', '-y', action='store_true', 
+                       help='Skip confirmation prompt and proceed automatically')
+    parser.add_argument('--quiet', '-q', action='store_true',
+                       help='Reduce output verbosity')
     
-    if response == 'y' or response == 'yes':
+    args = parser.parse_args()
+    
+    if not args.quiet:
+        print("This script will fetch ALL videos from @minigolfeveryday")
+        print("and replace your current 30-video database.\n")
+    
+    if args.yes:
+        proceed = True
+        if not args.quiet:
+            print("Auto-proceeding due to --yes flag...")
+    else:
+        response = input("Do you want to proceed? (y/N): ").lower().strip()
+        proceed = response in ['y', 'yes']
+    
+    if proceed:
         success = fetch_all_videos()
         if success:
-            print("\n🚀 Next steps:")
-            print("   1. Upload the updated tiktok_videos.json to your server")
-            print("   2. Your automation will now maintain all 177+ videos")
-            print("   3. Your website will show the complete video collection")
+            if not args.quiet:
+                print("\n🚀 Next steps:")
+                print("   1. Upload the updated tiktok_videos.json to your server")
+                print("   2. Your automation will now maintain all 177+ videos")
+                print("   3. Your website will show the complete video collection")
             return 0
         else:
             print("\n❌ Fetch failed. Please try again or check the issues above.")
             return 1
     else:
-        print("Operation cancelled.")
+        if not args.quiet:
+            print("Operation cancelled.")
         return 0
 
 if __name__ == "__main__":

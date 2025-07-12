@@ -988,7 +988,7 @@ def create_blog_post(current_user):
         return jsonify({
             'message': 'Blog post created successfully',
             'post': post.to_dict()
-        }), 201
+        }, 201)
         
     except Exception as e:
         db.session.rollback()
@@ -1203,6 +1203,78 @@ def toggle_user_active(current_user, user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Failed to update user'}), 500
+
+
+@app.route('/api/admin/pull-videos', methods=['POST'])
+@token_required
+@admin_required
+def pull_videos(current_user):
+    """Manually pull latest videos from TikTok (admin only)"""
+    try:
+        import subprocess
+        import os
+        
+        # Get the absolute path to the fetch_all_videos.py script
+        script_path = os.path.join(os.path.dirname(__file__), 'fetch_all_videos.py')
+        
+        # Run the script with non-interactive flags
+        result = subprocess.run([
+            'python', script_path, '--yes', '--quiet'
+        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
+        
+        if result.returncode == 0:
+            # Parse the output to extract stats if available
+            output_lines = result.stdout.strip().split('\n')
+            stats = {
+                'processed': 0,
+                'new': 0,
+                'updated': 0,
+                'success': True
+            }
+            
+            # Try to extract stats from output
+            for line in output_lines:
+                if 'processed' in line.lower():
+                    try:
+                        # Look for numbers in the line
+                        import re
+                        numbers = re.findall(r'\d+', line)
+                        if numbers:
+                            stats['processed'] = int(numbers[0])
+                    except:
+                        pass
+                elif 'new' in line.lower():
+                    try:
+                        numbers = re.findall(r'\d+', line)
+                        if numbers:
+                            stats['new'] = int(numbers[0])
+                    except:
+                        pass
+                elif 'updated' in line.lower():
+                    try:
+                        numbers = re.findall(r'\d+', line)
+                        if numbers:
+                            stats['updated'] = int(numbers[0])
+                    except:
+                        pass
+            
+            return jsonify({
+                'message': 'Videos pulled successfully',
+                'processed': stats['processed'],
+                'new': stats['new'],
+                'updated': stats['updated'],
+                'output': result.stdout
+            }), 200
+        else:
+            return jsonify({
+                'error': 'Failed to pull videos',
+                'details': result.stderr or result.stdout
+            }), 500
+            
+    except subprocess.TimeoutExpired:
+        return jsonify({'error': 'Video pull timed out (5 minutes)'}), 408
+    except Exception as e:
+        return jsonify({'error': f'Failed to pull videos: {str(e)}'}), 500
 
 
 # Database Setup Route (for production initialization)

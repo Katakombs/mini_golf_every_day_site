@@ -109,6 +109,7 @@ class BlogAdminApp {
     document.getElementById('quick-view-drafts').addEventListener('click', () => this.showPostsManagement('drafts'));
     document.getElementById('quick-manage-posts').addEventListener('click', () => this.showPostsManagement('all'));
     document.getElementById('quick-view-public').addEventListener('click', () => window.open('blog.html', '_blank'));
+    document.getElementById('quick-pull-videos').addEventListener('click', () => this.handlePullVideos());
     document.getElementById('admin-all-posts-btn').addEventListener('click', () => {
       this.closeDropdown();
       this.showPostsManagement('all');
@@ -952,6 +953,46 @@ class BlogAdminApp {
         const range = this.editor.getSelection() || { index: this.editor.getLength() };
         this.editor.deleteText(range.index - 'Uploading image...'.length, 'Uploading image...'.length);
       }
+    }
+  }
+
+  async handlePullVideos() {
+    const button = document.getElementById('quick-pull-videos');
+    const originalText = button.textContent;
+    
+    // Show loading state
+    button.textContent = '🔄 Pulling Videos...';
+    button.disabled = true;
+    
+    try {
+      const token = localStorage.getItem('blog_token');
+      const response = await fetch(`${this.apiBase}/api/admin/pull-videos`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ Videos updated successfully!\n\nProcessed: ${data.processed || 0} videos\nNew: ${data.new || 0} videos\nUpdated: ${data.updated || 0} videos`);
+        
+        // Optionally refresh the page or update UI
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        const error = await response.json();
+        alert(`❌ Failed to pull videos: ${error.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Video pull error:', error);
+      alert('❌ Failed to pull videos. Please check your connection and try again.');
+    } finally {
+      // Reset button state
+      button.textContent = originalText;
+      button.disabled = false;
     }
   }
 
