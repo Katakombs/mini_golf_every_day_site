@@ -1,6 +1,12 @@
 {
   "videos": [
     {
+      "video_id": "7526756456385826062",
+      "title": "Day 187. Cheers to 10 years!  #minigolfeveryday #minigolf #everyday #...",
+      "upload_date": "20250714",
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7526756456385826062"
+    },
+    {
       "video_id": "7526200732681325837",
       "title": "Day 186. Time is a construct.  #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250712",
@@ -1117,6 +1123,6 @@
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7455430384231255342"
     }
   ],
-  "last_updated": "2025-07-14T01:18:24.952124",
-  "total_count": 186
+  "last_updated": "2025-07-14T04:36:55.195911",
+  "total_count": 187
 }
