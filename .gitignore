@@ -68,12 +68,15 @@ test_*
 ehthumbs.db
 Thumbs.db
 
-# Sensitive config files (if any)
-.env
+# Sensitive config files (selective)
 .env.local
-.env.production
+.env.blog
 secrets.json
 config.json
+
+# Keep these environment files for deployment:
+# .env (local development)
+# .env.production (production deployment)
 
 # Node modules (if using any JS tools)
 node_modules/
@@ -122,3 +125,50 @@ MJLights.mov
 !*.jpeg
 !*.gif
 !*.ico
+
+# Archive directory (cleanup results)
+.archive/
+
+# Debug and diagnostic files
+debug_*
+diagnose_*
+test_*.py
+test_*.html
+troubleshoot.*
+*_debug.*
+*_test.*
+
+# Backup files
+*backup*
+deployment_backup_*
+*.backup
+
+# Temporary and experimental files
+temp_*
+*_temp.*
+quick_*
+simple_*
+emergency_*
+fix_*.py
+cleanup_*.py
+
+# Old deployment scripts
+*_deployment.sh
+*_fix.sh
+upload_*.sh
+
+# Python cache and environments
+__pycache__/
+venv/
+.venv/
+instance/
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep
+# Allow some common image formats but ignore large files
+!uploads/*.png
+!uploads/*.jpg
+!uploads/*.jpeg
+!uploads/*.gif
+!uploads/*.webp

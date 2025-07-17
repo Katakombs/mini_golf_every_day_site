@@ -7,12 +7,31 @@ This will replace your current 30-video database with all 177+ videos
 import sys
 import os
 import json
-from datetime import datetime
+import glob
+import time
+from datetime import datetime, timedelta
 
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from tiktok_automation import TikTokVideoManager
+
+def cleanup_old_backups(keep_days=3):
+    """Clean up old backup files to save disk space"""
+    try:
+        cutoff_time = time.time() - (keep_days * 24 * 60 * 60)
+        backup_files = glob.glob('tiktok_videos_backup_*.json')
+        
+        deleted_count = 0
+        for backup_file in backup_files:
+            if os.path.getmtime(backup_file) < cutoff_time:
+                os.remove(backup_file)
+                deleted_count += 1
+        
+        if deleted_count > 0:
+            print(f"🧹 Cleaned up {deleted_count} old backup files")
+    except Exception as e:
+        print(f"⚠️  Could not cleanup old backups: {e}")
 
 def fetch_all_videos():
     """Fetch all videos from the TikTok channel"""
@@ -61,7 +80,9 @@ def fetch_all_videos():
         if len(all_videos) > 5:
             print(f"   ... and {len(all_videos) - 5} more videos")
         
-        # Backup current data
+        # Backup current data (disabled to prevent excessive backup files)
+        # Comment out this section if backups are being created too frequently
+        """
         if current_videos:
             backup_file = f"tiktok_videos_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             try:
@@ -71,12 +92,32 @@ def fetch_all_videos():
                         'videos': current_videos
                     }, f, indent=2)
                 print(f"\n💾 Backed up current database to: {backup_file}")
+                
+                # Cleanup old backup files (keep last 3 days)
+                cleanup_old_backups()
+                
             except Exception as e:
                 print(f"⚠️  Could not create backup: {e}")
+        """
         
         # Save all videos
         print(f"\n💾 Saving {len(all_videos)} videos to database...")
         manager.save_video_data(all_videos)
+        
+        # Update MySQL database
+        print("🗄️  Updating MySQL database...")
+        try:
+            import subprocess
+            result = subprocess.run(['python', 'migrate_videos_to_db.py'], 
+                                  capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                print("✅ Database updated successfully")
+            else:
+                print(f"⚠️  Database update failed: {result.stderr}")
+                print("   JSON file is still updated and website will work")
+        except Exception as e:
+            print(f"⚠️  Could not run database migration: {e}")
+            print("   JSON file is updated, manually run: python migrate_videos_to_db.py")
         
         # Update HTML
         print("🔄 Updating watch.html with all videos...")
@@ -109,24 +150,43 @@ def fetch_all_videos():
         return False
 
 def main():
-    print("This script will fetch ALL videos from @minigolfeveryday")
-    print("and replace your current 30-video database.\n")
+    import argparse
     
-    response = input("Do you want to proceed? (y/N): ").lower().strip()
+    parser = argparse.ArgumentParser(description='Fetch all videos from @minigolfeveryday TikTok channel')
+    parser.add_argument('--yes', '-y', action='store_true', 
+                       help='Skip confirmation prompt and proceed automatically')
+    parser.add_argument('--quiet', '-q', action='store_true',
+                       help='Reduce output verbosity')
     
-    if response == 'y' or response == 'yes':
+    args = parser.parse_args()
+    
+    if not args.quiet:
+        print("This script will fetch ALL videos from @minigolfeveryday")
+        print("and replace your current 30-video database.\n")
+    
+    if args.yes:
+        proceed = True
+        if not args.quiet:
+            print("Auto-proceeding due to --yes flag...")
+    else:
+        response = input("Do you want to proceed? (y/N): ").lower().strip()
+        proceed = response in ['y', 'yes']
+    
+    if proceed:
         success = fetch_all_videos()
         if success:
-            print("\n🚀 Next steps:")
-            print("   1. Upload the updated tiktok_videos.json to your server")
-            print("   2. Your automation will now maintain all 177+ videos")
-            print("   3. Your website will show the complete video collection")
+            if not args.quiet:
+                print("\n🚀 Next steps:")
+                print("   1. Upload the updated tiktok_videos.json to your server")
+                print("   2. Your automation will now maintain all 177+ videos")
+                print("   3. Your website will show the complete video collection")
             return 0
         else:
             print("\n❌ Fetch failed. Please try again or check the issues above.")
             return 1
     else:
-        print("Operation cancelled.")
+        if not args.quiet:
+            print("Operation cancelled.")
         return 0
 
 if __name__ == "__main__":

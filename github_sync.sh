@@ -65,6 +65,15 @@ if curl -s -f "$GITHUB_RAW_URL" -o "tiktok_videos_new.json"; then
         LATEST_TITLE=$(python -c "import json; data=json.load(open('tiktok_videos.json')); print(data['videos'][0]['title'][:60] if data['videos'] else 'None')" 2>/dev/null || echo "Unknown")
         log_message "Most recent video: $LATEST_TITLE..."
         
+        # Update MySQL database
+        log_message "🗄️  Updating MySQL database..."
+        if python migrate_videos_to_db.py 2>&1 | tee -a "$LOG_FILE"; then
+            log_message "✅ Database updated successfully"
+        else
+            log_message "⚠️  Database update failed, but JSON file is updated"
+            log_message "   The website will still work with JSON fallback"
+        fi
+        
     else
         log_message "❌ Downloaded file is not valid JSON"
         rm -f "tiktok_videos_new.json"

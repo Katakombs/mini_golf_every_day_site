@@ -9,3 +9,36 @@
     h1, h2, h3, .brand {
       font-family: 'Fredoka', sans-serif;
     }
+    
+    /* YouTube embed styling for blog posts */
+    .prose .youtube-embed-container {
+      margin: 1.5rem 0;
+    }
+    
+    .prose .youtube-embed-container iframe {
+      border-radius: 8px;
+    }
+    
+    /* Ensure iframes are responsive in blog content */
+    .prose iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    /* Fix for any legacy YouTube embeds */
+    .prose div[style*="padding-bottom: 56.25%"] {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Legacy iframe styling for older YouTube embeds */
+    .prose iframe[src*="youtube.com/embed"]:not([style*="position: absolute"]) {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }

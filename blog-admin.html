@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Golf Every Day - Blog Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&family=Inter&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+  <link href="/css/mytailwind.css" rel="stylesheet">
+  <link href="/css/styles.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- Quill WYSIWYG Editor (Open Source) -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  
+  <!-- Custom Quill Styling -->
+  <style>
+    .ql-editor {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #374151;
+    }
+    
+    .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor h4, .ql-editor h5, .ql-editor h6 {
+      color: #1f2937;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      font-weight: 600;
+    }
+    
+    .ql-editor h1 { font-size: 2em; }
+    .ql-editor h2 { font-size: 1.5em; }
+    .ql-editor h3 { font-size: 1.25em; }
+    
+    .ql-editor blockquote {
+      border-left: 4px solid #10b981;
+      padding-left: 1em;
+      margin: 1em 0;
+      font-style: italic;
+      background: #f0fdf4;
+      padding: 1em;
+      border-radius: 0 5px 5px 0;
+    }
+    
+    .ql-editor img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .ql-editor iframe {
+      max-width: 100%;
+    }
+    
+    .ql-editor p {
+      margin: 1em 0;
+    }
+    
+    .ql-editor ul, .ql-editor ol {
+      padding-left: 1.5em;
+      margin: 1em 0;
+    }
+    
+    .ql-editor li {
+      margin: 0.5em 0;
+    }
+    
+    .ql-editor a {
+      color: #10b981;
+      text-decoration: underline;
+    }
+    
+    .ql-editor a:hover {
+      color: #065f46;
+    }
+    
+    .ql-editor pre {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 5px;
+      padding: 1em;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .ql-editor code {
+      background: #f3f4f6;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    /* Mobile-specific Quill editor styles */
+    @media (max-width: 640px) {
+      .ql-toolbar {
+        padding: 6px 8px !important;
+        border-radius: 4px 4px 0 0 !important;
+      }
+      
+      .ql-toolbar .ql-formats {
+        margin-right: 8px !important;
+      }
+      
+      .ql-toolbar button {
+        width: 24px !important;
+        height: 24px !important;
+        padding: 2px !important;
+        margin: 1px !important;
+      }
+      
+      .ql-toolbar button svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+      
+      .ql-toolbar .ql-picker {
+        font-size: 12px !important;
+      }
+      
+      .ql-container {
+        border-radius: 0 0 4px 4px !important;
+      }
+      
+      .ql-editor {
+        font-size: 14px !important;
+        padding: 8px !important;
+        min-height: 200px !important;
+      }
+      
+      .ql-editor h1 { font-size: 1.5em !important; }
+      .ql-editor h2 { font-size: 1.25em !important; }
+      .ql-editor h3 { font-size: 1.1em !important; }
+      
+      /* Hide some toolbar items on mobile to save space */
+      .ql-toolbar .ql-font,
+      .ql-toolbar .ql-size,
+      .ql-toolbar .ql-script,
+      .ql-toolbar .ql-direction {
+        display: none !important;
+      }
+    }
+    
+    /* Tablet styles */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .ql-toolbar {
+        padding: 8px 10px !important;
+      }
+      
+      .ql-toolbar button {
+        width: 28px !important;
+        height: 28px !important;
+      }
+      
+      .ql-editor {
+        font-size: 15px !important;
+        padding: 12px !important;
+      }
+    }
+    
+    /* Mobile-friendly touch targets */
+    @media (max-width: 768px) {
+      button {
+        min-height: 48px;
+        touch-action: manipulation;
+      }
+      
+      /* Ensure buttons don't overflow on mobile */
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      
+      /* Mobile-specific post management styling */
+      #posts-management .space-y-4 > div {
+        padding: 12px;
+      }
+      
+      /* Mobile pagination */
+      #admin-posts-pagination {
+        gap: 4px;
+      }
+      
+      /* Mobile filter buttons */
+      #posts-management .flex-wrap button {
+        min-width: 60px;
+        text-align: center;
+      }
+      
+      /* Ensure text doesn't overflow in post titles */
+      .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      
+      /* Mobile-specific post item styling */
+      .min-w-0 {
+        min-width: 0;
+      }
+      
+      .flex-shrink-0 {
+        flex-shrink: 0;
+      }
+    }
+      
+      #quick-pull-videos {
+        font-size: 16px;
+        padding: 12px 24px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+      }
+      
+      #quick-pull-videos:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      /* Ensure buttons don't overflow on mobile */
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      
+      /* Mobile-specific post management styling */
+      #posts-management .space-y-4 > div {
+        padding: 12px;
+      }
+      
+      /* Mobile pagination */
+      #admin-posts-pagination {
+        gap: 4px;
+      }
+      
+      /* Mobile filter buttons */
+      #posts-management .flex-wrap button {
+        min-width: 60px;
+        text-align: center;
+      }
+      
+      /* Ensure text doesn't overflow in post titles */
+      .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      
+      /* Mobile-specific post item styling */
+      .min-w-0 {
+        min-width: 0;
+      }
+      
+      .flex-shrink-0 {
+        flex-shrink: 0;
+      }
+    }
+    
+    .ql-editor iframe {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    
+    .ql-minigolf, .ql-youtube {
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      margin: 0 2px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      min-width: 32px;
+    }
+    
+    .ql-minigolf:hover, .ql-youtube:hover {
+      background: #f0f0f0;
+      border-color: #999;
+    }
+    
+    .ql-minigolf:active, .ql-youtube:active {
+      background: #e0e0e0;
+    }
+    
+    /* Ensure custom buttons are visible */
+    .ql-toolbar .ql-formats:last-child .ql-minigolf,
+    .ql-toolbar .ql-formats:last-child .ql-youtube {
+      margin-left: 8px;
+    }
+    
+    .ql-toolbar {
+      border-top: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      border-radius: 5px 5px 0 0;
+    }
+    
+    .ql-container {
+      border-bottom: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      border-radius: 0 0 5px 5px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+  <!-- Admin Header -->
+  <header class="bg-green-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex flex-col md:flex-row md:justify-between items-center gap-2 md:gap-0">
+      <div class="flex items-center space-x-2">
+        <img src="images/mgedlogoforreal.svg" alt="Mini Golf Logo" class="w-10 h-10">
+        <h1 class="text-2xl brand">Mini Golf Every Day - Blog Admin</h1>
+      </div>
+      <nav class="space-x-4">
+        <a href="index.html" class="hover:underline">← Back to Site</a>
+        <a href="blog.html" class="hover:underline">View Public Blog</a>
+        
+        <!-- Admin controls -->
+        <div id="admin-controls" class="inline-block">
+          <div id="admin-menu" class="inline-block relative">
+            <button id="admin-menu-btn" class="bg-white text-green-600 px-3 py-1 rounded hover:bg-green-50 transition">
+              <span id="admin-username-display"></span> ▼
+            </button>
+            <div id="admin-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+              <a href="#" id="admin-write-post-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">✏️ Write New Post</a>
+              <a href="#" id="admin-my-posts-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">📄 My Posts</a>
+              <a href="#" id="admin-all-posts-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🗂️ All Posts</a>
+              <a href="#" id="admin-users-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">👥 Manage Users</a>
+              <div class="border-t border-gray-100"></div>
+              <a href="#" id="admin-logout-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🚪 Logout</a>
+            </div>
+          </div>
+          
+          <div id="admin-login-section" class="inline-block">
+            <button id="admin-login-btn" class="bg-white text-green-600 px-3 py-1 rounded hover:bg-green-50 transition">
+              Admin Login
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Admin Content -->
+  <main class="container mx-auto py-8 px-4">
+    
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="hidden">
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 Blog Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-blue-800">Total Posts</h3>
+            <p id="stats-total-posts" class="text-3xl font-bold text-blue-600">-</p>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-green-800">Published</h3>
+            <p id="stats-published-posts" class="text-3xl font-bold text-green-600">-</p>
+          </div>
+          <div class="bg-yellow-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-yellow-800">Drafts</h3>
+            <p id="stats-draft-posts" class="text-3xl font-bold text-yellow-600">-</p>
+          </div>
+          <div class="bg-purple-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-purple-800">Featured</h3>
+            <p id="stats-featured-posts" class="text-3xl font-bold text-purple-600">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">⚡ Quick Actions</h3>
+        <div class="flex flex-wrap gap-4">
+          <button id="quick-write-post" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+            ✏️ Write New Post
+          </button>
+          <button id="quick-view-drafts" class="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition">
+            📝 View Drafts
+          </button>
+          <button id="quick-manage-posts" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+            🗂️ Manage All Posts
+          </button>
+          <button id="quick-view-public" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+            👀 View Public Blog
+          </button>
+          <button id="quick-pull-videos" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition touch-manipulation min-h-12">
+            🎥 Pull Latest Videos
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Posts -->
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">📚 Recent Posts</h3>
+        <div id="admin-recent-posts" class="space-y-4">
+          <!-- Recent posts will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts Management View -->
+    <div id="posts-management" class="hidden">
+      <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-800">📄 Posts Management</h2>
+          <div class="flex flex-wrap gap-2 sm:space-x-2 sm:gap-0">
+            <button id="filter-all" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm">All</button>
+            <button id="filter-published" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition text-sm">Published</button>
+            <button id="filter-drafts" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition text-sm">Drafts</button>
+            <button id="filter-featured" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition text-sm">Featured</button>
+          </div>
+        </div>
+        
+        <div id="admin-posts-list" class="space-y-4">
+          <!-- Posts list will be loaded here -->
+        </div>
+        
+        <div id="admin-posts-pagination" class="flex flex-wrap justify-center mt-6 gap-2">
+          <!-- Pagination will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Required Message -->
+    <div id="admin-login-required" class="text-center py-16">
+      <div class="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">🔐 Admin Access Required</h2>
+        <p class="text-gray-600 mb-6">Please log in with your admin credentials to access the blog management system.</p>
+        <button id="show-admin-login" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+          Admin Login
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Admin Login Modal -->
+  <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">🔐 Admin Login</h2>
+        <button id="close-admin-login-modal" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label for="admin-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+          <input type="text" id="admin-username" name="username" required 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                 placeholder="Enter admin username">
+        </div>
+        
+        <div>
+          <label for="admin-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input type="password" id="admin-password" name="password" required 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                 placeholder="Enter admin password">
+        </div>
+        
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500">
+          Login
+        </button>
+      </form>
+      
+      <div id="admin-auth-message" class="hidden mt-4 p-3 rounded"></div>
+    </div>
+  </div>
+
+  <!-- Post Editor Modal -->
+  <div id="post-editor-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-1 sm:p-2 md:p-4">
+    <div class="bg-white rounded-lg w-full max-w-full sm:max-w-5xl md:max-w-6xl h-full max-h-[98vh] sm:max-h-[95vh] overflow-hidden flex flex-col mx-1 sm:mx-2 md:mx-4">
+      <div class="flex-shrink-0 p-2 sm:p-3 md:p-4 lg:p-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <h2 id="editor-title" class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800">Write New Post</h2>
+          <button id="close-editor" class="text-gray-500 hover:text-gray-700 p-1 flex-shrink-0">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 lg:p-6">
+        
+        <form id="post-form" class="space-y-3 sm:space-y-4 md:space-y-6">
+          <input type="hidden" id="post-id" value="">
+          
+          <!-- Title -->
+          <div>
+            <label for="post-title" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Title</label>
+            <input type="text" id="post-title" name="title" required 
+                   class="w-full px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Enter your post title...">
+          </div>
+          
+          <!-- Excerpt -->
+          <div>
+            <label for="post-excerpt" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Excerpt (Optional)</label>
+            <textarea id="post-excerpt" name="excerpt" rows="2"
+                      class="w-full px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Brief summary of your post..."></textarea>
+          </div>
+          
+          <!-- Featured Image URL -->
+          <div>
+            <label for="post-featured-image" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Featured Image URL (Optional)</label>
+            <input type="url" id="post-featured-image" name="featured_image"
+                   class="w-full px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="https://example.com/image.jpg">
+          </div>
+          
+          <!-- Content Editor -->
+          <div>
+            <label for="post-content" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Content</label>
+            <div id="post-content" style="height: 300px; min-height: 250px;" class="sm:h-96"></div>
+          </div>
+          
+          <!-- SEO Meta - Single column on mobile, two columns on desktop -->
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <label for="post-meta-title" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">SEO Title (Optional)</label>
+              <input type="text" id="post-meta-title" name="meta_title"
+                     class="w-full px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                     placeholder="SEO optimized title...">
+            </div>
+            <div>
+              <label for="post-meta-description" class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">SEO Description (Optional)</label>
+              <textarea id="post-meta-description" name="meta_description" rows="2"
+                        class="w-full px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="SEO description..."></textarea>
+            </div>
+          </div>
+          
+          <!-- Publishing Options -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 md:gap-4">
+            <label class="flex items-center">
+              <input type="checkbox" id="post-published" name="is_published" class="mr-2">
+              <span class="text-sm text-gray-700">Publish immediately</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="post-featured" name="is_featured" class="mr-2">
+              <span class="text-sm text-gray-700">Mark as featured</span>
+            </label>
+          </div>
+          
+          <!-- Action Buttons - Stack vertically on mobile -->
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-3 sm:pt-4 border-t gap-3 sm:gap-0">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <button type="button" id="preview-post" class="bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-blue-700 transition text-sm">
+                Preview
+              </button>
+              <button type="button" id="save-draft" class="bg-gray-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-gray-700 transition text-sm">
+                Save Draft
+              </button>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <button type="button" id="cancel-edit" class="bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-red-700 transition text-sm">
+                Cancel
+              </button>
+              <button type="submit" id="save-post" class="bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-green-700 transition text-sm">
+                Save & Publish
+              </button>
+            </div>
+          </div>
+        </form>
+        
+        <div id="post-message" class="hidden mt-4 p-3 rounded"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-green-600 text-white py-8 mt-16">
+    <div class="container mx-auto text-center">
+      <div class="flex items-center justify-center space-x-2 mb-4">
+        <img src="images/mgedlogoforreal.svg" alt="Mini Golf Logo" class="w-8 h-8">
+        <span class="text-xl brand">Mini Golf Every Day - Admin</span>
+      </div>
+      <p>&copy; 2025 Mini Golf Every Day. Blog Management System</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="/js/blog-admin.js"></script>
+</body>
+</html>
