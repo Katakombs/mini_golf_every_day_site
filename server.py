@@ -1210,21 +1210,57 @@ def toggle_user_active(current_user, user_id):
 @admin_required
 def pull_videos(current_user):
     """Manually pull latest videos from TikTok (admin only)"""
+    import subprocess
+    import os
+    
     try:
-        import subprocess
-        import os
+        # Get the absolute path to the update_videos.py script
+        script_path = os.path.join(os.path.dirname(__file__), 'update_videos.py')
         
-        # Get the absolute path to the fetch_all_videos.py script
-        script_path = os.path.join(os.path.dirname(__file__), 'fetch_all_videos.py')
+        # List of Python executables to try
+        python_executables = [
+            '/home/phazeshi/virtualenv/minigolfeveryday/3.9/bin/python',
+            'python3',
+            'python',
+            '/usr/bin/python3',
+            '/usr/bin/python'
+        ]
         
-        # Run the script with non-interactive flags
-        result = subprocess.run([
-            'python', script_path, '--yes', '--quiet'
-        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
+        result = None
+        last_error = None
+        
+        for python_exec in python_executables:
+            try:
+                # Run the script with non-interactive flags and proper encoding
+                result = subprocess.run([
+                    python_exec, script_path, '--yes', '--quiet'
+                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=300)
+                
+                # If successful, break out of the loop
+                if result.returncode == 0:
+                    break
+                else:
+                    last_error = f"Exit code {result.returncode}: {result.stderr}"
+                    
+            except FileNotFoundError:
+                continue  # Try next Python executable
+            except Exception as e:
+                last_error = str(e)
+                continue
+        
+        if result is None:
+            return jsonify({
+                'error': 'Failed to pull videos',
+                'details': 'No working Python executable found',
+                'attempted_executables': python_executables
+            }), 500
         
         if result.returncode == 0:
+            # Clean the output to remove any problematic characters
+            output_text = result.stdout.replace('\x00', '').strip()
+            
             # Parse the output to extract stats if available
-            output_lines = result.stdout.strip().split('\n')
+            output_lines = output_text.split('\n') if output_text else []
             stats = {
                 'processed': 0,
                 'new': 0,
@@ -1233,28 +1269,30 @@ def pull_videos(current_user):
             }
             
             # Try to extract stats from output
+            import re
             for line in output_lines:
-                if 'processed' in line.lower():
+                line_lower = line.lower().strip()
+                
+                # Look for specific patterns: "Processed: X videos" or "   Processed: X videos"
+                if 'processed:' in line_lower:
                     try:
-                        # Look for numbers in the line
-                        import re
-                        numbers = re.findall(r'\d+', line)
-                        if numbers:
-                            stats['processed'] = int(numbers[0])
+                        match = re.search(r'processed:\s*(\d+)', line_lower)
+                        if match:
+                            stats['processed'] = int(match.group(1))
                     except:
                         pass
-                elif 'new' in line.lower():
+                elif 'new:' in line_lower:
                     try:
-                        numbers = re.findall(r'\d+', line)
-                        if numbers:
-                            stats['new'] = int(numbers[0])
+                        match = re.search(r'new:\s*(\d+)', line_lower)
+                        if match:
+                            stats['new'] = int(match.group(1))
                     except:
                         pass
-                elif 'updated' in line.lower():
+                elif 'updated:' in line_lower:
                     try:
-                        numbers = re.findall(r'\d+', line)
-                        if numbers:
-                            stats['updated'] = int(numbers[0])
+                        match = re.search(r'updated:\s*(\d+)', line_lower)
+                        if match:
+                            stats['updated'] = int(match.group(1))
                     except:
                         pass
             
@@ -1263,18 +1301,26 @@ def pull_videos(current_user):
                 'processed': stats['processed'],
                 'new': stats['new'],
                 'updated': stats['updated'],
-                'output': result.stdout
+                'output': output_text[:500] + '...' if len(output_text) > 500 else output_text
             }), 200
         else:
+            # Clean error output
+            error_text = result.stderr.replace('\x00', '').strip() if result.stderr else 'Unknown error'
+            
             return jsonify({
                 'error': 'Failed to pull videos',
-                'details': result.stderr or result.stdout
+                'details': error_text[:200] + '...' if len(error_text) > 200 else error_text,
+                'attempted_executables': python_executables
             }), 500
             
     except subprocess.TimeoutExpired:
         return jsonify({'error': 'Video pull timed out (5 minutes)'}), 408
     except Exception as e:
-        return jsonify({'error': f'Failed to pull videos: {str(e)}'}), 500
+        return jsonify({
+            'error': 'Failed to pull videos',
+            'details': str(e),
+            'attempted_executables': python_executables
+        }), 500
 
 
 # Database Setup Route (for production initialization)

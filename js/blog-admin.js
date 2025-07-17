@@ -109,7 +109,55 @@ class BlogAdminApp {
     document.getElementById('quick-view-drafts').addEventListener('click', () => this.showPostsManagement('drafts'));
     document.getElementById('quick-manage-posts').addEventListener('click', () => this.showPostsManagement('all'));
     document.getElementById('quick-view-public').addEventListener('click', () => window.open('blog.html', '_blank'));
-    document.getElementById('quick-pull-videos').addEventListener('click', () => this.handlePullVideos());
+    // Mobile-friendly event handling for video pull button
+    const pullVideosButton = document.getElementById('quick-pull-videos');
+    if (pullVideosButton) {
+      let touchHandled = false;
+      
+      // Add touchstart for mobile devices (primary method)
+      pullVideosButton.addEventListener('touchstart', (e) => {
+        console.log('📱 Touch start detected on video pull button');
+        e.preventDefault();
+        e.stopPropagation();
+        touchHandled = true;
+        
+        // Add a small delay to ensure touch is registered
+        setTimeout(() => {
+          console.log('📱 Executing handlePullVideos from touchstart');
+          this.handlePullVideos();
+        }, 100);
+      }, { passive: false });
+      
+      // Add touchend to reset flag
+      pullVideosButton.addEventListener('touchend', (e) => {
+        console.log('📱 Touch end detected on video pull button');
+        e.preventDefault();
+        e.stopPropagation();
+      }, { passive: false });
+      
+      // Add click as fallback for desktop and some mobile browsers
+      pullVideosButton.addEventListener('click', (e) => {
+        console.log('🖱️ Click detected on video pull button, touchHandled:', touchHandled);
+        
+        // Prevent double execution on mobile devices
+        if (touchHandled) {
+          console.log('🚫 Skipping click handler - already handled by touch');
+          touchHandled = false;
+          return;
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🖱️ Executing handlePullVideos from click');
+        this.handlePullVideos();
+      });
+      
+      // Reset touch flag after a delay
+      pullVideosButton.addEventListener('touchcancel', () => {
+        console.log('📱 Touch cancelled');
+        touchHandled = false;
+      });
+    }
     document.getElementById('admin-all-posts-btn').addEventListener('click', () => {
       this.closeDropdown();
       this.showPostsManagement('all');
@@ -306,20 +354,20 @@ class BlogAdminApp {
       : '';
 
     div.innerHTML = `
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h4 class="font-semibold text-gray-800 mb-2">${post.title}</h4>
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+        <div class="flex-1 min-w-0">
+          <h4 class="font-semibold text-gray-800 mb-2 truncate">${post.title}</h4>
           <p class="text-sm text-gray-600 mb-2">By ${post.author.username} • ${publishedDate}</p>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2 flex-wrap">
             ${statusBadge}
             ${featuredBadge}
           </div>
         </div>
-        <div class="flex space-x-2 ml-4">
-          <button onclick="blogAdminApp.editPost(${post.id})" class="text-blue-600 hover:text-blue-700 text-sm">
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-2 sm:ml-4 flex-shrink-0">
+          <button onclick="blogAdminApp.editPost(${post.id})" class="text-blue-600 hover:text-blue-700 text-sm px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition-colors text-center">
             ✏️ Edit
           </button>
-          <button onclick="blogAdminApp.deletePost(${post.id})" class="text-red-600 hover:text-red-700 text-sm">
+          <button onclick="blogAdminApp.deletePost(${post.id})" class="text-red-600 hover:text-red-700 text-sm px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition-colors text-center">
             🗑️ Delete
           </button>
         </div>
@@ -348,12 +396,12 @@ class BlogAdminApp {
     
     // Update filter button styles
     document.querySelectorAll('[id^="filter-"]').forEach(btn => {
-      btn.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition';
+      btn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm';
     });
     
     const activeBtn = document.getElementById(`filter-${filter}`);
     if (activeBtn) {
-      activeBtn.className = 'px-4 py-2 bg-green-200 text-green-800 rounded';
+      activeBtn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 bg-green-200 text-green-800 rounded text-sm';
     }
     
     this.loadPostsForManagement();
@@ -427,7 +475,7 @@ class BlogAdminApp {
     if (pagination.has_prev) {
       const prevBtn = document.createElement('button');
       prevBtn.textContent = '← Previous';
-      prevBtn.className = 'px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50';
+      prevBtn.className = 'px-2 py-1 sm:px-3 sm:py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm';
       prevBtn.addEventListener('click', () => {
         this.currentPage = pagination.page - 1;
         this.loadPostsForManagement();
@@ -435,13 +483,18 @@ class BlogAdminApp {
       container.appendChild(prevBtn);
     }
 
-    // Page numbers
-    for (let i = 1; i <= pagination.pages; i++) {
+    // Page numbers - show fewer on mobile
+    const isMobile = window.innerWidth < 640;
+    const maxPages = isMobile ? 5 : 10;
+    const startPage = Math.max(1, pagination.page - Math.floor(maxPages / 2));
+    const endPage = Math.min(pagination.pages, startPage + maxPages - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
       const pageBtn = document.createElement('button');
       pageBtn.textContent = i;
       pageBtn.className = i === pagination.page 
-        ? 'px-3 py-2 bg-green-600 text-white rounded'
-        : 'px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50';
+        ? 'px-2 py-1 sm:px-3 sm:py-2 bg-green-600 text-white rounded text-sm'
+        : 'px-2 py-1 sm:px-3 sm:py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm';
       
       pageBtn.addEventListener('click', () => {
         this.currentPage = i;
@@ -454,7 +507,7 @@ class BlogAdminApp {
     if (pagination.has_next) {
       const nextBtn = document.createElement('button');
       nextBtn.textContent = 'Next →';
-      nextBtn.className = 'px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50';
+      nextBtn.className = 'px-2 py-1 sm:px-3 sm:py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm';
       nextBtn.addEventListener('click', () => {
         this.currentPage = pagination.page + 1;
         this.loadPostsForManagement();
@@ -493,6 +546,9 @@ class BlogAdminApp {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     
+    // Add mobile-specific body class to prevent background scrolling
+    document.body.classList.add('overflow-hidden');
+    
     this.initEditor(postData?.content || '');
   }
 
@@ -500,6 +556,9 @@ class BlogAdminApp {
     const modal = document.getElementById('post-editor-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    
+    // Remove mobile-specific body class
+    document.body.classList.remove('overflow-hidden');
     
     if (this.editor) {
       // Properly destroy Quill editor and remove all associated DOM elements
@@ -549,26 +608,42 @@ class BlogAdminApp {
       container.id = 'post-content';
     }
 
+    // Determine if we're on mobile for different toolbar configuration
+    const isMobile = window.innerWidth < 640;
+    
+    // Mobile-optimized toolbar
+    const mobileToolbar = [
+      ['bold', 'italic', 'underline'],
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link', 'image'],
+      ['blockquote'],
+      ['clean']
+    ];
+    
+    // Full desktop toolbar
+    const desktopToolbar = [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      ['clean']
+    ];
+
     // Initialize Quill editor
     this.editor = new Quill('#post-content', {
       theme: 'snow',
       modules: {
         toolbar: {
-          container: [
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'align': [] }],
-            ['link', 'image', 'video'],
-            ['blockquote', 'code-block'],
-            ['clean']
-          ],
+          container: isMobile ? mobileToolbar : desktopToolbar,
           handlers: {
             'image': () => this.handleImageUpload(),
             'minigolf': () => this.showMiniGolfDialog(),
@@ -618,11 +693,13 @@ class BlogAdminApp {
       }
     });
 
-    // Add custom toolbar buttons after editor initialization
-    setTimeout(() => {
-      this.addCustomButtons();
-      this.preventBase64Images();
-    }, 500); // Increased timeout to ensure DOM is ready
+    // Add custom toolbar buttons after editor initialization (only on desktop)
+    if (!isMobile) {
+      setTimeout(() => {
+        this.addCustomButtons();
+        this.preventBase64Images();
+      }, 500);
+    }
 
     // Override default image handling to prevent base64 storage
     this.preventBase64Images();
@@ -957,42 +1034,114 @@ class BlogAdminApp {
   }
 
   async handlePullVideos() {
+    console.log('🎬 handlePullVideos called - method entry');
+    console.log('🔧 User agent:', navigator.userAgent);
+    console.log('📱 Window dimensions:', window.innerWidth, 'x', window.innerHeight);
+    
     const button = document.getElementById('quick-pull-videos');
+    if (!button) {
+      console.error('❌ Button element not found!');
+      return;
+    }
+    
+    console.log('🔲 Button found:', button);
+    console.log('🔲 Button disabled status:', button.disabled);
+    
     const originalText = button.textContent;
+    console.log('📝 Original button text:', originalText);
+    
+    // Prevent double-clicking on mobile
+    if (button.disabled) {
+      console.log('⚠️ Button already disabled, exiting');
+      return;
+    }
     
     // Show loading state
     button.textContent = '🔄 Pulling Videos...';
     button.disabled = true;
     
+    // Add mobile-friendly visual feedback
+    button.style.opacity = '0.6';
+    button.style.cursor = 'not-allowed';
+    
     try {
+      console.log('🎬 Starting video pull request...');
+      
       const token = localStorage.getItem('blog_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+      
+      console.log('🔐 Using token:', token.substring(0, 20) + '...');
+      
+      // Mobile-friendly timeout (2 minutes instead of 5)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const timeout = isMobile ? 120000 : 300000; // 2 minutes for mobile, 5 minutes for desktop
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
       const response = await fetch(`${this.apiBase}/api/admin/pull-videos`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response headers:', response.headers);
 
       if (response.ok) {
         const data = await response.json();
-        alert(`✅ Videos updated successfully!\n\nProcessed: ${data.processed || 0} videos\nNew: ${data.new || 0} videos\nUpdated: ${data.updated || 0} videos`);
+        console.log('✅ Success response:', data);
+        
+        // Mobile-friendly alert with shorter message
+        const message = isMobile 
+          ? `✅ Videos updated!\n\nProcessed: ${data.processed || 0}\nNew: ${data.new || 0}\nUpdated: ${data.updated || 0}`
+          : `✅ Videos updated successfully!\n\nProcessed: ${data.processed || 0} videos\nNew: ${data.new || 0} videos\nUpdated: ${data.updated || 0} videos\n\nMessage: ${data.message || 'Success'}`;
+        
+        alert(message);
         
         // Optionally refresh the page or update UI
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       } else {
-        const error = await response.json();
-        alert(`❌ Failed to pull videos: ${error.error || 'Unknown error'}`);
+        console.error('❌ Error response status:', response.status);
+        
+        let errorMessage = `HTTP ${response.status}`;
+        try {
+          const error = await response.json();
+          errorMessage = error.error || error.message || errorMessage;
+          console.error('❌ Error details:', error);
+        } catch (parseError) {
+          console.error('❌ Could not parse error response:', parseError);
+          const errorText = await response.text();
+          console.error('❌ Raw error response:', errorText);
+          errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}`;
+        }
+        
+        alert(`❌ Failed to pull videos: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('Video pull error:', error);
-      alert('❌ Failed to pull videos. Please check your connection and try again.');
+      console.error('💥 Network/JavaScript error:', error);
+      
+      let errorMessage = error.message;
+      if (error.name === 'AbortError') {
+        errorMessage = 'Request timed out. Please try again.';
+      }
+      
+      alert(`❌ Failed to pull videos: ${errorMessage}\n\nCheck browser console for details.`);
     } finally {
       // Reset button state
       button.textContent = originalText;
       button.disabled = false;
+      button.style.opacity = '1';
+      button.style.cursor = 'pointer';
     }
   }
 
