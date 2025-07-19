@@ -1,6 +1,12 @@
 {
   "videos": [
     {
+      "video_id": "7528542494967991566",
+      "title": "Day 192. A series of boxes #minigolfeveryday #minigolf #puttputt #gol...",
+      "upload_date": "20250718",
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7528542494967991566"
+    },
+    {
       "video_id": "7528228969955527991",
       "title": "Day 191. Terrain.   #minigolfeveryday #minigolf #puttputt #golftok #5...",
       "upload_date": "20250718",
@@ -1147,6 +1153,6 @@
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7455430384231255342"
     }
   ],
-  "last_updated": "2025-07-18T20:47:34.980997",
-  "total_count": 191
+  "last_updated": "2025-07-19T01:14:13.983336",
+  "total_count": 192
 }
