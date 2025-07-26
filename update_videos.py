@@ -36,11 +36,11 @@ def save_video_data(videos):
 def get_latest_videos_ytdlp(limit=200):
     """Get latest videos using yt-dlp"""
     try:
-        # Try to run yt-dlp to get video metadata
+        # Try to run yt-dlp to get video metadata with view counts
         cmd = [
             'yt-dlp',
             '--flat-playlist',
-            '--print', '%(id)s|%(title)s|%(upload_date)s',
+            '--print', '%(id)s|%(title)s|%(upload_date)s|%(view_count)s|%(like_count)s|%(comment_count)s',
             '--playlist-end', str(limit),
             'https://www.tiktok.com/@minigolfeveryday'
         ]
@@ -55,16 +55,30 @@ def get_latest_videos_ytdlp(limit=200):
         for line in result.stdout.strip().split('\n'):
             if line.strip():
                 try:
-                    parts = line.split('|')
+                    parts = line.split('|', 5)  # Split into max 6 parts
                     if len(parts) >= 3:
                         video_id = parts[0]
                         title = parts[1]
                         upload_date = parts[2]
+                        view_count = parts[3] if len(parts) > 3 else '0'
+                        like_count = parts[4] if len(parts) > 4 else '0'
+                        comment_count = parts[5] if len(parts) > 5 else '0'
+                        
+                        # Convert counts to integers, defaulting to 0
+                        try:
+                            view_count = int(view_count) if view_count.isdigit() else 0
+                            like_count = int(like_count) if like_count.isdigit() else 0
+                            comment_count = int(comment_count) if comment_count.isdigit() else 0
+                        except ValueError:
+                            view_count = like_count = comment_count = 0
                         
                         videos.append({
                             'video_id': video_id,
                             'title': title,
                             'upload_date': upload_date,
+                            'view_count': view_count,
+                            'like_count': like_count,
+                            'comment_count': comment_count,
                             'url': f'https://www.tiktok.com/@minigolfeveryday/video/{video_id}'
                         })
                 except Exception as e:

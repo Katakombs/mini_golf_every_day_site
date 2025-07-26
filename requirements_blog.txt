@@ -7,7 +7,7 @@ Flask-CORS==4.0.0
 # Database - Multiple MySQL drivers for compatibility
 PyMySQL==1.1.0
 mysql-connector-python==8.2.0
-SQLAlchemy==2.0.23
+SQLAlchemy==2.0.41
 
 # Authentication and security
 PyJWT==2.8.0

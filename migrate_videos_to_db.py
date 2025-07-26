@@ -58,10 +58,16 @@ def create_videos_table(connection):
                     title TEXT,
                     upload_date VARCHAR(8),
                     url VARCHAR(500),
+                    view_count INT DEFAULT 0,
+                    like_count INT DEFAULT 0,
+                    comment_count INT DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     INDEX idx_video_id (video_id),
-                    INDEX idx_upload_date (upload_date)
+                    INDEX idx_upload_date (upload_date),
+                    INDEX idx_view_count (view_count),
+                    INDEX idx_like_count (like_count),
+                    INDEX idx_comment_count (comment_count)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             """)
             
@@ -111,6 +117,9 @@ def migrate_videos_to_database(connection, videos):
                 title = video.get('title', '')
                 upload_date = video.get('upload_date', '')
                 url = video.get('url', f"https://www.tiktok.com/@minigolfeveryday/video/{video_id}")
+                view_count = video.get('view_count', 0)
+                like_count = video.get('like_count', 0)
+                comment_count = video.get('comment_count', 0)
                 
                 if not video_id:
                     print(f"⚠️ Skipping video with no ID: {video}")
@@ -120,14 +129,17 @@ def migrate_videos_to_database(connection, videos):
                 try:
                     # Insert or update video
                     cursor.execute("""
-                        INSERT INTO videos (video_id, title, upload_date, url)
-                        VALUES (%s, %s, %s, %s)
+                        INSERT INTO videos (video_id, title, upload_date, url, view_count, like_count, comment_count)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                         ON DUPLICATE KEY UPDATE
                         title = VALUES(title),
                         upload_date = VALUES(upload_date),
                         url = VALUES(url),
+                        view_count = VALUES(view_count),
+                        like_count = VALUES(like_count),
+                        comment_count = VALUES(comment_count),
                         updated_at = CURRENT_TIMESTAMP
-                    """, (video_id, title, upload_date, url))
+                    """, (video_id, title, upload_date, url, view_count, like_count, comment_count))
                     
                     migrated += 1
                     

@@ -17,11 +17,11 @@ def run_ytdlp(username="minigolfeveryday", limit=50):
         
         print(f"🌐 Fetching videos from: {profile_url}")
         
-        # Use yt-dlp to extract video info
+        # Use yt-dlp to extract video info with view counts
         cmd = [
             'yt-dlp',
             '--flat-playlist',
-            '--print', '%(id)s|%(title)s|%(upload_date)s',
+            '--print', '%(id)s|%(title)s|%(upload_date)s|%(view_count)s|%(like_count)s|%(comment_count)s',
             '--playlist-end', str(limit),
             profile_url
         ]
@@ -39,16 +39,27 @@ def run_ytdlp(username="minigolfeveryday", limit=50):
         
         for line in result.stdout.strip().split('\n'):
             if '|' in line and line.strip():
-                parts = line.split('|', 2)  # Split into max 3 parts
-                if len(parts) >= 2:
+                parts = line.split('|', 5)  # Split into max 6 parts
+                if len(parts) >= 3:
                     video_id = parts[0].strip()
                     title = parts[1].strip() if len(parts) > 1 else f"TikTok Video {video_id}"
                     upload_date = parts[2].strip() if len(parts) > 2 else datetime.now().strftime('%Y%m%d')
+                    view_count = parts[3].strip() if len(parts) > 3 else '0'
+                    like_count = parts[4].strip() if len(parts) > 4 else '0'
+                    comment_count = parts[5].strip() if len(parts) > 5 else '0'
                     
                     # Fix empty titles
                     if not title or title.strip() == '':
                         title = f"TikTok Video {video_id}"
                         print(f"  ⚠️  Empty title for {video_id}, using fallback: {title}")
+                    
+                    # Convert counts to integers, defaulting to 0
+                    try:
+                        view_count = int(view_count) if view_count.isdigit() else 0
+                        like_count = int(like_count) if like_count.isdigit() else 0
+                        comment_count = int(comment_count) if comment_count.isdigit() else 0
+                    except ValueError:
+                        view_count = like_count = comment_count = 0
                     
                     # Basic validation
                     if video_id and video_id.isdigit() and len(video_id) >= 15:
@@ -56,6 +67,9 @@ def run_ytdlp(username="minigolfeveryday", limit=50):
                             'video_id': video_id,
                             'title': title,
                             'upload_date': upload_date,
+                            'view_count': view_count,
+                            'like_count': like_count,
+                            'comment_count': comment_count,
                             'url': f"https://www.tiktok.com/@{username}/video/{video_id}"
                         })
                     else:

@@ -76,6 +76,51 @@ MGED.utils = {
   },
   
   /**
+   * Calculate popularity score for a video using actual view data when available
+   */
+  calculatePopularityScore: function(video) {
+    if (!video) return 0;
+    
+    // If we have actual view count data, use it
+    if (video.view_count && video.view_count > 0) {
+      let score = video.view_count;
+      
+      // Add bonus for likes and comments (engagement)
+      if (video.like_count) score += video.like_count * 10;
+      if (video.comment_count) score += video.comment_count * 50;
+      
+      return score;
+    }
+    
+    // Fallback to proxy algorithm when view data isn't available
+    let score = 0;
+    
+    // Factor 1: Day number (newer days = higher score as channel grows)
+    const dayNumber = parseInt(this.extractDayNumber(video.title)) || 0;
+    score += dayNumber * 10; // Each day adds 10 points
+    
+    // Factor 2: Recency (more recent uploads = higher score)
+    if (video.upload_date) {
+      const uploadDate = new Date(video.upload_date);
+      const now = new Date();
+      const daysSinceUpload = Math.max(0, (now - uploadDate) / (1000 * 60 * 60 * 24));
+      score += Math.max(0, 100 - daysSinceUpload); // Recent videos get up to 100 points
+    }
+    
+    // Factor 3: Title engagement (longer titles might indicate more effort/engagement)
+    const titleLength = (video.title || '').length;
+    score += Math.min(50, titleLength); // Up to 50 points for longer titles
+    
+    // Factor 4: Special keywords that might indicate popular content
+    const title = (video.title || '').toLowerCase();
+    if (title.includes('challenge') || title.includes('fail') || title.includes('win')) score += 20;
+    if (title.includes('family') || title.includes('kids') || title.includes('dog')) score += 15;
+    if (title.includes('hole in one') || title.includes('ace')) score += 30;
+    
+    return score;
+  },
+  
+  /**
    * Debounce function for search input
    */
   debounce: function(func, wait) {
@@ -716,6 +761,21 @@ MGED.video = {
     const uploadDate = MGED.utils.formatDate(video.upload_date);
     const dayNumber = MGED.utils.extractDayNumber(video.title);
     
+    // Format view count with commas
+    const formatViewCount = (count) => {
+      if (!count || count === 0) return '';
+      return count.toLocaleString();
+    };
+    
+    // Generate stats HTML if we have view data
+    const statsHTML = (video.view_count || video.like_count) ? `
+      <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+        ${video.view_count ? `<span>👁️ ${formatViewCount(video.view_count)} views</span>` : ''}
+        ${video.like_count ? `<span>❤️ ${formatViewCount(video.like_count)} likes</span>` : ''}
+        ${video.comment_count ? `<span>💬 ${formatViewCount(video.comment_count)} comments</span>` : ''}
+      </div>
+    ` : '';
+    
     const tiktokEmbed = `
       <blockquote class="tiktok-embed" 
                   cite="${video.url}" 
@@ -742,6 +802,7 @@ MGED.video = {
           <h3 class="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
             ${video.title || 'Mini Golf Adventure'}
           </h3>
+          ${statsHTML}
           <a href="${video.url}" target="_blank" 
              class="text-green-600 hover:text-green-800 font-medium text-sm">
             Watch on TikTok →
@@ -764,6 +825,7 @@ MGED.video = {
             <p class="text-gray-600 mb-4">
               Watch the latest mini golf action from day ${dayNumber} of the Mini Golf Every Day challenge!
             </p>
+            ${statsHTML}
             <div class="flex items-center space-x-4">
               <a href="${video.url}" target="_blank" 
                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-medium">
@@ -1139,6 +1201,27 @@ MGED.pages.watch = {
           return (a.upload_date || '').localeCompare(b.upload_date || '');
         case 'title':
           return (a.title || '').localeCompare(b.title || '');
+        case 'views':
+          // Sort by calculated popularity score (proxy for views)
+          const scoreA = MGED.utils.calculatePopularityScore(a);
+          const scoreB = MGED.utils.calculatePopularityScore(b);
+          return scoreB - scoreA; // Higher scores first
+        case 'likes':
+          // Sort by like count (actual likes when available)
+          const likesA = a.like_count || 0;
+          const likesB = b.like_count || 0;
+          if (likesA !== likesB) {
+            return likesB - likesA; // Higher likes first
+          }
+          // Secondary sort by view count if likes are equal
+          const viewsA = a.view_count || 0;
+          const viewsB = b.view_count || 0;
+          return viewsB - viewsA;
+        case 'engagement':
+          // Sort by comprehensive engagement score
+          const engagementA = (a.view_count || 0) + (a.like_count || 0) * 10 + (a.comment_count || 0) * 50;
+          const engagementB = (b.view_count || 0) + (b.like_count || 0) * 10 + (b.comment_count || 0) * 50;
+          return engagementB - engagementA; // Higher engagement first
         default:
           return 0;
       }
