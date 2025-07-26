@@ -556,7 +556,10 @@ def get_videos_from_database():
         if connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT video_id, title, upload_date, url
+                    SELECT video_id, title, upload_date, url, 
+                           COALESCE(view_count, 0) as view_count,
+                           COALESCE(like_count, 0) as like_count,
+                           COALESCE(comment_count, 0) as comment_count
                     FROM videos
                     ORDER BY upload_date DESC, created_at DESC
                 """)
@@ -570,7 +573,10 @@ def get_videos_from_database():
                         'video_id': video['video_id'],
                         'title': video['title'] or '',
                         'upload_date': video['upload_date'] or '',
-                        'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}"
+                        'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}",
+                        'view_count': video.get('view_count', 0),
+                        'like_count': video.get('like_count', 0),
+                        'comment_count': video.get('comment_count', 0)
                     })
                 
                 connection.close()
