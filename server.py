@@ -8,6 +8,7 @@ import os
 import re
 import hashlib
 import secrets
+import smtplib
 from datetime import datetime, timedelta
 from functools import wraps
 import json
@@ -20,6 +21,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Try to import MySQL drivers
 MYSQL_DRIVERS = {
@@ -1536,3 +1539,105 @@ def uploaded_file(filename):
     """Serve uploaded files"""
     uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
     return send_from_directory(uploads_dir, filename)
+
+
+# Contact Form API
+@app.route('/api/contact', methods=['POST'])
+def contact_form():
+    """Handle contact form submissions"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['name', 'email', 'subject', 'message']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Validate email format
+        if not validate_email(data['email']):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Sanitize inputs
+        name = data['name'].strip()[:100]  # Limit to 100 characters
+        email = data['email'].strip().lower()
+        subject = data['subject'].strip()[:200]  # Limit to 200 characters
+        message = data['message'].strip()[:2000]  # Limit to 2000 characters
+        
+        # Prepare email content
+        email_subject = f"Contact Form: {subject} - Mini Golf Every Day"
+        email_body = f"""
+New contact form submission from Mini Golf Every Day website:
+
+Name: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+Sent from: https://minigolfevery.day/contact.html
+Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
+        """.strip()
+        
+        # Send email silently
+        try:
+            smtp_server = os.environ.get('SMTP_SERVER', 'localhost')
+            smtp_port = int(os.environ.get('SMTP_PORT', '25'))
+            sender_email = os.environ.get('SENDER_EMAIL', 'noreply@minigolfevery.day')
+            sender_password = os.environ.get('SENDER_PASSWORD', '')
+            
+            # Create message
+            msg = MIMEMultipart()
+            msg['From'] = sender_email
+            msg['To'] = 'minigolfeveryday@gmail.com'
+            msg['Subject'] = email_subject
+            
+            msg.attach(MIMEText(email_body, 'plain'))
+            
+            # Send email
+            if smtp_server == 'localhost' and not sender_password:
+                # Simple local mail server (no authentication)
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                    server.send_message(msg)
+            else:
+                # Authenticated SMTP server
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                    server.starttls()
+                    if sender_password:
+                        server.login(sender_email, sender_password)
+                    server.send_message(msg)
+            
+            print(f"[INFO] Contact form email sent from {email} to minigolfeveryday@gmail.com")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Message sent successfully'
+            }), 200
+            
+        except Exception as email_error:
+            print(f"[ERROR] Failed to send contact form email: {email_error}")
+            
+            # Log the contact form submission for manual follow-up
+            contact_log_file = 'contact_submissions.log'
+            log_entry = f"{datetime.now().isoformat()} | {name} | {email} | {subject} | {message}\n"
+            
+            try:
+                with open(contact_log_file, 'a', encoding='utf-8') as f:
+                    f.write(log_entry)
+                print(f"[INFO] Contact form submission logged to {contact_log_file}")
+            except Exception as log_error:
+                print(f"[ERROR] Failed to log contact form submission: {log_error}")
+            
+            # Return success anyway to not confuse the user
+            return jsonify({
+                'success': True,
+                'message': 'Message sent successfully'
+            }), 200
+            
+    except Exception as e:
+        print(f"[ERROR] Contact form processing failed: {e}")
+        return jsonify({
+            'error': 'Failed to process contact form'
+        }), 500

@@ -204,54 +204,17 @@
         flex-shrink: 0;
       }
     }
-      
-      #quick-pull-videos {
-        font-size: 16px;
-        padding: 12px 24px;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-      }
-      
-      #quick-pull-videos:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      
-      /* Ensure buttons don't overflow on mobile */
-      .flex-wrap {
-        flex-wrap: wrap;
-      }
-      
-      /* Mobile-specific post management styling */
-      #posts-management .space-y-4 > div {
-        padding: 12px;
-      }
-      
-      /* Mobile pagination */
-      #admin-posts-pagination {
-        gap: 4px;
-      }
-      
-      /* Mobile filter buttons */
-      #posts-management .flex-wrap button {
-        min-width: 60px;
-        text-align: center;
-      }
-      
-      /* Ensure text doesn't overflow in post titles */
-      .truncate {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      
-      /* Mobile-specific post item styling */
-      .min-w-0 {
-        min-width: 0;
-      }
-      
-      .flex-shrink-0 {
-        flex-shrink: 0;
-      }
+    
+    /* Quick pull videos button styling */
+    #quick-pull-videos {
+      font-size: 16px;
+      padding: 12px 24px;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    #quick-pull-videos:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     
     .ql-editor iframe {
@@ -318,6 +281,7 @@
       <nav class="space-x-4">
         <a href="index.html" class="hover:underline">← Back to Site</a>
         <a href="blog.html" class="hover:underline">View Public Blog</a>
+        <a href="contact.html" class="hover:underline">Contact</a>
         
         <!-- Admin controls -->
         <div id="admin-controls" class="inline-block">

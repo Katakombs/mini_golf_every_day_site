@@ -220,7 +220,7 @@ MGED.ui = {
   updateStats: function(statusData) {
     const elements = {
       'stats-total': statusData.video_count || '0',
-      'stats-days': statusData.video_count || '0',
+      'stats-days': statusData.days_running || statusData.video_count || '0',
       'total-videos': statusData.video_count || '0'
     };
     
