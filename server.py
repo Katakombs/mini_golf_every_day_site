@@ -751,36 +751,6 @@ def get_video_stats_from_database():
                     }
             finally:
                 return_db_connection(connection)
-                
-                # Calculate days running
-                days_running = 0
-                if first_video and first_video['upload_date']:
-                    try:
-                        first_date = datetime.strptime(first_video['upload_date'], '%Y%m%d')
-                        days_running = (datetime.now() - first_date).days + 1
-                    except ValueError:
-                        days_running = total_videos
-                else:
-                    days_running = total_videos
-                
-                # Format latest video
-                latest_video_data = None
-                if latest_video:
-                    latest_video_data = {
-                        'video_id': latest_video['video_id'],
-                        'title': latest_video['title'] or '',
-                        'upload_date': latest_video['upload_date'] or '',
-                        'url': latest_video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{latest_video['video_id']}"
-                    }
-                
-                return {
-                    'video_count': total_videos,
-                    'total_videos': total_videos,
-                    'days_running': days_running,
-                    'latest_video': latest_video_data,
-                    'last_updated': datetime.now().isoformat(),
-                    'source': 'database'
-                }
         
     except Exception as e:
         print(f"[ERROR] Database stats fetch failed: {e}")
