@@ -31,6 +31,10 @@ MYSQL_DRIVERS = {
     'mysqlconnector': None
 }
 
+# Global connection pool for shared hosting
+_connection_pool = None
+_max_connections = 5
+
 try:
     import pymysql
     MYSQL_DRIVERS['pymysql'] = pymysql
@@ -59,6 +63,45 @@ if os.path.exists('.env'):
 
 app = Flask(__name__)
 CORS(app)
+
+# Resource optimization settings
+import gc
+import os
+import time
+from collections import defaultdict
+
+# Set environment variables for optimization
+os.environ['PYTHONUNBUFFERED'] = '1'
+os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+
+# Configure Flask for shared hosting
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1 year cache
+app.config['TEMPLATES_AUTO_RELOAD'] = False
+app.config['DEBUG'] = False
+
+# Disable SQLAlchemy query logging in production
+import logging
+logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+
+# Simple rate limiting for shared hosting
+_request_counts = defaultdict(list)
+_MAX_REQUESTS_PER_MINUTE = 60
+
+def check_rate_limit(ip):
+    """Simple rate limiting"""
+    now = time.time()
+    minute_ago = now - 60
+    
+    # Clean old requests
+    _request_counts[ip] = [req_time for req_time in _request_counts[ip] if req_time > minute_ago]
+    
+    # Check if limit exceeded
+    if len(_request_counts[ip]) >= _MAX_REQUESTS_PER_MINUTE:
+        return False
+    
+    # Add current request
+    _request_counts[ip].append(now)
+    return True
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
@@ -534,19 +577,64 @@ def setup_video_database():
 # API Routes
 
 def get_db_connection():
-    """Get database connection for video operations"""
+    """Get database connection for video operations with connection pooling"""
+    global _connection_pool
+    
     try:
-        return pymysql.connect(
-            host=os.environ.get('DB_HOST', 'localhost'),
-            user=os.environ.get('DB_USER'),
-            password=os.environ.get('DB_PASSWORD'),
-            database=os.environ.get('DB_NAME'),
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
-        )
+        # Simple connection pool for shared hosting
+        if _connection_pool is None:
+            _connection_pool = []
+        
+        # Return existing connection if available
+        while _connection_pool:
+            try:
+                conn = _connection_pool.pop()
+                # Test if connection is still alive
+                conn.ping(reconnect=False)
+                return conn
+            except:
+                continue
+        
+        # Create new connection if pool is empty
+        if len(_connection_pool) < _max_connections:
+            conn = pymysql.connect(
+                host=os.environ.get('DB_HOST', 'localhost'),
+                user=os.environ.get('DB_USER'),
+                password=os.environ.get('DB_PASSWORD'),
+                database=os.environ.get('DB_NAME'),
+                charset='utf8mb4',
+                cursorclass=pymysql.cursors.DictCursor,
+                autocommit=True,  # Reduce transaction overhead
+                read_timeout=30,   # Prevent hanging connections
+                write_timeout=30
+            )
+            return conn
+        else:
+            print("[WARNING] Connection pool exhausted, creating temporary connection")
+            return pymysql.connect(
+                host=os.environ.get('DB_HOST', 'localhost'),
+                user=os.environ.get('DB_USER'),
+                password=os.environ.get('DB_PASSWORD'),
+                database=os.environ.get('DB_NAME'),
+                charset='utf8mb4',
+                cursorclass=pymysql.cursors.DictCursor
+            )
     except Exception as e:
         print(f"[ERROR] Database connection failed: {e}")
         return None
+
+def return_db_connection(connection):
+    """Return connection to pool"""
+    global _connection_pool
+    if connection and _connection_pool is not None:
+        try:
+            connection.ping(reconnect=False)
+            if len(_connection_pool) < _max_connections:
+                _connection_pool.append(connection)
+            else:
+                connection.close()
+        except:
+            connection.close()
 
 def get_videos_from_database():
     """Get videos from database, fallback to JSON if database fails"""
@@ -554,39 +642,41 @@ def get_videos_from_database():
         # Try database first
         connection = get_db_connection()
         if connection:
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT video_id, title, upload_date, url, 
-                           COALESCE(view_count, 0) as view_count,
-                           COALESCE(like_count, 0) as like_count,
-                           COALESCE(comment_count, 0) as comment_count
-                    FROM videos
-                    ORDER BY upload_date DESC, created_at DESC
-                """)
-                
-                db_videos = cursor.fetchall()
-                
-                # Convert to expected format
-                videos = []
-                for video in db_videos:
-                    videos.append({
-                        'video_id': video['video_id'],
-                        'title': video['title'] or '',
-                        'upload_date': video['upload_date'] or '',
-                        'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}",
-                        'view_count': video.get('view_count', 0),
-                        'like_count': video.get('like_count', 0),
-                        'comment_count': video.get('comment_count', 0)
-                    })
-                
-                connection.close()
-                
-                return {
-                    'videos': videos,
-                    'last_updated': datetime.now().isoformat(),
-                    'total_count': len(videos),
-                    'source': 'database'
-                }
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT video_id, title, upload_date, url, 
+                               COALESCE(view_count, 0) as view_count,
+                               COALESCE(like_count, 0) as like_count,
+                               COALESCE(comment_count, 0) as comment_count
+                        FROM videos
+                        ORDER BY upload_date DESC, created_at DESC
+                        LIMIT 200
+                    """)
+                    
+                    db_videos = cursor.fetchall()
+                    
+                    # Convert to expected format
+                    videos = []
+                    for video in db_videos:
+                        videos.append({
+                            'video_id': video['video_id'],
+                            'title': video['title'] or '',
+                            'upload_date': video['upload_date'] or '',
+                            'url': video['url'] or f"https://www.tiktok.com/@minigolfeveryday/video/{video['video_id']}",
+                            'view_count': video.get('view_count', 0),
+                            'like_count': video.get('like_count', 0),
+                            'comment_count': video.get('comment_count', 0)
+                        })
+                    
+                    return {
+                        'videos': videos,
+                        'last_updated': datetime.now().isoformat(),
+                        'total_count': len(videos),
+                        'source': 'database'
+                    }
+            finally:
+                return_db_connection(connection)
         
     except Exception as e:
         print(f"[ERROR] Database video fetch failed: {e}")
@@ -612,31 +702,55 @@ def get_video_stats_from_database():
         # Try database first
         connection = get_db_connection()
         if connection:
-            with connection.cursor() as cursor:
-                # Get total count
-                cursor.execute("SELECT COUNT(*) as count FROM videos")
-                total_videos = cursor.fetchone()['count']
-                
-                # Get first video for days calculation
-                cursor.execute("""
-                    SELECT upload_date 
-                    FROM videos 
-                    WHERE upload_date IS NOT NULL AND upload_date != ''
-                    ORDER BY upload_date ASC 
-                    LIMIT 1
-                """)
-                first_video = cursor.fetchone()
-                
-                # Get latest video
-                cursor.execute("""
-                    SELECT video_id, title, upload_date, url
-                    FROM videos 
-                    ORDER BY upload_date DESC, created_at DESC 
-                    LIMIT 1
-                """)
-                latest_video = cursor.fetchone()
-                
-                connection.close()
+            try:
+                with connection.cursor() as cursor:
+                    # Single optimized query to get all stats
+                    cursor.execute("""
+                        SELECT 
+                            COUNT(*) as total_videos,
+                            MIN(upload_date) as first_date,
+                            MAX(upload_date) as last_date,
+                            MAX(CONCAT(upload_date, '|', video_id, '|', COALESCE(title, ''), '|', COALESCE(url, ''))) as latest_video_data
+                        FROM videos 
+                        WHERE upload_date IS NOT NULL AND upload_date != ''
+                    """)
+                    
+                    stats = cursor.fetchone()
+                    total_videos = stats['total_videos'] or 0
+                    
+                    # Parse latest video data
+                    latest_video_data = None
+                    if stats['latest_video_data']:
+                        parts = stats['latest_video_data'].split('|')
+                        if len(parts) >= 4:
+                            latest_video_data = {
+                                'video_id': parts[1],
+                                'title': parts[2] or '',
+                                'upload_date': parts[0] or '',
+                                'url': parts[3] or f"https://www.tiktok.com/@minigolfeveryday/video/{parts[1]}"
+                            }
+                    
+                    # Calculate days running
+                    days_running = 0
+                    if stats['first_date']:
+                        try:
+                            first_date = datetime.strptime(stats['first_date'], '%Y%m%d')
+                            days_running = (datetime.now() - first_date).days + 1
+                        except ValueError:
+                            days_running = total_videos
+                    else:
+                        days_running = total_videos
+                    
+                    return {
+                        'video_count': total_videos,
+                        'total_videos': total_videos,
+                        'days_running': days_running,
+                        'latest_video': latest_video_data,
+                        'last_updated': datetime.now().isoformat(),
+                        'source': 'database'
+                    }
+            finally:
+                return_db_connection(connection)
                 
                 # Calculate days running
                 days_running = 0
@@ -1122,8 +1236,15 @@ def get_public_blog_post(post_id):
 @app.route('/api/videos', methods=['GET'])
 def get_videos():
     """Get TikTok videos from database with JSON fallback"""
+    # Rate limiting
+    client_ip = request.remote_addr
+    if not check_rate_limit(client_ip):
+        return jsonify({'error': 'Rate limit exceeded'}), 429
+    
     try:
         data = get_videos_from_database()
+        # Force garbage collection after large data operations
+        gc.collect()
         return jsonify(data), 200
     except Exception as e:
         print(f"[ERROR] Videos endpoint failed: {e}")
