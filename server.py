@@ -1507,7 +1507,7 @@ def update_database_only(current_user):
                 
                 result = subprocess.run([
                     python_exec, update_script_path, '--yes', '--quiet'
-                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
+                ], capture_output=True, text=True, encoding='ascii', errors='replace', timeout=120, env=env)
                 
                 # If successful, break out of the loop
                 if result.returncode == 0:
@@ -1533,7 +1533,7 @@ def update_database_only(current_user):
                     
                     result = subprocess.run([
                         python_exec, simple_script_path
-                    ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
+                    ], capture_output=True, text=True, encoding='ascii', errors='replace', timeout=120, env=env)
                     
                     if result.returncode == 0:
                         break
