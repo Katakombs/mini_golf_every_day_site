@@ -30,18 +30,18 @@ def load_video_data():
             with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
             videos = data.get('videos', [])
-            print(f"✅ Loaded {len(videos)} videos from JSON file")
+            print(f"Loaded {len(videos)} videos from JSON file")
             return videos
         else:
-            print("❌ tiktok_videos.json not found")
+            print("tiktok_videos.json not found")
             return []
     except Exception as e:
-        print(f"❌ Error loading JSON: {e}")
+        print(f"Error loading JSON: {e}")
         return []
 
 def update_database_only():
     """Update database from JSON without fetching new videos"""
-    print("🗄️  Database Update Only - Shared Hosting Mode")
+    print("Database Update Only - Shared Hosting Mode")
     print("=" * 50)
     
     # Setup environment
@@ -50,11 +50,11 @@ def update_database_only():
     # Load videos from JSON
     videos = load_video_data()
     if not videos:
-        print("❌ No videos found in JSON file")
+        print("No videos found in JSON file")
         return False
     
     # Update database
-    print("🗄️  Updating MySQL database...")
+    print("Updating MySQL database...")
     try:
         # Try different Python executables for shared hosting
         python_executables = [
@@ -69,37 +69,37 @@ def update_database_only():
         success = False
         for python_exec in python_executables:
             try:
-                print(f"   Trying {python_exec}...")
+                print(f"Trying {python_exec}...")
                 result = subprocess.run([
                     python_exec, 'migrate_videos_to_db.py'
                 ], capture_output=True, text=True, timeout=60)
                 
                 if result.returncode == 0:
-                    print("✅ MySQL database updated successfully")
-                    print(f"   Updated {len(videos)} videos in database")
+                    print("MySQL database updated successfully")
+                    print(f"Updated {len(videos)} videos in database")
                     success = True
                     break
                 else:
-                    print(f"   Failed with {python_exec}: {result.stderr}")
+                    print(f"Failed with {python_exec}: {result.stderr}")
                     
             except FileNotFoundError:
-                print(f"   {python_exec} not found")
+                print(f"{python_exec} not found")
                 continue
             except subprocess.TimeoutExpired:
-                print(f"   {python_exec} timed out")
+                print(f"{python_exec} timed out")
                 continue
             except Exception as e:
-                print(f"   {python_exec} error: {e}")
+                print(f"{python_exec} error: {e}")
                 continue
         
         if not success:
-            print("❌ All Python executables failed")
+            print("All Python executables failed")
             return False
             
         return True
         
     except Exception as e:
-        print(f"⚠️  Could not run database migration: {e}")
+        print(f"Could not run database migration: {e}")
         return False
     finally:
         # Force garbage collection
@@ -132,10 +132,10 @@ def main():
         success = update_database_only()
         if success:
             if not args.quiet:
-                print(f"\n✅ Database update completed successfully")
+                print("Database update completed successfully")
             return 0
         else:
-            print("\n❌ Database update failed. Please check the issues above.")
+            print("Database update failed. Please check the issues above.")
             return 1
     else:
         if not args.quiet:
@@ -147,8 +147,8 @@ if __name__ == "__main__":
         exit_code = main()
         sys.exit(exit_code)
     except KeyboardInterrupt:
-        print("\n🛑 Cancelled by user")
+        print("Cancelled by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n💥 Unexpected error: {e}")
+        print(f"Unexpected error: {e}")
         sys.exit(1) 
