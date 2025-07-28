@@ -1394,6 +1394,11 @@ def pull_videos(current_user):
         if result.returncode == 0:
             # Clean the output to remove any problematic characters
             output_text = result.stdout.replace('\x00', '').strip()
+            # Handle any remaining Unicode issues
+            try:
+                output_text = output_text.encode('utf-8', errors='ignore').decode('utf-8')
+            except:
+                output_text = output_text.encode('ascii', errors='ignore').decode('ascii')
             
             # Parse the output to extract stats if available
             output_lines = output_text.split('\n') if output_text else []
@@ -1507,7 +1512,7 @@ def update_database_only(current_user):
                 
                 result = subprocess.run([
                     python_exec, update_script_path, '--yes', '--quiet'
-                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
+                ], capture_output=True, text=True, encoding='utf-8', errors='ignore', timeout=120, env=env)
                 
                 # If successful, break out of the loop
                 if result.returncode == 0:
@@ -1533,7 +1538,7 @@ def update_database_only(current_user):
                     
                     result = subprocess.run([
                         python_exec, simple_script_path
-                    ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
+                    ], capture_output=True, text=True, encoding='utf-8', errors='ignore', timeout=120, env=env)
                     
                     if result.returncode == 0:
                         break
@@ -1556,6 +1561,11 @@ def update_database_only(current_user):
         if result.returncode == 0:
             # Clean the output to remove any problematic characters
             output_text = result.stdout.replace('\x00', '').strip()
+            # Handle any remaining Unicode issues
+            try:
+                output_text = output_text.encode('utf-8', errors='ignore').decode('utf-8')
+            except:
+                output_text = output_text.encode('ascii', errors='ignore').decode('ascii')
             
             return jsonify({
                 'message': 'Database updated successfully',
