@@ -245,6 +245,15 @@ class BlogAdminApp {
         this.hidePostEditor();
       }
     });
+    
+    // Database update modal event handlers
+    document.getElementById('close-database-update-modal').addEventListener('click', () => this.hideDatabaseUpdateModal());
+    document.getElementById('close-database-update-btn').addEventListener('click', () => this.hideDatabaseUpdateModal());
+    document.getElementById('database-update-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'database-update-modal') {
+        this.hideDatabaseUpdateModal();
+      }
+    });
   }
 
   // Modal methods
@@ -257,6 +266,20 @@ class BlogAdminApp {
     document.getElementById('admin-login-modal').classList.add('hidden');
     document.getElementById('admin-login-modal').classList.remove('flex');
     this.clearAdminAuthMessages();
+  }
+
+  showDatabaseUpdateModal(content) {
+    const modal = document.getElementById('database-update-modal');
+    const contentDiv = document.getElementById('database-update-content');
+    contentDiv.innerHTML = content;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  hideDatabaseUpdateModal() {
+    const modal = document.getElementById('database-update-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
   }
 
   // Auth handlers
@@ -1261,17 +1284,25 @@ class BlogAdminApp {
         const data = await response.json();
         console.log('✅ Success response:', data);
         
-        // Mobile-friendly alert with shorter message
-        const message = isMobile 
-          ? `✅ Database updated!\n\nThis syncs existing video data to the database without fetching new videos.`
-          : `✅ Database updated successfully!\n\nThis operation syncs existing video data from the JSON file to the database without fetching new videos from TikTok.\n\nMessage: ${data.message || 'Success'}`;
+        // Create modal content for success
+        const modalContent = `
+          <div class="text-center">
+            <div class="text-6xl mb-4">✅</div>
+            <h3 class="text-xl font-semibold text-green-600 mb-2">Database Updated Successfully!</h3>
+            <p class="text-gray-600 mb-4">This operation syncs existing video data from the JSON file to the database without fetching new videos from TikTok.</p>
+            <div class="bg-green-50 p-4 rounded-lg">
+              <p class="text-green-800"><strong>Message:</strong> ${data.message || 'Success'}</p>
+              ${data.output ? `<p class="text-green-700 mt-2 text-sm"><strong>Output:</strong> ${data.output.substring(0, 200)}${data.output.length > 200 ? '...' : ''}</p>` : ''}
+            </div>
+          </div>
+        `;
         
-        alert(message);
+        this.showDatabaseUpdateModal(modalContent);
         
-        // Optionally refresh the page or update UI
+        // Optionally refresh the page after a delay
         setTimeout(() => {
           window.location.reload();
-        }, 2000);
+        }, 3000);
       } else {
         console.error('❌ Error response status:', response.status);
         
@@ -1287,7 +1318,19 @@ class BlogAdminApp {
           errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}`;
         }
         
-        alert(`❌ Failed to update database: ${errorMessage}`);
+        // Create modal content for error
+        const modalContent = `
+          <div class="text-center">
+            <div class="text-6xl mb-4">❌</div>
+            <h3 class="text-xl font-semibold text-red-600 mb-2">Database Update Failed</h3>
+            <p class="text-gray-600 mb-4">There was an error updating the database.</p>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <p class="text-red-800"><strong>Error:</strong> ${errorMessage}</p>
+            </div>
+          </div>
+        `;
+        
+        this.showDatabaseUpdateModal(modalContent);
       }
     } catch (error) {
       console.error('💥 Network/JavaScript error:', error);
@@ -1299,7 +1342,19 @@ class BlogAdminApp {
         errorMessage = 'Network error. Please check your connection.';
       }
       
-      alert(`❌ Failed to update database: ${errorMessage}`);
+      // Create modal content for network error
+      const modalContent = `
+        <div class="text-center">
+          <div class="text-6xl mb-4">💥</div>
+          <h3 class="text-xl font-semibold text-red-600 mb-2">Network Error</h3>
+          <p class="text-gray-600 mb-4">There was a problem connecting to the server.</p>
+          <div class="bg-red-50 p-4 rounded-lg">
+            <p class="text-red-800"><strong>Error:</strong> ${errorMessage}</p>
+          </div>
+        </div>
+      `;
+      
+      this.showDatabaseUpdateModal(modalContent);
     } finally {
       // Restore button state
       button.textContent = originalText;
