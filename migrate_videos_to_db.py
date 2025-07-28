@@ -16,12 +16,12 @@ def load_environment():
     # Try regular .env first, then production
     if os.path.exists('.env'):
         load_dotenv('.env')
-        print("✅ Loaded .env file")
+        print("[OK] Loaded .env file")
     elif os.path.exists('.env.production'):
         load_dotenv('.env.production')
-        print("✅ Loaded .env.production file")
+        print("[OK] Loaded .env.production file")
     else:
-        print("❌ No environment file found (.env or .env.production)")
+        print("[ERROR] No environment file found (.env or .env.production)")
         return False
     return True
 
@@ -37,10 +37,10 @@ def connect_to_database():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-        print(f"✅ Connected to MySQL database: {os.environ.get('DB_NAME')}")
+        print(f"[OK] Connected to MySQL database: {os.environ.get('DB_NAME')}")
         return connection
     except Exception as e:
-        print(f"❌ Database connection failed: {e}")
+        print(f"[ERROR] Database connection failed: {e}")
         print(f"   Host: {os.environ.get('DB_HOST', 'localhost')}")
         print(f"   Port: {os.environ.get('DB_PORT', 3306)}")
         print(f"   Database: {os.environ.get('DB_NAME')}")
@@ -80,13 +80,13 @@ def create_videos_table(connection):
             except pymysql.Error as e:
                 # Index might already exist
                 if e.args[0] != 1061:  # 1061 = Duplicate key name
-                    print(f"⚠️ Index creation warning: {e}")
+                    print(f"[WARNING] Index creation warning: {e}")
             
         connection.commit()
-        print("✅ Videos table created/verified")
+        print("[OK] Videos table created/verified")
         return True
     except Exception as e:
-        print(f"❌ Failed to create videos table: {e}")
+        print(f"[ERROR] Failed to create videos table: {e}")
         return False
 
 def load_json_videos():
@@ -96,13 +96,13 @@ def load_json_videos():
             with open('tiktok_videos.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
             videos = data.get('videos', [])
-            print(f"✅ Loaded {len(videos)} videos from JSON file")
+            print(f"[OK] Loaded {len(videos)} videos from JSON file")
             return videos
         else:
-            print("⚠️ tiktok_videos.json not found - starting with empty database")
+            print("[WARNING] tiktok_videos.json not found - starting with empty database")
             return []
     except Exception as e:
-        print(f"❌ Failed to load JSON file: {e}")
+        print(f"[ERROR] Failed to load JSON file: {e}")
         return []
 
 def migrate_videos_to_database(connection, videos):
@@ -122,7 +122,7 @@ def migrate_videos_to_database(connection, videos):
                 comment_count = video.get('comment_count', 0)
                 
                 if not video_id:
-                    print(f"⚠️ Skipping video with no ID: {video}")
+                    print(f"[WARNING] Skipping video with no ID: {video}")
                     skipped += 1
                     continue
                 
@@ -144,15 +144,15 @@ def migrate_videos_to_database(connection, videos):
                     migrated += 1
                     
                 except Exception as e:
-                    print(f"⚠️ Failed to migrate video {video_id}: {e}")
+                    print(f"[WARNING] Failed to migrate video {video_id}: {e}")
                     skipped += 1
         
         connection.commit()
-        print(f"✅ Migration complete: {migrated} migrated, {skipped} skipped")
+        print(f"[OK] Migration complete: {migrated} migrated, {skipped} skipped")
         return True
         
     except Exception as e:
-        print(f"❌ Migration failed: {e}")
+        print(f"[ERROR] Migration failed: {e}")
         return False
 
 def sync_database_to_json(connection):
@@ -188,11 +188,11 @@ def sync_database_to_json(connection):
         with open('tiktok_videos.json', 'w', encoding='utf-8') as f:
             json.dump(json_data, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Synced {len(json_videos)} videos to tiktok_videos.json")
+        print(f"[OK] Synced {len(json_videos)} videos to tiktok_videos.json")
         return True
         
     except Exception as e:
-        print(f"❌ Failed to sync to JSON: {e}")
+        print(f"[ERROR] Failed to sync to JSON: {e}")
         return False
 
 def verify_migration(connection):
@@ -209,23 +209,23 @@ def verify_migration(connection):
                 data = json.load(f)
                 json_count = len(data.get('videos', []))
         
-        print(f"📊 Verification:")
+        print(f"[INFO] Verification:")
         print(f"   Database videos: {db_count}")
         print(f"   JSON file videos: {json_count}")
         
         if db_count == json_count and db_count > 0:
-            print("✅ Migration verified successfully")
+            print("[OK] Migration verified successfully")
             return True
         else:
-            print("⚠️ Video counts don't match")
+            print("[WARNING] Video counts don't match")
             return False
             
     except Exception as e:
-        print(f"❌ Verification failed: {e}")
+        print(f"[ERROR] Verification failed: {e}")
         return False
 
 def main():
-    print("🎬 MIGRATING VIDEOS FROM JSON TO DATABASE")
+    print("MIGRATING VIDEOS FROM JSON TO DATABASE")
     print("=" * 50)
     
     # Load environment
@@ -255,15 +255,15 @@ def main():
         
         # Verify migration
         if not verify_migration(connection):
-            print("⚠️ Migration completed but verification failed")
+            print("[WARNING] Migration completed but verification failed")
         
-        print("\n✅ MIGRATION COMPLETE!")
-        print("🎯 WHAT HAPPENED:")
+        print("\n[OK] MIGRATION COMPLETE!")
+        print("WHAT HAPPENED:")
         print("  1. Created videos table in MySQL database")
         print("  2. Migrated all videos from JSON to database")
         print("  3. Synced database back to JSON for GitHub Actions")
         print("  4. Your GitHub Actions will continue to work normally")
-        print("\n💡 NEXT STEPS:")
+        print("\nNEXT STEPS:")
         print("  1. Update server.py to read from database instead of JSON")
         print("  2. GitHub Actions will keep JSON file in sync with database")
         print("  3. Best of both worlds: database reliability + GitHub Actions compatibility")

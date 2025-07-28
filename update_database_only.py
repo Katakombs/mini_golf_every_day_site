@@ -20,6 +20,11 @@ def setup_environment():
     os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
     os.environ['PYTHONUNBUFFERED'] = '1'
     
+    # Set UTF-8 encoding for subprocesses
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+    os.environ['LANG'] = 'en_US.UTF-8'
+    os.environ['LC_ALL'] = 'en_US.UTF-8'
+    
     # Force garbage collection
     gc.collect()
 
@@ -72,7 +77,7 @@ def update_database_only():
                 print(f"Trying {python_exec}...")
                 result = subprocess.run([
                     python_exec, 'migrate_videos_to_db.py'
-                ], capture_output=True, text=True, timeout=60)
+                ], capture_output=True, text=True, timeout=60, encoding='utf-8', errors='replace', env=os.environ.copy())
                 
                 if result.returncode == 0:
                     print("MySQL database updated successfully")
@@ -80,13 +85,17 @@ def update_database_only():
                     success = True
                     break
                 else:
-                    print(f"Failed with {python_exec}: {result.stderr}")
+                    stderr_output = result.stderr if result.stderr else "No error output"
+                    print(f"Failed with {python_exec}: {stderr_output}")
                     
             except FileNotFoundError:
                 print(f"{python_exec} not found")
                 continue
             except subprocess.TimeoutExpired:
                 print(f"{python_exec} timed out")
+                continue
+            except UnicodeEncodeError as e:
+                print(f"{python_exec} encoding error: {e}")
                 continue
             except Exception as e:
                 print(f"{python_exec} error: {e}")
