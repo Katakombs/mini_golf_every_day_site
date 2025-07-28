@@ -87,6 +87,10 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 _request_counts = defaultdict(list)
 _MAX_REQUESTS_PER_MINUTE = 60
 
+# Shared hosting process limits
+_MAX_CONCURRENT_PROCESSES = 3
+_active_processes = 0
+
 def check_rate_limit(ip):
     """Simple rate limiting"""
     now = time.time()
@@ -102,6 +106,29 @@ def check_rate_limit(ip):
     # Add current request
     _request_counts[ip].append(now)
     return True
+
+def check_process_limit():
+    """Check if we're at process limit for shared hosting"""
+    global _active_processes
+    return _active_processes < _MAX_CONCURRENT_PROCESSES
+
+def acquire_process_slot():
+    """Acquire a process slot"""
+    global _active_processes
+    if check_process_limit():
+        _active_processes += 1
+        return True
+    return False
+
+def release_process_slot():
+    """Release a process slot"""
+    global _active_processes
+    if _active_processes > 0:
+        _active_processes -= 1
+
+def force_garbage_collection():
+    """Force garbage collection to free memory"""
+    gc.collect()
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
@@ -1309,21 +1336,28 @@ def toggle_user_active(current_user, user_id):
 @token_required
 @admin_required
 def pull_videos(current_user):
-    """Manually pull latest videos from TikTok (admin only)"""
+    """Manually pull latest videos from TikTok (admin only) - Optimized for shared hosting"""
     import subprocess
     import os
+    
+    # Check process limits for shared hosting
+    if not acquire_process_slot():
+        return jsonify({
+            'error': 'Server is busy. Please try again in a few minutes.',
+            'details': 'Too many concurrent processes'
+        }), 503
     
     try:
         # Get the absolute path to the update_videos.py script
         script_path = os.path.join(os.path.dirname(__file__), 'update_videos.py')
         
-        # List of Python executables to try
+        # List of Python executables to try (prioritize system Python for shared hosting)
         python_executables = [
-            '/home/phazeshi/virtualenv/minigolfeveryday/3.9/bin/python',
             'python3',
             'python',
             '/usr/bin/python3',
-            '/usr/bin/python'
+            '/usr/bin/python',
+            '/home/phazeshi/virtualenv/minigolfeveryday/3.9/bin/python'
         ]
         
         result = None
@@ -1331,10 +1365,10 @@ def pull_videos(current_user):
         
         for python_exec in python_executables:
             try:
-                # Run the script with non-interactive flags and proper encoding
+                # Run the script with optimized flags for shared hosting
                 result = subprocess.run([
-                    python_exec, script_path, '--yes', '--quiet'
-                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=300)
+                    python_exec, script_path, '--yes', '--quiet', '--shared-hosting'
+                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=180)  # Reduced timeout
                 
                 # If successful, break out of the loop
                 if result.returncode == 0:
@@ -1396,6 +1430,9 @@ def pull_videos(current_user):
                     except:
                         pass
             
+            # Force garbage collection after large operation
+            force_garbage_collection()
+            
             return jsonify({
                 'message': 'Videos pulled successfully',
                 'processed': stats['processed'],
@@ -1414,13 +1451,103 @@ def pull_videos(current_user):
             }), 500
             
     except subprocess.TimeoutExpired:
-        return jsonify({'error': 'Video pull timed out (5 minutes)'}), 408
+        return jsonify({'error': 'Video pull timed out (3 minutes)'}), 408
     except Exception as e:
         return jsonify({
             'error': 'Failed to pull videos',
             'details': str(e),
             'attempted_executables': python_executables
         }), 500
+    finally:
+        # Always release the process slot
+        release_process_slot()
+
+
+@app.route('/api/admin/update-database', methods=['POST'])
+@token_required
+@admin_required
+def update_database_only(current_user):
+    """Update database from JSON data only - lightweight for shared hosting"""
+    import subprocess
+    import os
+    
+    # Check process limits for shared hosting
+    if not acquire_process_slot():
+        return jsonify({
+            'error': 'Server is busy. Please try again in a few minutes.',
+            'details': 'Too many concurrent processes'
+        }), 503
+    
+    try:
+        # Get the absolute path to the update_database_only.py script
+        script_path = os.path.join(os.path.dirname(__file__), 'update_database_only.py')
+        
+        # List of Python executables to try (prioritize system Python for shared hosting)
+        python_executables = [
+            'python3',
+            'python',
+            '/usr/bin/python3',
+            '/usr/bin/python'
+        ]
+        
+        result = None
+        last_error = None
+        
+        for python_exec in python_executables:
+            try:
+                # Run the lightweight database update script
+                result = subprocess.run([
+                    python_exec, script_path, '--yes', '--quiet'
+                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120)
+                
+                # If successful, break out of the loop
+                if result.returncode == 0:
+                    break
+                else:
+                    last_error = f"Exit code {result.returncode}: {result.stderr}"
+                    
+            except FileNotFoundError:
+                continue  # Try next Python executable
+            except Exception as e:
+                last_error = str(e)
+                continue
+        
+        if result is None:
+            return jsonify({
+                'error': 'Failed to update database',
+                'details': 'No working Python executable found',
+                'attempted_executables': python_executables
+            }), 500
+        
+        if result.returncode == 0:
+            # Clean the output to remove any problematic characters
+            output_text = result.stdout.replace('\x00', '').strip()
+            
+            return jsonify({
+                'message': 'Database updated successfully',
+                'output': output_text[:500] + '...' if len(output_text) > 500 else output_text
+            }), 200
+        else:
+            # Clean error output
+            error_text = result.stderr.replace('\x00', '').strip() if result.stderr else 'Unknown error'
+            
+            return jsonify({
+                'error': 'Failed to update database',
+                'details': error_text[:200] + '...' if len(error_text) > 200 else error_text,
+                'attempted_executables': python_executables
+            }), 500
+            
+    except subprocess.TimeoutExpired:
+        return jsonify({'error': 'Database update timed out (2 minutes)'}), 408
+    except Exception as e:
+        return jsonify({
+            'error': 'Failed to update database',
+            'details': str(e),
+            'attempted_executables': python_executables
+        }), 500
+    finally:
+        # Always release the process slot
+        release_process_slot()
 
 
 # Database Setup Route (for production initialization)

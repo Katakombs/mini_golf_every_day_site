@@ -2,6 +2,7 @@
 """
 Simple video update script that provides proper statistics
 This script will update videos and output the correct stats format
+Optimized for shared hosting environments
 """
 
 import sys
@@ -9,7 +10,22 @@ import os
 import json
 import subprocess
 import time
+import gc
 from datetime import datetime
+
+# Shared hosting optimizations
+def optimize_for_shared_hosting():
+    """Apply optimizations for shared hosting"""
+    # Reduce memory usage
+    gc.collect()
+    
+    # Set lower limits for shared hosting
+    os.environ['PYTHONUNBUFFERED'] = '1'
+    os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+    
+    # Disable subprocess output buffering
+    if hasattr(subprocess, 'PIPE'):
+        subprocess.PIPE = subprocess.PIPE
 
 def load_video_data():
     """Load existing video data from JSON file"""
@@ -33,19 +49,26 @@ def save_video_data(videos):
     with open('tiktok_videos.json', 'w') as f:
         json.dump(data, f, indent=2)
 
-def get_latest_videos_ytdlp(limit=200):
-    """Get latest videos using yt-dlp"""
+def get_latest_videos_ytdlp(limit=200, shared_hosting=False):
+    """Get latest videos using yt-dlp - optimized for shared hosting"""
     try:
+        # Reduce limit for shared hosting
+        if shared_hosting:
+            limit = min(limit, 100)  # Max 100 videos for shared hosting
+        
         # Try to run yt-dlp to get video metadata with view counts
         cmd = [
             'yt-dlp',
             '--flat-playlist',
             '--print', '%(id)s|%(title)s|%(upload_date)s|%(view_count)s|%(like_count)s|%(comment_count)s',
             '--playlist-end', str(limit),
+            '--quiet',  # Reduce output for shared hosting
             'https://www.tiktok.com/@minigolfeveryday'
         ]
         
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        # Shorter timeout for shared hosting
+        timeout = 60 if shared_hosting else 120
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         
         if result.returncode != 0:
             print(f"yt-dlp failed: {result.stderr}")
@@ -85,6 +108,8 @@ def get_latest_videos_ytdlp(limit=200):
                     print(f"Error parsing line: {line}, error: {e}")
                     continue
         
+        # Force garbage collection after large data operation
+        gc.collect()
         return videos
         
     except subprocess.TimeoutExpired:
@@ -94,8 +119,11 @@ def get_latest_videos_ytdlp(limit=200):
         print(f"Error running yt-dlp: {e}")
         return []
 
-def update_videos():
-    """Update videos and return statistics"""
+def update_videos(shared_hosting=False):
+    """Update videos and return statistics - optimized for shared hosting"""
+    if shared_hosting:
+        optimize_for_shared_hosting()
+    
     print("🎬 Mini Golf Every Day - Video Update")
     print("=" * 50)
     
@@ -110,7 +138,7 @@ def update_videos():
     
     # Fetch latest videos
     print("\n🔍 Fetching latest videos from @minigolfeveryday...")
-    latest_videos = get_latest_videos_ytdlp()
+    latest_videos = get_latest_videos_ytdlp(shared_hosting=shared_hosting)
     
     if not latest_videos:
         print("❌ Failed to fetch videos")
@@ -142,17 +170,20 @@ def update_videos():
     print(f"\n💾 Saving {len(merged_videos)} videos to database...")
     save_video_data(merged_videos)
     
-    # Update database
-    print("🗄️  Updating MySQL database...")
-    try:
-        result = subprocess.run(['python3', 'migrate_videos_to_db.py'], 
-                              capture_output=True, text=True, timeout=60)
-        if result.returncode == 0:
-            print("✅ MySQL database updated successfully")
-        else:
-            print(f"⚠️  Database update failed: {result.stderr}")
-    except Exception as e:
-        print(f"⚠️  Could not run database migration: {e}")
+    # Update database - only if not in shared hosting mode or if explicitly requested
+    if not shared_hosting:
+        print("🗄️  Updating MySQL database...")
+        try:
+            result = subprocess.run(['python3', 'migrate_videos_to_db.py'], 
+                                  capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                print("✅ MySQL database updated successfully")
+            else:
+                print(f"⚠️  Database update failed: {result.stderr}")
+        except Exception as e:
+            print(f"⚠️  Could not run database migration: {e}")
+    else:
+        print("🗄️  Skipping MySQL update in shared hosting mode")
     
     # Calculate statistics
     stats = {
@@ -180,6 +211,9 @@ def update_videos():
     
     print(f"\n🎉 Update complete! Database now has {len(merged_videos)} videos")
     
+    # Force garbage collection after completion
+    gc.collect()
+    
     return stats
 
 def main():
@@ -190,6 +224,8 @@ def main():
                        help='Skip confirmation prompt and proceed automatically')
     parser.add_argument('--quiet', '-q', action='store_true',
                        help='Reduce output verbosity')
+    parser.add_argument('--shared-hosting', action='store_true',
+                       help='Optimize for shared hosting environments')
     
     args = parser.parse_args()
     
@@ -206,7 +242,7 @@ def main():
         proceed = response in ['y', 'yes']
     
     if proceed:
-        stats = update_videos()
+        stats = update_videos(shared_hosting=args.shared_hosting)
         if stats['success']:
             if not args.quiet:
                 print(f"\n✅ Update completed successfully")
