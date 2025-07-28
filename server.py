@@ -1357,6 +1357,8 @@ def pull_videos(current_user):
             'python',
             '/usr/bin/python3',
             '/usr/bin/python',
+            '/opt/alt/python39/bin/python3',
+            '/opt/alt/python39/bin/python',
             '/home/phazeshi/virtualenv/minigolfeveryday/3.9/bin/python'
         ]
         
@@ -1479,8 +1481,9 @@ def update_database_only(current_user):
         }), 503
     
     try:
-        # Get the absolute path to the update_database_only.py script
-        script_path = os.path.join(os.path.dirname(__file__), 'update_database_only.py')
+        # Get the absolute path to the database update scripts
+        update_script_path = os.path.join(os.path.dirname(__file__), 'update_database_only.py')
+        simple_script_path = os.path.join(os.path.dirname(__file__), 'simple_db_update.py')
         
         # List of Python executables to try (prioritize system Python for shared hosting)
         python_executables = [
@@ -1493,12 +1496,18 @@ def update_database_only(current_user):
         result = None
         last_error = None
         
+        # Try the main update script first
         for python_exec in python_executables:
             try:
-                # Run the lightweight database update script
+                # Run the lightweight database update script with environment fixes
+                env = os.environ.copy()
+                env['PYTHONPATH'] = ''
+                env['PYTHONDONTWRITEBYTECODE'] = '1'
+                env['PYTHONUNBUFFERED'] = '1'
+                
                 result = subprocess.run([
-                    python_exec, script_path, '--yes', '--quiet'
-                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120)
+                    python_exec, update_script_path, '--yes', '--quiet'
+                ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
                 
                 # If successful, break out of the loop
                 if result.returncode == 0:
@@ -1511,6 +1520,31 @@ def update_database_only(current_user):
             except Exception as e:
                 last_error = str(e)
                 continue
+        
+        # If main script failed, try the simple fallback script
+        if result is None or result.returncode != 0:
+            print("🔄 Trying fallback simple script...")
+            for python_exec in python_executables:
+                try:
+                    env = os.environ.copy()
+                    env['PYTHONPATH'] = ''
+                    env['PYTHONDONTWRITEBYTECODE'] = '1'
+                    env['PYTHONUNBUFFERED'] = '1'
+                    
+                    result = subprocess.run([
+                        python_exec, simple_script_path
+                    ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=120, env=env)
+                    
+                    if result.returncode == 0:
+                        break
+                    else:
+                        last_error = f"Fallback script failed: Exit code {result.returncode}: {result.stderr}"
+                        
+                except FileNotFoundError:
+                    continue
+                except Exception as e:
+                    last_error = f"Fallback script error: {str(e)}"
+                    continue
         
         if result is None:
             return jsonify({

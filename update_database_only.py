@@ -2,14 +2,26 @@
 """
 Lightweight database update script for shared hosting
 This script only updates the database from existing JSON data
+Optimized for shared hosting environments with restricted Python
 """
 
 import os
+import sys
 import json
 import subprocess
 import gc
-import sys
 from datetime import datetime
+
+# Handle shared hosting Python environment issues
+def setup_environment():
+    """Setup environment for shared hosting"""
+    # Disable site module import issues
+    os.environ['PYTHONPATH'] = ''
+    os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+    os.environ['PYTHONUNBUFFERED'] = '1'
+    
+    # Force garbage collection
+    gc.collect()
 
 def load_video_data():
     """Load existing video data from JSON file"""
@@ -32,6 +44,9 @@ def update_database_only():
     print("🗄️  Database Update Only - Shared Hosting Mode")
     print("=" * 50)
     
+    # Setup environment
+    setup_environment()
+    
     # Load videos from JSON
     videos = load_video_data()
     if not videos:
@@ -41,15 +56,48 @@ def update_database_only():
     # Update database
     print("🗄️  Updating MySQL database...")
     try:
-        result = subprocess.run(['python3', 'migrate_videos_to_db.py'], 
-                              capture_output=True, text=True, timeout=60)
-        if result.returncode == 0:
-            print("✅ MySQL database updated successfully")
-            print(f"   Updated {len(videos)} videos in database")
-            return True
-        else:
-            print(f"⚠️  Database update failed: {result.stderr}")
+        # Try different Python executables for shared hosting
+        python_executables = [
+            'python3',
+            'python',
+            '/usr/bin/python3',
+            '/usr/bin/python',
+            '/opt/alt/python39/bin/python3',
+            '/opt/alt/python39/bin/python'
+        ]
+        
+        success = False
+        for python_exec in python_executables:
+            try:
+                print(f"   Trying {python_exec}...")
+                result = subprocess.run([
+                    python_exec, 'migrate_videos_to_db.py'
+                ], capture_output=True, text=True, timeout=60)
+                
+                if result.returncode == 0:
+                    print("✅ MySQL database updated successfully")
+                    print(f"   Updated {len(videos)} videos in database")
+                    success = True
+                    break
+                else:
+                    print(f"   Failed with {python_exec}: {result.stderr}")
+                    
+            except FileNotFoundError:
+                print(f"   {python_exec} not found")
+                continue
+            except subprocess.TimeoutExpired:
+                print(f"   {python_exec} timed out")
+                continue
+            except Exception as e:
+                print(f"   {python_exec} error: {e}")
+                continue
+        
+        if not success:
+            print("❌ All Python executables failed")
             return False
+            
+        return True
+        
     except Exception as e:
         print(f"⚠️  Could not run database migration: {e}")
         return False
