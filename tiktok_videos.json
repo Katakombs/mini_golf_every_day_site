@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7531947782857362701",
+      "title": "Day 201. Camping prep.  #minigolfeveryday #minigolf #puttputt #campin...",
+      "upload_date": "20250728",
+      "view_count": 65,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7531947782857362701"
+    },
+    {
       "video_id": "7531584385926106382",
       "title": "Day 200. 200! #minigolfeveryday #minigolf #puttputt #200 #tricky",
       "upload_date": "20250727",
@@ -1790,17 +1799,8 @@
       "like_count": 2,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7455767169155239214"
-    },
-    {
-      "video_id": "7455430384231255342",
-      "title": "Day 1. Finding my gear. ⛳️ #minigolfeveryday #minigolf #everyday #gob...",
-      "upload_date": "20250102",
-      "view_count": 763,
-      "like_count": 9,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7455430384231255342"
     }
   ],
-  "last_updated": "2025-07-28T01:22:04.585140",
+  "last_updated": "2025-07-28T02:21:13.063488",
   "total_count": 200
 }
