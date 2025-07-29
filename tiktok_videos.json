@@ -1,1092 +1,1806 @@
 {
   "videos": [
     {
+      "video_id": "7532320393600781581",
+      "title": "Day 202. Perspective.  #minigolfeveryday #minigolf #puttputt #perspec...",
+      "upload_date": "20250729",
+      "view_count": 4,
+      "like_count": 0,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7532320393600781581"
+    },
+    {
+      "video_id": "7531947782857362701",
+      "title": "Day 201. Camping prep.  #minigolfeveryday #minigolf #puttputt #campin...",
+      "upload_date": "20250728",
+      "view_count": 65,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7531947782857362701"
+    },
+    {
+      "video_id": "7531584385926106382",
+      "title": "Day 200. 200! #minigolfeveryday #minigolf #puttputt #200 #tricky",
+      "upload_date": "20250727",
+      "view_count": 449,
+      "like_count": 9,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7531584385926106382"
+    },
+    {
+      "video_id": "7531205582469041421",
+      "title": "Day 199. Friday night with Troon and Ozzy.  #minigolfeveryday #minigo...",
+      "upload_date": "20250726",
+      "view_count": 201,
+      "like_count": 8,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7531205582469041421"
+    },
+    {
+      "video_id": "7530835660899585293",
+      "title": "Day 198. Globular.  #minigolfeveryday #minigolf #puttputt #golftok #g...",
+      "upload_date": "20250725",
+      "view_count": 781,
+      "like_count": 42,
+      "comment_count": 1,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7530835660899585293"
+    },
+    {
+      "video_id": "7530375753628716343",
+      "title": "Day 197. National Lemon Day 🍋  #minigolfeveryday #minigolf #puttputt ...",
+      "upload_date": "20250723",
+      "view_count": 120,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7530375753628716343"
+    },
+    {
+      "video_id": "7530001946996952334",
+      "title": "Day 196. Hello jump.  #minigolfeveryday #minigolf #puttputt #golftok ...",
+      "upload_date": "20250722",
+      "view_count": 130,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7530001946996952334"
+    },
+    {
+      "video_id": "7529715650621607181",
+      "title": "Day 195. I’m surrounded. #minigolfeveryday #minigolf #puttputt #golft...",
+      "upload_date": "20250722",
+      "view_count": 846,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7529715650621607181"
+    },
+    {
+      "video_id": "7529332988341914893",
+      "title": "Day 194. Post-camping crash. #minigolfeveryday #minigolf #puttputt #g...",
+      "upload_date": "20250721",
+      "view_count": 268,
+      "like_count": 6,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7529332988341914893"
+    },
+    {
+      "video_id": "7528921890908376333",
+      "title": "Day 193. Camping! #minigolfeveryday #minigolf #puttputt #golftok #cam...",
+      "upload_date": "20250719",
+      "view_count": 1006,
+      "like_count": 20,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7528921890908376333"
+    },
+    {
+      "video_id": "7528542494967991566",
+      "title": "Day 192. A series of boxes #minigolfeveryday #minigolf #puttputt #gol...",
+      "upload_date": "20250718",
+      "view_count": 220,
+      "like_count": 9,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7528542494967991566"
+    },
+    {
+      "video_id": "7528228969955527991",
+      "title": "Day 191. Terrain.   #minigolfeveryday #minigolf #puttputt #golftok #5...",
+      "upload_date": "20250718",
+      "view_count": 820,
+      "like_count": 26,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7528228969955527991"
+    },
+    {
+      "video_id": "7527819522535984397",
+      "title": "Day 190. Suitcases.    #minigolfeveryday #minigolf #puttputt #golftok...",
+      "upload_date": "20250716",
+      "view_count": 889,
+      "like_count": 46,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7527819522535984397"
+    },
+    {
+      "video_id": "7527490245793729847",
+      "title": "Day 189. Funnel reprise.  #minigolfeveryday #minigolf #puttputt #golf...",
+      "upload_date": "20250716",
+      "view_count": 143,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7527490245793729847"
+    },
+    {
+      "video_id": "7527108548308798733",
+      "title": "Day 188. Corner.  #minigolfeveryday #minigolf #golf #office #golftok ",
+      "upload_date": "20250715",
+      "view_count": 993,
+      "like_count": 24,
+      "comment_count": 1,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7527108548308798733"
+    },
+    {
+      "video_id": "7526756456385826062",
+      "title": "Day 187. Cheers to 10 years!  #minigolfeveryday #minigolf #everyday #...",
+      "upload_date": "20250714",
+      "view_count": 131,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7526756456385826062"
+    },
+    {
+      "video_id": "7526200732681325837",
+      "title": "Day 186. Time is a construct.  #minigolfeveryday #minigolf #everyday ...",
+      "upload_date": "20250712",
+      "view_count": 63,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7526200732681325837"
+    },
+    {
+      "video_id": "7525544472994696462",
+      "title": "Day 185. Down under.  #minigolfeveryday #minigolf #everyday #puttputt...",
+      "upload_date": "20250710",
+      "view_count": 1023,
+      "like_count": 35,
+      "comment_count": 2,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7525544472994696462"
+    },
+    {
+      "video_id": "7525183887849311543",
+      "title": "Day 184. Change of scenery.  #minigolfeveryday #minigolf #everyday #p...",
+      "upload_date": "20250709",
+      "view_count": 114,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7525183887849311543"
+    },
+    {
+      "video_id": "7524795631584447757",
+      "title": "Day 183. Skate ramp (kinda).  #minigolfeveryday #minigolf #everyday #...",
+      "upload_date": "20250708",
+      "view_count": 119,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7524795631584447757"
+    },
+    {
+      "video_id": "7524434734013844749",
+      "title": "Day 182. 4th? 6th? Who’s counting? #minigolfeveryday #minigolf #every...",
+      "upload_date": "20250707",
+      "view_count": 127,
+      "like_count": 5,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7524434734013844749"
+    },
+    {
       "video_id": "7524061825164479799",
       "title": "Day 181. Balance.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250706",
+      "view_count": 880,
+      "like_count": 16,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7524061825164479799"
     },
     {
       "video_id": "7523682772725124366",
       "title": "Day 180. Viva la revolución! #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250705",
+      "view_count": 114,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7523682772725124366"
     },
     {
       "video_id": "7523382073504075022",
       "title": "Day 179. Eponymous treats.  #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250705",
+      "view_count": 698,
+      "like_count": 20,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7523382073504075022"
     },
     {
       "video_id": "7522955100550204685",
       "title": "Day 178. Queen.  #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250703",
+      "view_count": 884,
+      "like_count": 29,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7522955100550204685"
     },
     {
       "video_id": "7522583834320260365",
       "title": "Day 177. Crisps.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250702",
+      "view_count": 1592,
+      "like_count": 24,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7522583834320260365"
     },
     {
       "video_id": "7522193369712364813",
       "title": "Day 176. Lights.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250701",
+      "view_count": 109,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7522193369712364813"
     },
     {
       "video_id": "7521882226938744119",
       "title": "Day 175. Driveway run.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250630",
+      "view_count": 926,
+      "like_count": 7,
+      "comment_count": 3,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7521882226938744119"
     },
     {
       "video_id": "7521516808671710519",
       "title": "Day 174. Food fun.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250629",
+      "view_count": 189,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7521516808671710519"
     },
     {
       "video_id": "7521176390096424247",
       "title": "Day 173. Post-show hotel putt.  #minigolfeveryday #minigolf #everyday...",
       "upload_date": "20250629",
+      "view_count": 802,
+      "like_count": 16,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7521176390096424247"
     },
     {
       "video_id": "7520792307759648055",
       "title": "Day 172. Getting crafty.  #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250628",
+      "view_count": 135,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7520792307759648055"
     },
     {
       "video_id": "7520341083860061454",
       "title": "Day 171. Happy Birthday (to me)! #minigolfeveryday #minigolf #everyda...",
       "upload_date": "20250626",
+      "view_count": 779,
+      "like_count": 37,
+      "comment_count": 2,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7520341083860061454"
     },
     {
       "video_id": "7519988784516123918",
       "title": "Day 170. Happy Birthday! #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250625",
+      "view_count": 133,
+      "like_count": 5,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7519988784516123918"
     },
     {
       "video_id": "7519618835645893943",
       "title": "Day 169. Hot enough for ya? #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250624",
+      "view_count": 736,
+      "like_count": 38,
+      "comment_count": 2,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7519618835645893943"
     },
     {
       "video_id": "7519234729237957901",
       "title": "Day 168. American Sunday.  #minigolfeveryday #minigolf #everyday #put...",
       "upload_date": "20250623",
+      "view_count": 783,
+      "like_count": 11,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7519234729237957901"
     },
     {
       "video_id": "7518886602458844430",
       "title": "Day 167. Festa! #minigolfeveryday #minigolf #everyday #puttputt #fyp ...",
       "upload_date": "20250622",
+      "view_count": 134,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7518886602458844430"
     },
     {
       "video_id": "7518510635437542711",
       "title": "Day 166. Merch.  #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250621",
+      "view_count": 840,
+      "like_count": 23,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7518510635437542711"
     },
     {
       "video_id": "7518129001257323831",
       "title": "Day 165. Storm’s a-brewin.  #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250620",
+      "view_count": 131,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7518129001257323831"
     },
     {
       "video_id": "7517718390451096846",
       "title": "Day 164. My glasses!  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250619",
+      "view_count": 759,
+      "like_count": 18,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7517718390451096846"
     },
     {
       "video_id": "7517461554997054734",
       "title": "Day 163. New monument.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250619",
+      "view_count": 183,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7517461554997054734"
     },
     {
       "video_id": "7516914507663330573",
       "title": "Day 162. Monday.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250617",
+      "view_count": 874,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7516914507663330573"
     },
     {
       "video_id": "7516345442758577454",
       "title": "",
       "upload_date": "20250616",
+      "view_count": 778,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7516345442758577454"
     },
     {
       "video_id": "7515968349596159275",
       "title": "Day 160. Flag Day.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250615",
+      "view_count": 852,
+      "like_count": 10,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7515968349596159275"
     },
     {
       "video_id": "7515599136482430254",
       "title": "Day 159. Building.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250614",
+      "view_count": 866,
+      "like_count": 14,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7515599136482430254"
     },
     {
       "video_id": "7515160951574842667",
       "title": "Day 158. Editing fun.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250612",
+      "view_count": 869,
+      "like_count": 13,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7515160951574842667"
     },
     {
       "video_id": "7514864210807983406",
       "title": "Day 157. Dam.  #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250612",
+      "view_count": 65,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7514864210807983406"
     },
     {
       "video_id": "7514503639554198826",
       "title": "Day 156. Vote! #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250611",
+      "view_count": 888,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7514503639554198826"
     },
     {
       "video_id": "7514122934424800555",
       "title": "Day 155. Guitar.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250610",
+      "view_count": 776,
+      "like_count": 14,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7514122934424800555"
     },
     {
       "video_id": "7513756596833357099",
       "title": "Day 154. Space Adventure.  #minigolfeveryday #minigolf #everyday #put...",
       "upload_date": "20250609",
+      "view_count": 94,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7513756596833357099"
     },
     {
       "video_id": "7513388481281035566",
       "title": "Day 153. Inception.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250608",
+      "view_count": 911,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7513388481281035566"
     },
     {
       "video_id": "7512980398356303146",
       "title": "Day 152. I tried.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250606",
+      "view_count": 993,
+      "like_count": 20,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7512980398356303146"
     },
     {
       "video_id": "7512557659380469038",
       "title": "Day 151. Keep dreaming.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250605",
+      "view_count": 932,
+      "like_count": 34,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7512557659380469038"
     },
     {
       "video_id": "7512135372537646378",
       "title": "Day 150. Coffee ramp.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250604",
+      "view_count": 216,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7512135372537646378"
     },
     {
       "video_id": "7511865094972919086",
       "title": "Day 149. Happy pride.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250603",
+      "view_count": 161,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7511865094972919086"
     },
     {
       "video_id": "7511493588912524586",
       "title": "Day 148. Groceries.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250602",
+      "view_count": 1049,
+      "like_count": 14,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7511493588912524586"
     },
     {
       "video_id": "7511071325667036458",
       "title": "Day 147. Putt Shack.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250601",
+      "view_count": 933,
+      "like_count": 36,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7511071325667036458"
     },
     {
       "video_id": "7510758443884629294",
       "title": "Day 146. Pre-show putt.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250531",
+      "view_count": 895,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7510758443884629294"
     },
     {
       "video_id": "7510445053937061162",
       "title": "Day 145. Parking garage.  #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250531",
+      "view_count": 1050,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7510445053937061162"
     },
     {
       "video_id": "7510061327323270442",
       "title": "Day 144. The office.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250530",
+      "view_count": 152,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7510061327323270442"
     },
     {
       "video_id": "7509566117145365803",
       "title": "Day 143. Lucky cricket.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250528",
+      "view_count": 909,
+      "like_count": 17,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7509566117145365803"
     },
     {
       "video_id": "7508926831806942510",
       "title": "Day 142. Bikes! #minigolfeveryday #minigolf #everyday #puttputt #fyp ...",
       "upload_date": "20250527",
+      "view_count": 209,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7508926831806942510"
     },
     {
       "video_id": "7508551958538685742",
       "title": "Day 141. Uke.  #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250526",
+      "view_count": 1175,
+      "like_count": 12,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7508551958538685742"
     },
     {
       "video_id": "7508152122576293162",
       "title": "Day 140. Epic.  #minigolfeveryday #minigolf #everyday #puttputt #fyp ...",
       "upload_date": "20250524",
+      "view_count": 985,
+      "like_count": 23,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7508152122576293162"
     },
     {
       "video_id": "7507719475265883435",
       "title": "Day 139. I’m over the cold (and rain).  #minigolfeveryday #minigolf #...",
       "upload_date": "20250523",
+      "view_count": 973,
+      "like_count": 10,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7507719475265883435"
     },
     {
       "video_id": "7507376188898233643",
       "title": "Day 138. Need inspo.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250522",
+      "view_count": 1029,
+      "like_count": 26,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7507376188898233643"
     },
     {
       "video_id": "7506971993544199466",
       "title": "Day 137. May showers? #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250521",
+      "view_count": 16,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7506971993544199466"
     },
     {
       "video_id": "7506611357911977258",
       "title": "Day 136. Pizza night.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250520",
+      "view_count": 1033,
+      "like_count": 17,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7506611357911977258"
     },
     {
       "video_id": "7506161062421597483",
       "title": "Day 135. Friday fun.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250519",
+      "view_count": 121,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7506161062421597483"
     },
     {
       "video_id": "7505557346257702190",
       "title": "Day 134. Eurovision! #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250517",
+      "view_count": 1059,
+      "like_count": 15,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7505557346257702190"
     },
     {
       "video_id": "7505142174795762987",
       "title": "Day 133. Pro skater.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250516",
+      "view_count": 159,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7505142174795762987"
     },
     {
       "video_id": "7504810155725327646",
       "title": "Day 132. Uphill.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250515",
+      "view_count": 13,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7504810155725327646"
     },
     {
       "video_id": "7504370971172703531",
       "title": "Day 131. Flip cup.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250514",
+      "view_count": 931,
+      "like_count": 18,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7504370971172703531"
     },
     {
       "video_id": "7503964700774845742",
       "title": "Day 130. Making moves.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250513",
+      "view_count": 238,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7503964700774845742"
     },
     {
       "video_id": "7503659047510461738",
       "title": "Day 129. Rocky road.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250512",
+      "view_count": 853,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7503659047510461738"
     },
     {
       "video_id": "7503356487524207918",
       "title": "Day 128. Happy Mother’s Day! #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250512",
+      "view_count": 121,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7503356487524207918"
     },
     {
       "video_id": "7502946897225714990",
       "title": "Day 127. National Miniature Golf Day! #minigolfeveryday #minigolf #ev...",
       "upload_date": "20250510",
+      "view_count": 3781,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7502946897225714990"
     },
     {
       "video_id": "7502526160778153259",
       "title": "Day 126. Caution:rain.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250509",
+      "view_count": 57,
+      "like_count": 5,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7502526160778153259"
     },
     {
       "video_id": "7502157860877454638",
       "title": "Day 125. Tick tock.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250508",
+      "view_count": 276,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7502157860877454638"
     },
     {
       "video_id": "7501779446635056427",
       "title": "Day 124. Eurovision Hype! #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250507",
+      "view_count": 153,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7501779446635056427"
     },
     {
       "video_id": "7501475463056002350",
       "title": "Day 123. Revenge or something.  #minigolfeveryday #minigolf #everyday...",
       "upload_date": "20250506",
+      "view_count": 941,
+      "like_count": 12,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7501475463056002350"
     },
     {
       "video_id": "7501054053233872174",
       "title": "Day 122. Mirror, mirror.  #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250505",
+      "view_count": 14,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7501054053233872174"
     },
     {
       "video_id": "7500747861936852270",
       "title": "Day 121. May the fourth be with you! #minigolfeveryday #minigolf #eve...",
       "upload_date": "20250505",
+      "view_count": 126,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7500747861936852270"
     },
     {
       "video_id": "7500367950772227374",
       "title": "Day 120. Home for the summer.  #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250503",
+      "view_count": 908,
+      "like_count": 18,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7500367950772227374"
     },
     {
       "video_id": "7500001094438014254",
       "title": "Day 119. Assist.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250502",
+      "view_count": 978,
+      "like_count": 23,
+      "comment_count": 2,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7500001094438014254"
     },
     {
       "video_id": "7499620973876940074",
       "title": "Day 118. Coffee! #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250501",
+      "view_count": 289,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7499620973876940074"
     },
     {
       "video_id": "7499205047851470123",
       "title": "Day 117. Kitchen shot.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250430",
+      "view_count": 947,
+      "like_count": 19,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7499205047851470123"
     },
     {
       "video_id": "7498823573042253099",
       "title": "Day 116. Back to work.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250429",
+      "view_count": 1744,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7498823573042253099"
     },
     {
       "video_id": "7498447319310830891",
       "title": "Day 115. Best fest? Best fest! #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250428",
+      "view_count": 157,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7498447319310830891"
     },
     {
       "video_id": "7498095062664924459",
       "title": "Day 114. Ska and sword, pt. 2. #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250427",
+      "view_count": 119,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7498095062664924459"
     },
     {
       "video_id": "7497786178167442734",
       "title": "Day 113. Ska and sword, pt. 1.  #minigolfeveryday #minigolf #everyday...",
       "upload_date": "20250427",
+      "view_count": 579,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7497786178167442734"
     },
     {
       "video_id": "7497367264610635050",
       "title": "Day 112. Earth Day = Every Day #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250425",
+      "view_count": 933,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7497367264610635050"
     },
     {
       "video_id": "7496919675666730282",
       "title": "Day 111. Crafty tunnel.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250424",
+      "view_count": 164,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7496919675666730282"
     },
     {
       "video_id": "7496509877649558826",
       "title": "Day 110. Admin professional day! #minigolfeveryday #minigolf #everyda...",
       "upload_date": "20250423",
+      "view_count": 146,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7496509877649558826"
     },
     {
       "video_id": "7496231161530780974",
       "title": "Day 109. Spring has sprung.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250422",
+      "view_count": 200,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7496231161530780974"
     },
     {
       "video_id": "7495863487030136110",
       "title": "Day 108. Morning prep.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250421",
+      "view_count": 1091,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7495863487030136110"
     },
     {
       "video_id": "7495444501431913774",
       "title": "Day 107. Happy Easter! #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250420",
+      "view_count": 949,
+      "like_count": 15,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7495444501431913774"
     },
     {
       "video_id": "7495148458416835886",
       "title": "Day 106. Getting ready.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250419",
+      "view_count": 946,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7495148458416835886"
     },
     {
       "video_id": "7494808379315997995",
       "title": "Day 105. Red panda.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250419",
+      "view_count": 982,
+      "like_count": 5,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7494808379315997995"
     },
     {
       "video_id": "7494383903466179882",
       "title": "Day 104. Perspective.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250417",
+      "view_count": 992,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7494383903466179882"
     },
     {
       "video_id": "7494056658147036459",
       "title": "Day 103. Avocados at law. #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250416",
+      "view_count": 147,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7494056658147036459"
     },
     {
       "video_id": "7493645367486205230",
       "title": "Day 102. U-turn.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250415",
+      "view_count": 15,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7493645367486205230"
     },
     {
       "video_id": "7493311533964086574",
       "title": "Day 101. Sure, why not? #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250414",
+      "view_count": 310,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7493311533964086574"
     },
     {
       "video_id": "7492862743603825966",
       "title": "Day 100. Invisible. #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250413",
+      "view_count": 1338,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7492862743603825966"
     },
     {
       "video_id": "7492602899609128238",
       "title": "Day 99. Ba dum tsss.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250413",
+      "view_count": 1122,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7492602899609128238"
     },
     {
       "video_id": "7492120803476131114",
       "title": "Day 98. Tee off.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250411",
+      "view_count": 960,
+      "like_count": 21,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7492120803476131114"
     },
     {
       "video_id": "7491414546293345582",
       "title": "Day 97. It’s a sign.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250409",
+      "view_count": 170,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7491414546293345582"
     },
     {
       "video_id": "7491013466854280494",
       "title": "Day 96. I’ve got a bad feeling about this.  #minigolfeveryday #minigo...",
       "upload_date": "20250408",
+      "view_count": 148,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7491013466854280494"
     },
     {
       "video_id": "7490647633187343659",
       "title": "Day 95. Monday, Monday.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250407",
+      "view_count": 156,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7490647633187343659"
     },
     {
       "video_id": "7490357452316233006",
       "title": "Day 94. Duck, duck…more ducks.  #minigolfeveryday #minigolf #everyday...",
       "upload_date": "20250407",
+      "view_count": 1232,
+      "like_count": 7,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7490357452316233006"
     },
     {
       "video_id": "7490019509248625966",
       "title": "Day 93. Juice, bro.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250406",
+      "view_count": 25200,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7490019509248625966"
     },
     {
       "video_id": "7489623478832942382",
       "title": "Day 92. Uppy.  #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250405",
+      "view_count": 23,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7489623478832942382"
     },
     {
       "video_id": "7489193263748959530",
       "title": "Day 91. Running out of ideas. And props.  #minigolfeveryday #minigolf...",
       "upload_date": "20250403",
+      "view_count": 1105,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7489193263748959530"
     },
     {
       "video_id": "7488812878221397290",
       "title": "Day 90. Sometimes it takes 2. #minigolfeveryday #minigolf #everyday #...",
       "upload_date": "20250402",
+      "view_count": 162,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7488812878221397290"
     },
     {
       "video_id": "7488438644773047595",
       "title": "Day 89. Through the legs.  #minigolfeveryday #minigolf #everyday #put...",
       "upload_date": "20250401",
+      "view_count": 135,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7488438644773047595"
     },
     {
       "video_id": "7488069856009456938",
       "title": "Day 88. Classic.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250331",
+      "view_count": 500,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7488069856009456938"
     },
     {
       "video_id": "7487783414574091563",
       "title": "Day 87. Back at ya.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250331",
+      "view_count": 478,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7487783414574091563"
     },
     {
       "video_id": "7487389657001594158",
       "title": "Day 86. Corner shot.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250330",
+      "view_count": 984,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7487389657001594158"
     },
     {
       "video_id": "7487059034466700590",
       "title": "Day 85. New music Friday.  #minigolfeveryday #minigolf #everyday #put...",
       "upload_date": "20250329",
+      "view_count": 164,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7487059034466700590"
     },
     {
       "video_id": "7486657896516767018",
       "title": "Day 84. Cannon.  #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250328",
+      "view_count": 904,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7486657896516767018"
     },
     {
       "video_id": "7486298513630973230",
       "title": "Day 83. Lil ramp.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250327",
+      "view_count": 4541,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7486298513630973230"
     },
     {
       "video_id": "7485926559593876779",
       "title": "Day 82. Blind shot.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250326",
+      "view_count": 977,
+      "like_count": 27,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7485926559593876779"
     },
     {
       "video_id": "7485563293688712494",
       "title": "Day 81. Leftovers.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250325",
+      "view_count": 129,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7485563293688712494"
     },
     {
       "video_id": "7485156791136013614",
       "title": "Day 80. Jumpstart.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250323",
+      "view_count": 1327,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7485156791136013614"
     },
     {
       "video_id": "7484795755568450862",
       "title": "Day 79. New rug.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250323",
+      "view_count": 3789,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7484795755568450862"
     },
     {
       "video_id": "7484360655265353002",
       "title": "Day 78. Same same but different.  #minigolfeveryday #minigolf #everyd...",
       "upload_date": "20250321",
+      "view_count": 813,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7484360655265353002"
     },
     {
       "video_id": "7484072110432849195",
       "title": "Day 77. Beginner’s luck.  #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250321",
+      "view_count": 891,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7484072110432849195"
     },
     {
       "video_id": "7483593870853360939",
       "title": "Day 76. Staple/file.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250319",
+      "view_count": 443,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7483593870853360939"
     },
     {
       "video_id": "7483224503091203374",
       "title": "Day 75. Through the whiteboard.  #minigolfeveryday #minigolf #everyda...",
       "upload_date": "20250318",
+      "view_count": 211,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7483224503091203374"
     },
     {
       "video_id": "7482946788144729390",
       "title": "Day 74. Sláinte.   #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250318",
+      "view_count": 994,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7482946788144729390"
     },
     {
       "video_id": "7482572888575511854",
       "title": "Day 73. Party party.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250317",
+      "view_count": 125,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7482572888575511854"
     },
     {
       "video_id": "7482210120282361134",
       "title": "Day 72. Beware.  #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250316",
+      "view_count": 1279,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7482210120282361134"
     },
     {
       "video_id": "7481720464541322538",
       "title": "Day 71. Pretend this was yesterday.  #minigolfeveryday #minigolf #eve...",
       "upload_date": "20250314",
+      "view_count": 983,
+      "like_count": 13,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7481720464541322538"
     },
     {
       "video_id": "7481092906963455274",
       "title": "Day 70. Prepare to qualify.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250313",
+      "view_count": 911,
+      "like_count": 10,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7481092906963455274"
     },
     {
       "video_id": "7480727097825168686",
       "title": "Day 69. Bye, Mack 🥲 #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250312",
+      "view_count": 953,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7480727097825168686"
     },
     {
       "video_id": "7480367342674005294",
       "title": "Day 68. Twilight.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250311",
+      "view_count": 114,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7480367342674005294"
     },
     {
       "video_id": "7479980568722148651",
       "title": "Day 67. Shoes! #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250310",
+      "view_count": 1004,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7479980568722148651"
     },
     {
       "video_id": "7479616431135542570",
       "title": "Day 66. Drink up.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250309",
+      "view_count": 931,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7479616431135542570"
     },
     {
       "video_id": "7479270153180613934",
       "title": "Day 65. In a dodecagon.  #minigolfeveryday #minigolf #everyday #puttp...",
       "upload_date": "20250308",
+      "view_count": 1032,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7479270153180613934"
     },
     {
       "video_id": "7478818412492475694",
       "title": "Day 64. Plumbing work.  #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250306",
+      "view_count": 287,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7478818412492475694"
     },
     {
       "video_id": "7478464629904166190",
       "title": "Day 63. Basement cleaning.  #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250305",
+      "view_count": 812,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7478464629904166190"
     },
     {
       "video_id": "7478116997709040939",
       "title": "Day 62. Phat Tuesday.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250305",
+      "view_count": 154,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7478116997709040939"
     },
     {
       "video_id": "7477967771666484526",
       "title": "Day 61. Sk8 or die.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250304",
+      "view_count": 65,
+      "like_count": 4,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7477967771666484526"
     },
     {
       "video_id": "7477413420602690858",
       "title": "Day 60. It’s late.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250303",
+      "view_count": 886,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7477413420602690858"
     },
     {
       "video_id": "7477021076392889643",
       "title": "Day 59. Skee-ball.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250302",
+      "view_count": 966,
+      "like_count": 12,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7477021076392889643"
     },
     {
       "video_id": "7476661920943099179",
       "title": "Day 58. The planets aligned! #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250301",
+      "view_count": 519,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7476661920943099179"
     },
     {
       "video_id": "7476281020980071726",
       "title": "Day 57. Through the window.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250228",
+      "view_count": 422,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7476281020980071726"
     },
     {
       "video_id": "7475929566461119787",
       "title": "Day 56. Take the bridge.  #minigolfeveryday #minigolf #everyday #putt...",
       "upload_date": "20250227",
+      "view_count": 866,
+      "like_count": 13,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7475929566461119787"
     },
     {
       "video_id": "7475549619359894830",
       "title": "Day 55. Old Timey.  #minigolfeveryday #minigolf #everyday #puttputt #...",
       "upload_date": "20250226",
+      "view_count": 535,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7475549619359894830"
     },
     {
       "video_id": "7475175737121836334",
       "title": "Day 54. Rome.  #minigolfeveryday #minigolf #everyday #puttputt #fyp #...",
       "upload_date": "20250225",
+      "view_count": 781,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7475175737121836334"
     },
     {
       "video_id": "7474760912310717739",
       "title": "Day 53. Comedy of errors.  #minigolfeveryday #minigolf #everyday #put...",
       "upload_date": "20250223",
+      "view_count": 574,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7474760912310717739"
     },
     {
       "video_id": "7474400926904667434",
       "title": "Day 52. Haircut day.  #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250223",
+      "view_count": 697,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7474400926904667434"
     },
     {
       "video_id": "7474053377727548714",
       "title": "Day 51. Obtuse.  #minigolfeveryday #minigolf #everyday #puttputt #fyp...",
       "upload_date": "20250222",
+      "view_count": 850,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7474053377727548714"
     },
     {
       "video_id": "7473711929232461102",
       "title": "Day 50. Love your pet 🤎 #minigolfeveryday #minigolf #everyday #puttpu...",
       "upload_date": "20250221",
+      "view_count": 679,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7473711929232461102"
     },
     {
       "video_id": "7473346098552163626",
       "title": "Day 49. Airmail.  #minigolfeveryday #minigolf #everyday #puttputt #fy...",
       "upload_date": "20250220",
+      "view_count": 782,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7473346098552163626"
     },
     {
       "video_id": "7472946023237881134",
       "title": "Day 48. I’m a cart.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250219",
+      "view_count": 151,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7472946023237881134"
     },
     {
       "video_id": "7472587820184554798",
       "title": "Day 47. Between two…rocks.  #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250218",
+      "view_count": 782,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7472587820184554798"
     },
     {
       "video_id": "7472240164086025518",
       "title": "Day 46. 12 hours and 6 states later. #minigolfeveryday #minigolf #eve...",
       "upload_date": "20250217",
+      "view_count": 844,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7472240164086025518"
     },
     {
       "video_id": "7471858888971652394",
       "title": "",
       "upload_date": "20250216",
+      "view_count": 852,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7471858888971652394"
     },
     {
       "video_id": "7471495602140892459",
       "title": "Day 44. Aaaand here’s the condo for the weekend.  #minigolfeveryday #...",
       "upload_date": "20250215",
+      "view_count": 426,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7471495602140892459"
     },
     {
       "video_id": "7471116211162631470",
       "title": "Day 43. We’re at the hotel.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250214",
+      "view_count": 166,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7471116211162631470"
     },
     {
       "video_id": "7470733435515079982",
       "title": "",
       "upload_date": "20250213",
+      "view_count": 158,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7470733435515079982"
     },
     {
       "video_id": "7470324743401409834",
       "title": "Day 41. Ricochet.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
       "upload_date": "20250212",
+      "view_count": 844,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7470324743401409834"
     },
     {
       "video_id": "7469956894501637419",
       "title": "Day 40. After 172 attempts…I still couldn’t sink it.  #minigolfeveryd...",
       "upload_date": "20250211",
+      "view_count": 115,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7469956894501637419"
     },
     {
       "video_id": "7469509188956278058",
       "title": "Day 39. Can they both lose? #minigolfeveryday #minigolf #everyday #pu...",
       "upload_date": "20250209",
+      "view_count": 700,
+      "like_count": 15,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7469509188956278058"
     },
     {
       "video_id": "7469236949119798570",
       "title": "Day 38. Reuse.  #minigolfeveryday #minigolf #everyday #puttputt #fyp ...",
       "upload_date": "20250209",
+      "view_count": 825,
+      "like_count": 5,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7469236949119798570"
     },
     {
       "video_id": "7468858873756028202",
       "title": "Day 37. MVP! #minigolfeveryday #minigolf #everyday #puttputt #fyp #go...",
       "upload_date": "20250208",
+      "view_count": 370,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7468858873756028202"
     },
     {
       "video_id": "7468488782841515307",
       "title": "Day 36. The mountains are calling.  #minigolfeveryday #minigolf #ever...",
       "upload_date": "20250207",
+      "view_count": 7,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7468488782841515307"
     },
     {
       "video_id": "7468137829973888298",
       "title": "Day 35. Heffalumps.  #minigolfeveryday #minigolf #everyday #puttputt ...",
       "upload_date": "20250206",
+      "view_count": 1704,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7468137829973888298"
     },
     {
       "video_id": "7467725080391568686",
       "title": "Day 34. I want to be the very best.  #minigolfeveryday #minigolf #eve...",
       "upload_date": "20250205",
+      "view_count": 179,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7467725080391568686"
     },
     {
       "video_id": "7467349757258632490",
       "title": "Day 33. Off the rail.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250204",
+      "view_count": 66,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7467349757258632490"
     },
     {
       "video_id": "7466999095182265642",
       "title": "Day 32. Jet lag. What day is it?  #minigolfeveryday #minigolf #everyd...",
       "upload_date": "20250203",
+      "view_count": 274,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7466999095182265642"
     },
     {
       "video_id": "7466603677386542379",
       "title": "Day 31. Juncon Day 4. Rain.  #minigolfeveryday #minigolf #everyday #p...",
       "upload_date": "20250201",
+      "view_count": 601,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7466603677386542379"
     },
     {
       "video_id": "7466346910018866478",
       "title": "Day 30. Juncon Day 3. So. Many. Dice.  #minigolfeveryday #minigolf #e...",
       "upload_date": "20250201",
+      "view_count": 3587,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7466346910018866478"
     },
     {
       "video_id": "7465838163613781291",
       "title": "Day 29. Juncon Day 2 (with mountains). #minigolfeveryday #minigolf #e...",
       "upload_date": "20250130",
+      "view_count": 135,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7465838163613781291"
     },
     {
       "video_id": "7465534193238347051",
       "title": "Day 28. JunCon Day 1. #minigolfeveryday #minigolf #everyday #puttputt...",
       "upload_date": "20250130",
+      "view_count": 197,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7465534193238347051"
     },
     {
       "video_id": "7465119059089214766",
       "title": "Day 27. Post Solitude Mountain.  #minigolfeveryday #minigolf #everyda...",
       "upload_date": "20250128",
+      "view_count": 1014,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7465119059089214766"
     },
     {
       "video_id": "7464742427983662379",
       "title": "Day 26. Utah or bust.  #minigolfeveryday #minigolf #everyday #puttput...",
       "upload_date": "20250127",
+      "view_count": 936,
+      "like_count": 13,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7464742427983662379"
     },
     {
       "video_id": "7464360953174396203",
       "title": "Day 25. Circle the wagons! #minigolfeveryday #minigolf #everyday #gob...",
       "upload_date": "20250126",
+      "view_count": 437,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7464360953174396203"
     },
     {
       "video_id": "7464038750583131438",
       "title": "Day 24. Shopping.  #minigolfeveryday #minigolf #everyday #gobills #pu...",
       "upload_date": "20250126",
+      "view_count": 176,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7464038750583131438"
     },
     {
       "video_id": "7463694613161856302",
       "title": "Day 23. Back up again.  #minigolfeveryday #minigolf #everyday #gobill...",
       "upload_date": "20250125",
+      "view_count": 341,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7463694613161856302"
     },
     {
       "video_id": "7463284283596328238",
       "title": "Day 22. Confession time.  #minigolfeveryday #minigolf #everyday #gobi...",
       "upload_date": "20250124",
+      "view_count": 849,
+      "like_count": 37,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7463284283596328238"
     },
     {
       "video_id": "7462846805160807726",
       "title": "Day 21. Back to basics.  #minigolfeveryday #minigolf #everyday #gobil...",
       "upload_date": "20250122",
+      "view_count": 2184,
+      "like_count": 6,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7462846805160807726"
     },
     {
       "video_id": "7462432349746187563",
       "title": "Day 20. Snow business.  #minigolfeveryday #minigolf #everyday #gobill...",
       "upload_date": "20250121",
+      "view_count": 123,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7462432349746187563"
     },
     {
       "video_id": "7462089610571599146",
       "title": "Day 19. LET’S GOOOO!!! #minigolfeveryday #minigolf #everyday #gobills...",
       "upload_date": "20250120",
+      "view_count": 592,
+      "like_count": 5,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7462089610571599146"
     },
     {
       "video_id": "7461717018161597739",
       "title": "Day 18. Improv.  #minigolfeveryday #minigolf #everyday #gobills #putt...",
       "upload_date": "20250119",
+      "view_count": 4544,
+      "like_count": 43,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7461717018161597739"
     },
     {
       "video_id": "7461245364276956462",
       "title": "Day 17. Secret Tunnel.  #minigolfeveryday #minigolf #everyday #gobill...",
       "upload_date": "20250118",
+      "view_count": 1021,
+      "like_count": 8,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7461245364276956462"
     },
     {
       "video_id": "7460937449913601323",
       "title": "Day 16. Jump! #minigolfeveryday #minigolf #everyday #gobills #puttput...",
       "upload_date": "20250117",
+      "view_count": 1040,
+      "like_count": 13,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7460937449913601323"
     },
     {
       "video_id": "7460583028826410286",
       "title": "Day 15. Protein is the goal.  #minigolfeveryday #minigolf #everyday #...",
       "upload_date": "20250116",
+      "view_count": 3183,
+      "like_count": 16,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7460583028826410286"
     },
     {
       "video_id": "7460318695869599022",
       "title": "Day 14. National Bagel Day. #minigolfeveryday #minigolf #everyday #go...",
       "upload_date": "20250116",
+      "view_count": 429,
+      "like_count": 6,
+      "comment_count": 2,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7460318695869599022"
     },
     {
       "video_id": "7459954205537832238",
       "title": "Day 13. Ramp! #minigolfeveryday #minigolf #everyday #gobills #puttput...",
       "upload_date": "20250115",
+      "view_count": 731,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7459954205537832238"
     },
     {
       "video_id": "7459526440988527915",
       "title": "Day 12. 4th and 1. #minigolfeveryday #minigolf #everyday #gobills #pu...",
       "upload_date": "20250113",
+      "view_count": 908,
+      "like_count": 8,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7459526440988527915"
     },
     {
       "video_id": "7459225199070760238",
       "title": "Day 11. Apres ski. #minigolfeveryday #minigolf #everyday #gobills #pu...",
       "upload_date": "20250113",
+      "view_count": 13,
+      "like_count": 2,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7459225199070760238"
     },
     {
       "video_id": "7458816369404972331",
       "title": "Day 10. He’s not a fan.  #minigolfeveryday #minigolf #everyday #gobil...",
       "upload_date": "20250112",
+      "view_count": 182,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7458816369404972331"
     },
     {
       "video_id": "7458400868094790955",
       "title": "Day 9. Automatic ball return.  #minigolfeveryday #minigolf #everyday ...",
       "upload_date": "20250110",
+      "view_count": 802,
+      "like_count": 10,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7458400868094790955"
     },
     {
       "video_id": "7458122286642597162",
       "title": "Day 8. Almost forgot.  #minigolfeveryday #minigolf #everyday #gobills...",
       "upload_date": "20250110",
+      "view_count": 449,
+      "like_count": 4,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7458122286642597162"
     },
     {
       "video_id": "7457681065394588971",
       "title": "Day 7. Blacklight golf. 👎 Editing credit: @Stuntant  #minigolfeveryda...",
       "upload_date": "20250108",
+      "view_count": 163,
+      "like_count": 3,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7457681065394588971"
     },
     {
       "video_id": "7457376983069084971",
       "title": "Day 6. Warm and comfy.  #minigolfeveryday #minigolf #everyday #gobill...",
       "upload_date": "20250108",
+      "view_count": 796,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7457376983069084971"
     },
     {
       "video_id": "7456997269108313390",
       "title": "Day 5. Snow day.  #minigolfeveryday #minigolf #everyday #gobills #put...",
       "upload_date": "20250107",
+      "view_count": 835,
+      "like_count": 7,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7456997269108313390"
     },
     {
       "video_id": "7456547325335440682",
       "title": "Day 4. Go Bills! #minigolfeveryday #minigolf #everyday #gobills #putt...",
       "upload_date": "20250105",
+      "view_count": 884,
+      "like_count": 7,
+      "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7456547325335440682"
     },
     {
       "video_id": "7456192441499045166",
       "title": "Day 3. Moving (adorable) obstacles  #minigolfeveryday #minigolf #ever...",
       "upload_date": "20250104",
+      "view_count": 959,
+      "like_count": 21,
+      "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7456192441499045166"
-    },
-    {
-      "video_id": "7455767169155239214",
-      "title": "Day 2. At the mall.  #minigolfeveryday #minigolf #everyday #gobills #...",
-      "upload_date": "20250103",
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7455767169155239214"
-    },
-    {
-      "video_id": "7455430384231255342",
-      "title": "Day 1. Finding my gear. ⛳️ #minigolfeveryday #minigolf #everyday #gob...",
-      "upload_date": "20250102",
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7455430384231255342"
     }
   ],
-  "last_updated": "2025-07-28T21:46:34.620321",
-  "total_count": 181
+  "last_updated": "2025-07-29T08:21:41.975464",
+  "total_count": 200
 }
