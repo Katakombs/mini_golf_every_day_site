@@ -159,55 +159,7 @@ class BlogAdminApp {
       });
     }
     
-    // Mobile-friendly event handling for database update button
-    const updateDatabaseButton = document.getElementById('quick-update-database');
-    if (updateDatabaseButton) {
-      let touchHandled = false;
-      
-      // Add touchstart for mobile devices (primary method)
-      updateDatabaseButton.addEventListener('touchstart', (e) => {
-        console.log('📱 Touch start detected on database update button');
-        e.preventDefault();
-        e.stopPropagation();
-        touchHandled = true;
-        
-        // Add a small delay to ensure touch is registered
-        setTimeout(() => {
-          console.log('📱 Executing handleUpdateDatabase from touchstart');
-          this.handleUpdateDatabase();
-        }, 100);
-      }, { passive: false });
-      
-      // Add touchend to reset flag
-      updateDatabaseButton.addEventListener('touchend', (e) => {
-        console.log('📱 Touch end detected on database update button');
-        e.preventDefault();
-        e.stopPropagation();
-      }, { passive: false });
-      
-      // Add click as fallback for desktop and some mobile browsers
-      updateDatabaseButton.addEventListener('click', (e) => {
-        console.log('🖱️ Click detected on database update button, touchHandled:', touchHandled);
-        
-        // Prevent double execution on mobile devices
-        if (touchHandled) {
-          console.log('🚫 Skipping click handler - already handled by touch');
-          touchHandled = false;
-          return;
-        }
-        
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🖱️ Executing handleUpdateDatabase from click');
-        this.handleUpdateDatabase();
-      });
-      
-      // Reset touch flag after a delay
-      updateDatabaseButton.addEventListener('touchcancel', () => {
-        console.log('📱 Touch cancelled');
-        touchHandled = false;
-      });
-    }
+
     document.getElementById('admin-all-posts-btn').addEventListener('click', () => {
       this.closeDropdown();
       this.showPostsManagement('all');
@@ -246,14 +198,7 @@ class BlogAdminApp {
       }
     });
     
-    // Database update modal event handlers
-    document.getElementById('close-database-update-modal').addEventListener('click', () => this.hideDatabaseUpdateModal());
-    document.getElementById('close-database-update-btn').addEventListener('click', () => this.hideDatabaseUpdateModal());
-    document.getElementById('database-update-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'database-update-modal') {
-        this.hideDatabaseUpdateModal();
-      }
-    });
+
   }
 
   // Modal methods
@@ -268,19 +213,7 @@ class BlogAdminApp {
     this.clearAdminAuthMessages();
   }
 
-  showDatabaseUpdateModal(content) {
-    const modal = document.getElementById('database-update-modal');
-    const contentDiv = document.getElementById('database-update-content');
-    contentDiv.innerHTML = content;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-  }
 
-  hideDatabaseUpdateModal() {
-    const modal = document.getElementById('database-update-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  }
 
   // Auth handlers
   async handleAdminLogin(e) {
@@ -1130,7 +1063,7 @@ class BlogAdminApp {
     }
     
     // Show loading state
-    button.textContent = '🔄 Pulling Videos...';
+                    button.textContent = 'Pulling Videos...';
     button.disabled = true;
     
     // Add mobile-friendly visual feedback
@@ -1218,151 +1151,7 @@ class BlogAdminApp {
     }
   }
 
-  async handleUpdateDatabase() {
-    console.log('🗄️ handleUpdateDatabase called - method entry');
-    console.log('🔧 User agent:', navigator.userAgent);
-    console.log('📱 Window dimensions:', window.innerWidth, 'x', window.innerHeight);
-    
-    const button = document.getElementById('quick-update-database');
-    if (!button) {
-      console.error('❌ Database update button element not found!');
-      return;
-    }
-    
-    console.log('🔲 Database update button found:', button);
-    console.log('🔲 Button disabled status:', button.disabled);
-    
-    const originalText = button.textContent;
-    console.log('📝 Original button text:', originalText);
-    
-    // Prevent double-clicking on mobile
-    if (button.disabled) {
-      console.log('⚠️ Button already disabled, exiting');
-      return;
-    }
-    
-    // Show loading state
-    button.textContent = '🔄 Updating Database...';
-    button.disabled = true;
-    
-    // Add mobile-friendly visual feedback
-    button.style.opacity = '0.6';
-    button.style.cursor = 'not-allowed';
-    
-    try {
-      console.log('🗄️ Starting database update request...');
-      
-      const token = localStorage.getItem('blog_token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
-      console.log('🔐 Using token:', token.substring(0, 20) + '...');
-      
-      // Shorter timeout for database-only update (1 minute)
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const timeout = isMobile ? 60000 : 120000; // 1 minute for mobile, 2 minutes for desktop
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-      
-      const response = await fetch(`${this.apiBase}/api/admin/update-database`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
 
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response headers:', response.headers);
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Success response:', data);
-        
-        // Create modal content for success
-        const modalContent = `
-          <div class="text-center">
-            <div class="text-6xl mb-4">✅</div>
-            <h3 class="text-xl font-semibold text-green-600 mb-2">Database Updated Successfully!</h3>
-            <p class="text-gray-600 mb-4">This operation syncs existing video data from the JSON file to the database without fetching new videos from TikTok.</p>
-            <div class="bg-green-50 p-4 rounded-lg">
-              <p class="text-green-800"><strong>Message:</strong> ${data.message || 'Success'}</p>
-              ${data.output ? `<p class="text-green-700 mt-2 text-sm"><strong>Output:</strong> ${data.output.substring(0, 200)}${data.output.length > 200 ? '...' : ''}</p>` : ''}
-            </div>
-          </div>
-        `;
-        
-        this.showDatabaseUpdateModal(modalContent);
-        
-        // Optionally refresh the page after a delay
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      } else {
-        console.error('❌ Error response status:', response.status);
-        
-        let errorMessage = `HTTP ${response.status}`;
-        try {
-          const error = await response.json();
-          errorMessage = error.error || error.message || errorMessage;
-          console.error('❌ Error details:', error);
-        } catch (parseError) {
-          console.error('❌ Could not parse error response:', parseError);
-          const errorText = await response.text();
-          console.error('❌ Raw error response:', errorText);
-          errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}`;
-        }
-        
-        // Create modal content for error
-        const modalContent = `
-          <div class="text-center">
-            <div class="text-6xl mb-4">❌</div>
-            <h3 class="text-xl font-semibold text-red-600 mb-2">Database Update Failed</h3>
-            <p class="text-gray-600 mb-4">There was an error updating the database.</p>
-            <div class="bg-red-50 p-4 rounded-lg">
-              <p class="text-red-800"><strong>Error:</strong> ${errorMessage}</p>
-            </div>
-          </div>
-        `;
-        
-        this.showDatabaseUpdateModal(modalContent);
-      }
-    } catch (error) {
-      console.error('💥 Network/JavaScript error:', error);
-      
-      let errorMessage = error.message;
-      if (error.name === 'AbortError') {
-        errorMessage = 'Request timed out. Please try again.';
-      } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        errorMessage = 'Network error. Please check your connection.';
-      }
-      
-      // Create modal content for network error
-      const modalContent = `
-        <div class="text-center">
-          <div class="text-6xl mb-4">💥</div>
-          <h3 class="text-xl font-semibold text-red-600 mb-2">Network Error</h3>
-          <p class="text-gray-600 mb-4">There was a problem connecting to the server.</p>
-          <div class="bg-red-50 p-4 rounded-lg">
-            <p class="text-red-800"><strong>Error:</strong> ${errorMessage}</p>
-          </div>
-        </div>
-      `;
-      
-      this.showDatabaseUpdateModal(modalContent);
-    } finally {
-      // Restore button state
-      button.textContent = originalText;
-      button.disabled = false;
-      button.style.opacity = '1';
-      button.style.cursor = 'pointer';
-    }
-  }
 
   showMiniGolfDialog() {
     // Remove any existing modals first

@@ -1395,6 +1395,36 @@ def pull_videos(current_user):
             # Clean the output to remove any problematic characters
             output_text = result.stdout.replace('\x00', '').strip()
             
+            # Now run the database migration to sync JSON data to database
+            print("Running database migration to sync JSON data...")
+            db_result = None
+            
+            for python_exec in python_executables:
+                try:
+                    # Run the migration script
+                    env = os.environ.copy()
+                    env['PYTHONDONTWRITEBYTECODE'] = '1'
+                    env['PYTHONUNBUFFERED'] = '1'
+                    env['PYTHONIOENCODING'] = 'utf-8'
+                    env['LC_ALL'] = 'en_US.UTF-8'
+                    env['LANG'] = 'en_US.UTF-8'
+                    
+                    db_result = subprocess.run([
+                        python_exec, 'migrate_videos_to_db.py'
+                    ], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=60, env=env)
+                    
+                    if db_result.returncode == 0:
+                        print("Database migration completed successfully")
+                        break
+                    else:
+                        print(f"Database migration failed: {db_result.stderr}")
+                        
+                except FileNotFoundError:
+                    continue
+                except Exception as e:
+                    print(f"Database migration error: {str(e)}")
+                    continue
+            
             # Parse the output to extract stats if available
             output_lines = output_text.split('\n') if output_text else []
             stats = {
@@ -1465,129 +1495,7 @@ def pull_videos(current_user):
         release_process_slot()
 
 
-@app.route('/api/admin/update-database', methods=['POST'])
-@token_required
-@admin_required
-def update_database_only(current_user):
-    """Update database from JSON data only - lightweight for shared hosting"""
-    import subprocess
-    import os
-    
-    # Check process limits for shared hosting
-    if not acquire_process_slot():
-        return jsonify({
-            'error': 'Server is busy. Please try again in a few minutes.',
-            'details': 'Too many concurrent processes'
-        }), 503
-    
-    try:
-        # Get the absolute path to the database update scripts
-        update_script_path = os.path.join(os.path.dirname(__file__), 'update_database_only.py')
-        simple_script_path = os.path.join(os.path.dirname(__file__), 'simple_db_update.py')
-        
-        # List of Python executables to try (prioritize system Python for shared hosting)
-        python_executables = [
-            'python3',
-            'python',
-            '/usr/bin/python3',
-            '/usr/bin/python'
-        ]
-        
-        result = None
-        last_error = None
-        
-        # Try the main update script first
-        for python_exec in python_executables:
-            try:
-                # Run the lightweight database update script with environment fixes
-                env = os.environ.copy()
-                env['PYTHONPATH'] = ''
-                env['PYTHONDONTWRITEBYTECODE'] = '1'
-                env['PYTHONUNBUFFERED'] = '1'
-                env['PYTHONIOENCODING'] = 'utf-8'
-                env['LC_ALL'] = 'en_US.UTF-8'
-                env['LANG'] = 'en_US.UTF-8'
-                
-                result = subprocess.run([
-                    python_exec, update_script_path, '--yes', '--quiet'
-                ], capture_output=True, text=True, encoding='ascii', errors='replace', timeout=120, env=env)
-                
-                # If successful, break out of the loop
-                if result.returncode == 0:
-                    break
-                else:
-                    last_error = f"Exit code {result.returncode}: {result.stderr}"
-                    
-            except FileNotFoundError:
-                continue  # Try next Python executable
-            except Exception as e:
-                last_error = str(e)
-                continue
-        
-        # If main script failed, try the simple fallback script
-        if result is None or result.returncode != 0:
-            print("🔄 Trying fallback simple script...")
-            for python_exec in python_executables:
-                try:
-                    env = os.environ.copy()
-                    env['PYTHONPATH'] = ''
-                    env['PYTHONDONTWRITEBYTECODE'] = '1'
-                    env['PYTHONUNBUFFERED'] = '1'
-                    env['PYTHONIOENCODING'] = 'utf-8'
-                    env['LC_ALL'] = 'en_US.UTF-8'
-                    env['LANG'] = 'en_US.UTF-8'
-                    
-                    result = subprocess.run([
-                        python_exec, simple_script_path
-                    ], capture_output=True, text=True, encoding='ascii', errors='replace', timeout=120, env=env)
-                    
-                    if result.returncode == 0:
-                        break
-                    else:
-                        last_error = f"Fallback script failed: Exit code {result.returncode}: {result.stderr}"
-                        
-                except FileNotFoundError:
-                    continue
-                except Exception as e:
-                    last_error = f"Fallback script error: {str(e)}"
-                    continue
-        
-        if result is None:
-            return jsonify({
-                'error': 'Failed to update database',
-                'details': 'No working Python executable found',
-                'attempted_executables': python_executables
-            }), 500
-        
-        if result.returncode == 0:
-            # Clean the output to remove any problematic characters
-            output_text = result.stdout.replace('\x00', '').strip()
-            
-            return jsonify({
-                'message': 'Database updated successfully',
-                'output': output_text[:500] + '...' if len(output_text) > 500 else output_text
-            }), 200
-        else:
-            # Clean error output
-            error_text = result.stderr.replace('\x00', '').strip() if result.stderr else 'Unknown error'
-            
-            return jsonify({
-                'error': 'Failed to update database',
-                'details': error_text[:200] + '...' if len(error_text) > 200 else error_text,
-                'attempted_executables': python_executables
-            }), 500
-            
-    except subprocess.TimeoutExpired:
-        return jsonify({'error': 'Database update timed out (2 minutes)'}), 408
-    except Exception as e:
-        return jsonify({
-            'error': 'Failed to update database',
-            'details': str(e),
-            'attempted_executables': python_executables
-        }), 500
-    finally:
-        # Always release the process slot
-        release_process_slot()
+
 
 
 # Database Setup Route (for production initialization)

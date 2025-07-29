@@ -230,29 +230,7 @@
   box-shadow: none;
 }
 
-#quick-update-database {
-  font-size: 16px;
-  padding: 12px 24px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-}
 
-#quick-update-database:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#quick-update-database:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#quick-update-database:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
     
     .ql-editor iframe {
       max-width: 100%;
@@ -392,9 +370,7 @@
           <button id="quick-pull-videos" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition touch-manipulation min-h-12">
             🎥 Pull Latest Videos
           </button>
-          <button id="quick-update-database" class="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition touch-manipulation min-h-12">
-            🗄️ Update Database Only
-          </button>
+
         </div>
       </div>
 
@@ -442,29 +418,7 @@
     </div>
   </main>
 
-  <!-- Database Update Results Modal -->
-  <div id="database-update-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">🗄️ Database Update Results</h2>
-        <button id="close-database-update-modal" class="text-gray-500 hover:text-gray-700">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      
-      <div id="database-update-content" class="space-y-4">
-        <!-- Content will be populated by JavaScript -->
-      </div>
-      
-      <div class="flex justify-end mt-6">
-        <button id="close-database-update-btn" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition">
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Admin Login Modal -->
   <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">

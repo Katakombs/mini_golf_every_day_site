@@ -170,7 +170,7 @@
             }
 
             try {
-                statusEl.innerHTML = '🔄 Logging in...';
+                statusEl.innerHTML = 'Logging in...';
                 statusEl.className = 'status info';
                 statusEl.style.display = 'block';
 
@@ -280,7 +280,7 @@
             try {
                 uploadBtn.disabled = true;
                 uploadBtn.textContent = 'Uploading...';
-                showStatus('info', '🔄 Uploading image...');
+                showStatus('info', 'Uploading image...');
 
                 const formData = new FormData();
                 formData.append('file', selectedFile);

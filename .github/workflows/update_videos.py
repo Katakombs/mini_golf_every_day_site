@@ -133,7 +133,7 @@ def main():
         print(f"🎬 Most recent: {existing_videos[0].get('title', 'Unknown')[:60]}...")
     
     # Fetch latest videos with yt-dlp
-    print("\n🔄 Fetching latest videos...")
+    print("\nFetching latest videos...")
     new_videos = run_ytdlp()
     
     if not new_videos:

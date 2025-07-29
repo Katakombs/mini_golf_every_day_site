@@ -124,11 +124,11 @@ def update_videos(shared_hosting=False):
     if shared_hosting:
         optimize_for_shared_hosting()
     
-    print("🎬 Mini Golf Every Day - Video Update")
+    print("Mini Golf Every Day - Video Update")
     print("=" * 50)
     
     # Load existing videos
-    print("📊 Loading existing video database...")
+    print("Loading existing video database...")
     current_videos = load_video_data()
     current_count = len(current_videos)
     print(f"   Current videos in database: {current_count}")
@@ -137,11 +137,11 @@ def update_videos(shared_hosting=False):
     current_ids = set(video['video_id'] for video in current_videos)
     
     # Fetch latest videos
-    print("\n🔍 Fetching latest videos from @minigolfeveryday...")
+    print("\nFetching latest videos from @minigolfeveryday...")
     latest_videos = get_latest_videos_ytdlp(shared_hosting=shared_hosting)
     
     if not latest_videos:
-        print("❌ Failed to fetch videos")
+        print("Failed to fetch videos")
         return {
             'processed': 0,
             'new': 0,
@@ -167,23 +167,23 @@ def update_videos(shared_hosting=False):
     merged_videos = latest_videos
     
     # Save updated data
-    print(f"\n💾 Saving {len(merged_videos)} videos to database...")
+    print(f"\nSaving {len(merged_videos)} videos to database...")
     save_video_data(merged_videos)
     
     # Update database - only if not in shared hosting mode or if explicitly requested
     if not shared_hosting:
-        print("🗄️  Updating MySQL database...")
+        print("Updating MySQL database...")
         try:
             result = subprocess.run(['python3', 'migrate_videos_to_db.py'], 
                                   capture_output=True, text=True, timeout=60)
             if result.returncode == 0:
-                print("✅ MySQL database updated successfully")
+                print("MySQL database updated successfully")
             else:
-                print(f"⚠️  Database update failed: {result.stderr}")
+                print(f"Database update failed: {result.stderr}")
         except Exception as e:
-            print(f"⚠️  Could not run database migration: {e}")
+            print(f"Could not run database migration: {e}")
     else:
-        print("🗄️  Skipping MySQL update in shared hosting mode")
+        print("Skipping MySQL update in shared hosting mode")
     
     # Calculate statistics
     stats = {
@@ -194,22 +194,22 @@ def update_videos(shared_hosting=False):
     }
     
     # Output statistics in the format expected by the server
-    print(f"\n📈 Update Statistics:")
+    print(f"\nUpdate Statistics:")
     print(f"   Processed: {stats['processed']} videos")
     print(f"   New: {stats['new']} videos")
     print(f"   Updated: {stats['updated']} videos")
     
     if new_videos:
-        print(f"\n🆕 New videos found:")
+        print(f"\nNew videos found:")
         for video in new_videos[:5]:  # Show first 5 new videos
             print(f"   - {video['title'][:60]}...")
     
     if updated_videos:
-        print(f"\n🔄 Updated videos:")
+        print(f"\nUpdated videos:")
         for video in updated_videos[:5]:  # Show first 5 updated videos
             print(f"   - {video['title'][:60]}...")
     
-    print(f"\n🎉 Update complete! Database now has {len(merged_videos)} videos")
+    print(f"\nUpdate complete! Database now has {len(merged_videos)} videos")
     
     # Force garbage collection after completion
     gc.collect()
@@ -245,13 +245,13 @@ def main():
         stats = update_videos(shared_hosting=args.shared_hosting)
         if stats['success']:
             if not args.quiet:
-                print(f"\n✅ Update completed successfully")
+                print(f"\nUpdate completed successfully")
                 print(f"   Processed: {stats['processed']} videos")
                 print(f"   New: {stats['new']} videos") 
                 print(f"   Updated: {stats['updated']} videos")
             return 0
         else:
-            print("\n❌ Update failed. Please try again or check the issues above.")
+            print("\nUpdate failed. Please try again or check the issues above.")
             return 1
     else:
         if not args.quiet:
@@ -263,8 +263,8 @@ if __name__ == "__main__":
         exit_code = main()
         sys.exit(exit_code)
     except KeyboardInterrupt:
-        print("\n🛑 Cancelled by user")
+        print("\nCancelled by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n💥 Unexpected error: {e}")
+        print(f"\nUnexpected error: {e}")
         sys.exit(1)

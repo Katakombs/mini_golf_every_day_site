@@ -120,7 +120,7 @@ def fetch_all_videos():
             print("   JSON file is updated, manually run: python migrate_videos_to_db.py")
         
         # Update HTML
-        print("🔄 Updating watch.html with all videos...")
+        print("Updating watch.html with all videos...")
         success = manager.update_watch_html(all_videos)
         
         if success:

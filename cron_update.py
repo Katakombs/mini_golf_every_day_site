@@ -127,7 +127,7 @@ def main():
     logger.info(f"📊 Initial video count: {initial_count}")
     
     # Trigger update
-    logger.info("🔄 Starting video update...")
+    logger.info("Starting video update...")
     update_ok, update_data = update_videos(DOMAIN)
     
     if not update_ok:
