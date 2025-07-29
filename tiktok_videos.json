@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7532594980683042103",
+      "title": "Day 203. Tea time.  #minigolfeveryday #minigolf #puttputt #obstacle  ...",
+      "upload_date": "20250729",
+      "view_count": 80,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7532594980683042103"
+    },
+    {
       "video_id": "7532320393600781581",
       "title": "Day 202. Perspective.  #minigolfeveryday #minigolf #puttputt #perspec...",
       "upload_date": "20250729",
@@ -1790,17 +1799,8 @@
       "like_count": 7,
       "comment_count": 1,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7456547325335440682"
-    },
-    {
-      "video_id": "7456192441499045166",
-      "title": "Day 3. Moving (adorable) obstacles  #minigolfeveryday #minigolf #ever...",
-      "upload_date": "20250104",
-      "view_count": 959,
-      "like_count": 21,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7456192441499045166"
     }
   ],
-  "last_updated": "2025-07-29T16:19:32.286436",
+  "last_updated": "2025-07-29T20:17:58.890170",
   "total_count": 200
 }
