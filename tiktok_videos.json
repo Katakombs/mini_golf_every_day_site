@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7533299160217357623",
+      "title": "Day 205. TBT: River bank.  #minigolfeveryday #minigolf #puttputt #riv...",
+      "upload_date": "20250731",
+      "view_count": 199,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7533299160217357623"
+    },
+    {
       "video_id": "7532965957799660855",
       "title": "Day 204. Pinkalicious.  #minigolfeveryday #minigolf #puttputt #obstac...",
       "upload_date": "20250730",
@@ -1790,17 +1799,8 @@
       "like_count": 7,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7457376983069084971"
-    },
-    {
-      "video_id": "7456997269108313390",
-      "title": "Day 5. Snow day.  #minigolfeveryday #minigolf #everyday #gobills #put...",
-      "upload_date": "20250107",
-      "view_count": 835,
-      "like_count": 7,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7456997269108313390"
     }
   ],
-  "last_updated": "2025-07-31T16:19:53.676278",
+  "last_updated": "2025-07-31T20:17:29.197095",
   "total_count": 200
 }
