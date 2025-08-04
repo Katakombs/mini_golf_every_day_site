@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7534534788988882189",
+      "title": "Day 207. Tarp.  #minigolfeveryday #minigolf #puttputt #camping #improv",
+      "upload_date": "20250804",
+      "view_count": 720,
+      "like_count": 53,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7534534788988882189"
+    },
+    {
       "video_id": "7533746717611527479",
       "title": "Day 206. Genesis.  #minigolfeveryday #minigolf #puttputt #originstory...",
       "upload_date": "20250801",
@@ -1790,17 +1799,8 @@
       "like_count": 4,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7458122286642597162"
-    },
-    {
-      "video_id": "7457681065394588971",
-      "title": "Day 7. Blacklight golf. 👎 Editing credit: @Stuntant  #minigolfeveryda...",
-      "upload_date": "20250108",
-      "view_count": 163,
-      "like_count": 3,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7457681065394588971"
     }
   ],
-  "last_updated": "2025-08-04T01:23:46.243282",
+  "last_updated": "2025-08-04T04:53:12.091723",
   "total_count": 200
 }
