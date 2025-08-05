@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7535189129261272333",
+      "title": "Day 209. Guardrails.  #minigolfeveryday #minigolf #puttputt #officepr...",
+      "upload_date": "20250805",
+      "view_count": 79,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7535189129261272333"
+    },
+    {
       "video_id": "7534828415690525965",
       "title": "Day 208. So empty.  #minigolfeveryday #minigolf #puttputt #officeprop...",
       "upload_date": "20250804",
@@ -1790,17 +1799,8 @@
       "like_count": 4,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7458816369404972331"
-    },
-    {
-      "video_id": "7458400868094790955",
-      "title": "Day 9. Automatic ball return.  #minigolfeveryday #minigolf #everyday ...",
-      "upload_date": "20250110",
-      "view_count": 802,
-      "like_count": 10,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7458400868094790955"
     }
   ],
-  "last_updated": "2025-08-05T16:17:07.195652",
+  "last_updated": "2025-08-05T20:16:57.702218",
   "total_count": 200
 }
