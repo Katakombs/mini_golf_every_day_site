@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7536313435252886798",
+      "title": "Day 212. Cornhole.  #minigolfeveryday #minigolf #puttputt #cornhole #...",
+      "upload_date": "20250808",
+      "view_count": 202,
+      "like_count": 2,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7536313435252886798"
+    },
+    {
       "video_id": "7535941646815366455",
       "title": "Day 211. Ramp-ish.  #minigolfeveryday #minigolf #puttputt #stool #ramp",
       "upload_date": "20250807",
@@ -1790,17 +1799,8 @@
       "like_count": 7,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7459954205537832238"
-    },
-    {
-      "video_id": "7459526440988527915",
-      "title": "Day 12. 4th and 1. #minigolfeveryday #minigolf #everyday #gobills #pu...",
-      "upload_date": "20250113",
-      "view_count": 908,
-      "like_count": 8,
-      "comment_count": 1,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7459526440988527915"
     }
   ],
-  "last_updated": "2025-08-08T20:17:05.346990",
+  "last_updated": "2025-08-09T01:12:35.022152",
   "total_count": 200
 }
