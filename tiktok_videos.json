@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7537445883948879117",
+      "title": "Day 215. Diggy diggy hole.  #minigolfeveryday #minigolf #puttputt #be...",
+      "upload_date": "20250811",
+      "view_count": 1101,
+      "like_count": 40,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7537445883948879117"
+    },
+    {
       "video_id": "7537156235573955895",
       "title": "Day 214. Water hazard.  #minigolfeveryday #minigolf #puttputt #beach ...",
       "upload_date": "20250811",
@@ -1790,17 +1799,8 @@
       "like_count": 13,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7460937449913601323"
-    },
-    {
-      "video_id": "7460583028826410286",
-      "title": "Day 15. Protein is the goal.  #minigolfeveryday #minigolf #everyday #...",
-      "upload_date": "20250116",
-      "view_count": 3183,
-      "like_count": 16,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7460583028826410286"
     }
   ],
-  "last_updated": "2025-08-11T20:16:11.319458",
+  "last_updated": "2025-08-12T01:11:47.923408",
   "total_count": 200
 }
