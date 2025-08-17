@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7539618631177587982",
+      "title": "Day 220. The saddest day.  #minigolfeveryday #minigolf #puttputt #vac...",
+      "upload_date": "20250817",
+      "view_count": 176,
+      "like_count": 3,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7539618631177587982"
+    },
+    {
       "video_id": "7539296575730846989",
       "title": "Outtakes: Gracen with a 1.  #minigolfeveryday #minigolf #oceancity #b...",
       "upload_date": "20250816",
@@ -1790,17 +1799,8 @@
       "like_count": 4,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7463694613161856302"
-    },
-    {
-      "video_id": "7463284283596328238",
-      "title": "Day 22. Confession time.  #minigolfeveryday #minigolf #everyday #gobi...",
-      "upload_date": "20250124",
-      "view_count": 849,
-      "like_count": 37,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7463284283596328238"
     }
   ],
-  "last_updated": "2025-08-17T16:16:46.217718",
+  "last_updated": "2025-08-17T20:15:58.834219",
   "total_count": 200
 }
