@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7541503255952559374",
+      "title": "Day 225. Basic.  #minigolfeveryday #minigolf #puttputt #obstacle  #jump",
+      "upload_date": "20250822",
+      "view_count": 59,
+      "like_count": 2,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7541503255952559374"
+    },
+    {
       "video_id": "7541122544485649719",
       "title": "Day 224. ⚔️. #minigolfeveryday #minigolf #puttinggreen #puttputt #swo...",
       "upload_date": "20250821",
@@ -1790,17 +1799,8 @@
       "like_count": 6,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7465534193238347051"
-    },
-    {
-      "video_id": "7465119059089214766",
-      "title": "Day 27. Post Solitude Mountain.  #minigolfeveryday #minigolf #everyda...",
-      "upload_date": "20250128",
-      "view_count": 1014,
-      "like_count": 8,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7465119059089214766"
     }
   ],
-  "last_updated": "2025-08-22T16:17:23.606204",
+  "last_updated": "2025-08-22T20:15:53.814766",
   "total_count": 200
 }
