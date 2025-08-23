@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7541848757516635405",
+      "title": "Day 226. Fun until it’s not.  #minigolfeveryday #minigolf #puttputt #...",
+      "upload_date": "20250823",
+      "view_count": 89,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7541848757516635405"
+    },
+    {
       "video_id": "7541503255952559374",
       "title": "Day 225. Basic.  #minigolfeveryday #minigolf #puttputt #obstacle  #jump",
       "upload_date": "20250822",
@@ -1790,17 +1799,8 @@
       "like_count": 3,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7465838163613781291"
-    },
-    {
-      "video_id": "7465534193238347051",
-      "title": "Day 28. JunCon Day 1. #minigolfeveryday #minigolf #everyday #puttputt...",
-      "upload_date": "20250130",
-      "view_count": 197,
-      "like_count": 6,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7465534193238347051"
     }
   ],
-  "last_updated": "2025-08-23T16:15:07.801465",
+  "last_updated": "2025-08-23T20:14:09.039050",
   "total_count": 200
 }
