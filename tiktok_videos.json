@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7542973945935416590",
+      "title": "Day 228. Dog days.  #minigolfeveryday #minigolf #puttputt #puttinggre...",
+      "upload_date": "20250826",
+      "view_count": 69,
+      "like_count": 2,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7542973945935416590"
+    },
+    {
       "video_id": "7542675986324688141",
       "title": "Day 227. Lounging.  #minigolfeveryday #minigolf #puttputt #recliner #...",
       "upload_date": "20250825",
@@ -1790,17 +1799,8 @@
       "like_count": 6,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7466999095182265642"
-    },
-    {
-      "video_id": "7466603677386542379",
-      "title": "Day 31. Juncon Day 4. Rain.  #minigolfeveryday #minigolf #everyday #p...",
-      "upload_date": "20250201",
-      "view_count": 601,
-      "like_count": 8,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7466603677386542379"
     }
   ],
-  "last_updated": "2025-08-26T16:17:38.120981",
+  "last_updated": "2025-08-26T20:15:59.084984",
   "total_count": 200
 }
