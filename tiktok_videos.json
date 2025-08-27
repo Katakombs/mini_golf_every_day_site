@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7543347386618219831",
+      "title": "Day 229. Tiger, tiger.  #minigolfeveryday #minigolf #tiger #papercraf...",
+      "upload_date": "20250827",
+      "view_count": 145,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7543347386618219831"
+    },
+    {
       "video_id": "7542973945935416590",
       "title": "Day 228. Dog days.  #minigolfeveryday #minigolf #puttputt #puttinggre...",
       "upload_date": "20250826",
@@ -1790,17 +1799,8 @@
       "like_count": 3,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7467349757258632490"
-    },
-    {
-      "video_id": "7466999095182265642",
-      "title": "Day 32. Jet lag. What day is it?  #minigolfeveryday #minigolf #everyd...",
-      "upload_date": "20250203",
-      "view_count": 274,
-      "like_count": 6,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7466999095182265642"
     }
   ],
-  "last_updated": "2025-08-27T16:17:50.237583",
+  "last_updated": "2025-08-27T20:15:35.033845",
   "total_count": 200
 }
