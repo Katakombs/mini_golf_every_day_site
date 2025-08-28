@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7543725013631765815",
+      "title": "Day 230. Teepee.  #minigolfeveryday #minigolf #puttinggreen #teepee #...",
+      "upload_date": "20250828",
+      "view_count": 375,
+      "like_count": 4,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7543725013631765815"
+    },
+    {
       "video_id": "7543347386618219831",
       "title": "Day 229. Tiger, tiger.  #minigolfeveryday #minigolf #tiger #papercraf...",
       "upload_date": "20250827",
@@ -1790,17 +1799,8 @@
       "like_count": 2,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7467725080391568686"
-    },
-    {
-      "video_id": "7467349757258632490",
-      "title": "Day 33. Off the rail.  #minigolfeveryday #minigolf #everyday #puttput...",
-      "upload_date": "20250204",
-      "view_count": 66,
-      "like_count": 3,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7467349757258632490"
     }
   ],
-  "last_updated": "2025-08-28T16:18:05.105992",
+  "last_updated": "2025-08-28T20:15:46.223087",
   "total_count": 200
 }
