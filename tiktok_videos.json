@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7545578033441164599",
+      "title": "Day 234. Whimsy.  #minigolfeveryday #minigolf #puttputt #musicbox #ca...",
+      "upload_date": "20250902",
+      "view_count": 104,
+      "like_count": 0,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7545578033441164599"
+    },
+    {
       "video_id": "7545277292906401037",
       "title": "Throwback: Dinosaur (Jr.) #minigolfeveryday #minigolf #oceancity #boa...",
       "upload_date": "20250902",
@@ -1790,17 +1799,8 @@
       "like_count": 2,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7469956894501637419"
-    },
-    {
-      "video_id": "7469509188956278058",
-      "title": "Day 39. Can they both lose? #minigolfeveryday #minigolf #everyday #pu...",
-      "upload_date": "20250209",
-      "view_count": 700,
-      "like_count": 15,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7469509188956278058"
     }
   ],
-  "last_updated": "2025-09-02T16:17:51.055501",
+  "last_updated": "2025-09-02T20:14:51.394760",
   "total_count": 200
 }
