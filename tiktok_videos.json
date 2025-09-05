@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7546381158120951053",
+      "title": "Day 236. Going up.  #minigolfeveryday #minigolf #puttputt #ramp #offi...",
+      "upload_date": "20250904",
+      "view_count": 290,
+      "like_count": 10,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7546381158120951053"
+    },
+    {
       "video_id": "7545945197180505357",
       "title": "Day 235. Rail slide.  #minigolfeveryday #minigolf #puttputt #jump #ra...",
       "upload_date": "20250903",
@@ -1790,17 +1799,8 @@
       "like_count": 7,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7470733435515079982"
-    },
-    {
-      "video_id": "7470324743401409834",
-      "title": "Day 41. Ricochet.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
-      "upload_date": "20250212",
-      "view_count": 844,
-      "like_count": 4,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7470324743401409834"
     }
   ],
-  "last_updated": "2025-09-04T20:14:53.469136",
+  "last_updated": "2025-09-05T01:05:03.022765",
   "total_count": 200
 }
