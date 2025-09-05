@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7546698296606199053",
+      "title": "Day 237. Rain delay.  #minigolfeveryday #minigolf #puttputt #rain #ra...",
+      "upload_date": "20250905",
+      "view_count": 7,
+      "like_count": 1,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7546698296606199053"
+    },
+    {
       "video_id": "7546381158120951053",
       "title": "Day 236. Going up.  #minigolfeveryday #minigolf #puttputt #ramp #offi...",
       "upload_date": "20250904",
@@ -1790,17 +1799,8 @@
       "like_count": 2,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7471116211162631470"
-    },
-    {
-      "video_id": "7470733435515079982",
-      "title": "",
-      "upload_date": "20250213",
-      "view_count": 158,
-      "like_count": 7,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7470733435515079982"
     }
   ],
-  "last_updated": "2025-09-05T16:17:18.977553",
+  "last_updated": "2025-09-05T20:14:45.792685",
   "total_count": 200
 }
