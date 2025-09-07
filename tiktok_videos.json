@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7547077606043045134",
+      "title": "Day 238. Laundry.  #minigolfeveryday #minigolf #puttputt #laundry #ne...",
+      "upload_date": "20250906",
+      "view_count": 877,
+      "like_count": 2,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7547077606043045134"
+    },
+    {
       "video_id": "7546698296606199053",
       "title": "Day 237. Rain delay.  #minigolfeveryday #minigolf #puttputt #rain #ra...",
       "upload_date": "20250905",
@@ -1790,17 +1799,8 @@
       "like_count": 3,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7471495602140892459"
-    },
-    {
-      "video_id": "7471116211162631470",
-      "title": "Day 43. We’re at the hotel.  #minigolfeveryday #minigolf #everyday #p...",
-      "upload_date": "20250214",
-      "view_count": 166,
-      "like_count": 2,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7471116211162631470"
     }
   ],
-  "last_updated": "2025-09-06T20:13:22.081678",
+  "last_updated": "2025-09-07T01:10:02.163935",
   "total_count": 200
 }
