@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7547795583369563405",
+      "title": "Day 240. Have some faith next time.  #minigolfeveryday #minigolf #buf...",
+      "upload_date": "20250908",
+      "view_count": 421,
+      "like_count": 19,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7547795583369563405"
+    },
+    {
       "video_id": "7547458055860915470",
       "title": "Day 238. Something to write home about.   #minigolfeveryday #minigolf...",
       "upload_date": "20250907",
@@ -1790,17 +1799,8 @@
       "like_count": 5,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7472240164086025518"
-    },
-    {
-      "video_id": "7471858888971652394",
-      "title": "",
-      "upload_date": "20250216",
-      "view_count": 852,
-      "like_count": 8,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7471858888971652394"
     }
   ],
-  "last_updated": "2025-09-08T16:16:14.376581",
+  "last_updated": "2025-09-08T20:15:14.391939",
   "total_count": 200
 }
