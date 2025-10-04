@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7557162263791127822",
+      "title": "Day 261. Since 2015.  #minigolfeveryday #minigolf #troonbrewing #craf...",
+      "upload_date": "20251004",
+      "view_count": 66,
+      "like_count": 0,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7557162263791127822"
+    },
+    {
       "video_id": "7556761063400688909",
       "title": "Day 260. Up and over.  #minigolfeveryday #minigolf #officeprops #obst...",
       "upload_date": "20251002",
@@ -1790,17 +1799,8 @@
       "like_count": 4,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7480727097825168686"
-    },
-    {
-      "video_id": "7480367342674005294",
-      "title": "Day 68. Twilight.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
-      "upload_date": "20250311",
-      "view_count": 114,
-      "like_count": 2,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7480367342674005294"
     }
   ],
-  "last_updated": "2025-10-03T20:14:46.604010",
+  "last_updated": "2025-10-04T01:01:38.870276",
   "total_count": 200
 }
