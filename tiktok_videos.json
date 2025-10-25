@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7564982015225859383",
+      "title": "Day 276. Tried and true.  #minigolfeveryday #minigolf #apple #applecr...",
+      "upload_date": "20251025",
+      "view_count": 160,
+      "like_count": 6,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7564982015225859383"
+    },
+    {
       "video_id": "7564542535432031501",
       "title": "Day 275. Elelator.  #minigolfeveryday #minigolf #elevator #tinytoons ...",
       "upload_date": "20251023",
@@ -1790,17 +1799,8 @@
       "like_count": 3,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7486657896516767018"
-    },
-    {
-      "video_id": "7486298513630973230",
-      "title": "Day 83. Lil ramp.  #minigolfeveryday #minigolf #everyday #puttputt #f...",
-      "upload_date": "20250327",
-      "view_count": 4541,
-      "like_count": 5,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7486298513630973230"
     }
   ],
-  "last_updated": "2025-10-25T00:13:12.634874",
+  "last_updated": "2025-10-25T04:03:57.660780",
   "total_count": 200
 }
