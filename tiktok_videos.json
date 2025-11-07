@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7569828369475439886",
+      "title": "Day 287. LOGANBERRY.  #minigolfeveryday #minigolf #loganberry #buffal...",
+      "upload_date": "20251107",
+      "view_count": 2,
+      "like_count": 0,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7569828369475439886"
+    },
+    {
       "video_id": "7569049643326197005",
       "title": "Day 286. I vote for more Halloweeen.  #minigolfeveryday #minigolf #ha...",
       "upload_date": "20251105",
@@ -1790,17 +1799,8 @@
       "like_count": 6,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7490647633187343659"
-    },
-    {
-      "video_id": "7490357452316233006",
-      "title": "Day 94. Duck, duck…more ducks.  #minigolfeveryday #minigolf #everyday...",
-      "upload_date": "20250407",
-      "view_count": 1232,
-      "like_count": 7,
-      "comment_count": 1,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7490357452316233006"
     }
   ],
-  "last_updated": "2025-11-07T00:14:32.858984",
+  "last_updated": "2025-11-07T04:04:29.473602",
   "total_count": 200
 }
