@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7579752844442520846",
+      "title": "Day 302. Holidays, I guess.  #minigolfeveryday #minigolf #holidays #o...",
+      "upload_date": "20251203",
+      "view_count": 126,
+      "like_count": 2,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7579752844442520846"
+    },
+    {
       "video_id": "7578345117770124557",
       "title": "Day 301. Three-oh-OnePiece #minigolfeveryday #minigolf #onepiece #bon...",
       "upload_date": "20251130",
@@ -1790,17 +1799,8 @@
       "like_count": 2,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7496509877649558826"
-    },
-    {
-      "video_id": "7496231161530780974",
-      "title": "Day 109. Spring has sprung.  #minigolfeveryday #minigolf #everyday #p...",
-      "upload_date": "20250422",
-      "view_count": 200,
-      "like_count": 4,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7496231161530780974"
     }
   ],
-  "last_updated": "2025-12-03T20:04:08.582485",
+  "last_updated": "2025-12-04T00:14:16.805204",
   "total_count": 200
 }
