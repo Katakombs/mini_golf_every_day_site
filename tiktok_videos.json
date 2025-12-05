@@ -1,6 +1,15 @@
 {
   "videos": [
     {
+      "video_id": "7580159143286230327",
+      "title": "Day 303. Worky worky work work.  #minigolfeveryday #minigolf #officep...",
+      "upload_date": "20251205",
+      "view_count": 0,
+      "like_count": 0,
+      "comment_count": 0,
+      "url": "https://www.tiktok.com/@minigolfeveryday/video/7580159143286230327"
+    },
+    {
       "video_id": "7579752844442520846",
       "title": "Day 302. Holidays, I guess.  #minigolfeveryday #minigolf #holidays #o...",
       "upload_date": "20251203",
@@ -1790,17 +1799,8 @@
       "like_count": 3,
       "comment_count": 0,
       "url": "https://www.tiktok.com/@minigolfeveryday/video/7496919675666730282"
-    },
-    {
-      "video_id": "7496509877649558826",
-      "title": "Day 110. Admin professional day! #minigolfeveryday #minigolf #everyda...",
-      "upload_date": "20250423",
-      "view_count": 146,
-      "like_count": 2,
-      "comment_count": 0,
-      "url": "https://www.tiktok.com/@minigolfeveryday/video/7496509877649558826"
     }
   ],
-  "last_updated": "2025-12-04T20:04:03.480258",
+  "last_updated": "2025-12-05T00:14:32.142981",
   "total_count": 200
 }
